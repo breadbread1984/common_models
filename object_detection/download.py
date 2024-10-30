@@ -29,7 +29,7 @@ def main(unused_argv):
     if not exists(download_file):
       gdown.download(data_info['url'], output = download_file)
     processor = data_info['postprocess']()
-    processor.process(download_file)
+    processor.process(download_file, output = FLAGS.output)
   else:
     raise Exception('unknown type of dataset')
 

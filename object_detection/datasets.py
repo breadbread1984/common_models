@@ -21,8 +21,8 @@ class CocoDataset(ABC):
     raise NotImplementedError('CocoDataset.load is not implemented!')
 
 class SafetyHelmet(CocoDataset):
-  def process(self, download_path):
-    target_path = join(FLAGS.output, 'safetyhelmet')
+  def process(self, download_path, output = 'datasets'):
+    target_path = join(output, 'safetyhelmet')
     # 1) unzip dataset
     if not exists(target_path):
       mkdir(target_path)
@@ -31,7 +31,7 @@ class SafetyHelmet(CocoDataset):
     # 2) convert VOC to COCO annotation
     coco_ann = voc_to_coco(join(target_path, 'VOC2028', 'Annotations'))
     # 3) load list
-    label_path = join(FLAGS.output, 'safetyhelmet', 'labels')
+    label_path = join(output, 'safetyhelmet', 'labels')
     if not exists(label_path):
       mkdir(label_path)
     for list_file in listdir(join(target_path, 'VOC2028', 'ImageSets', 'Main')):
