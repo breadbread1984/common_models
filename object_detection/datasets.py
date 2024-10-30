@@ -155,3 +155,16 @@ if __name__ == "__main__":
   safetyhelmet = SafetyHelmet()
   trainset = safetyhelmet.load('datasets/safetyhelmet','train')
   testset = safetyhelmet.load('datasets/safetyhelmet','val')
+  import numpy as np
+  import cv2
+  for sample in trainset:
+    img, ann = sample
+    img = np.array(img)[:,:,::-1]
+    boxes = ann['boxes']
+    labels = ann['labels']
+    for box, label in zip(boxes, labels):
+      box = box.cpu().numpy()
+      color = (255 if label == 0 else 0,255 if label == 1 else 0,255 if label == 2 else 0)
+      cv2.rectangle(img, tuple(box[:2]), tuple(box[2:]), color, 2)
+    cv2.imshow('', img)
+    cv2.waitKey()
