@@ -1,15 +1,18 @@
 #!/usr/bin/python3
 
 import os
+from os.path import basename, splitext
 import json
 import xml.etree.ElementTree as ET
 
 def parse_voc_annotation(annotation_path):
+    filename = basename(annotation_path)
+    stem, ext = splitext(filename)
     tree = ET.parse(annotation_path)
     root = tree.getroot()
 
     image_info = {
-        "file_name": root.find('filename').text,
+        "file_name": stem + '.jpg',
         "height": int(root.find('size/height').text),
         "width": int(root.find('size/width').text),
     }
