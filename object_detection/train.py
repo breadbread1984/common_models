@@ -60,7 +60,7 @@ def get_dataset(is_train, args):
         )
     elif args.dataset == 'safetyhelmet':
         safetyhelmet = SafetyHelmet()
-        ds = safetyhelmet.load('datasets/safetyhelmet', image_set, transforms)
+        ds = safetyhelmet.load('datasets/safetyhelmet', image_set, get_transform(is_train, args))
     return ds, num_classes
 
 
