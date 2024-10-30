@@ -20,6 +20,14 @@ matplotlib
 python3 download.py --dataset (safetyhelmet)
 ```
 
+### Add extra datasets
+
+- implement an inherted class of CocoDataset and put the code in file ***datasets.py***.
+
+- import the child class of CocoDataset in ***download.py***.
+
+- add extra dataset in ***train.py***
+
 ## Training
 
 You must modify the following flags:
