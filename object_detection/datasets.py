@@ -2,6 +2,7 @@
 
 from os.path import join, exists
 from abc import ABC, abstractmethod
+import torch
 from torchvision.datasets import CocoDetection, wrap_dataset_for_transforms_v2
 
 class CocoDataset(ABC):
