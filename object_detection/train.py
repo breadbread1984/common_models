@@ -46,7 +46,7 @@ def get_dataset(is_train, args):
     num_classes, mode = {
       "coco": (91, "instances"),
       "coco_kp": (2, "person_keypoints"),
-      "safetyhelmet": (3, "instances")
+      "safetyhelmet": (4, "instances")
     }[args.dataset]
     with_masks = "mask" in args.model
     if args.dataset in ['coco', 'coco_kp']:
