@@ -54,7 +54,7 @@ class SafetyHelmet(PostProcess):
         "categories": coco_ann['categories']
       }
       with open(join(label_path, stem + '.json'), 'w') as f:
-        f.write(json.dumps(subset_ann))
+        f.write(json.dumps(subset_ann, indent = 2, ensure_ascii = False))
 
 def main(unused_argv):
   if not exists(FLAGS.output):
