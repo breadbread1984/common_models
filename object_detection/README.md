@@ -104,3 +104,12 @@ torchrun --nproc_per_node=8 train.py\
     --dataset coco_kp --model keypointrcnn_resnet50_fpn --epochs 46\
     --lr-steps 36 43 --aspect-ratio-group-factor 3 --weights-backbone ResNet50_Weights.IMAGENET1K_V1
 ```
+
+## Sample training command
+
+### retinanet on safetyhelmet
+
+```shell
+python3 download.py --dataset safetyhelmet
+torchrun --nproc_per_node=1 train.py --dataset safetyhelmet --batch-size 32 --model retinanet_resnet50_fpn --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 --lr 0.01 --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+```
