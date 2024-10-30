@@ -39,13 +39,13 @@ class SafetyHelmet(PostProcess):
     for list_file in listdir(join(target_path, 'VOC2028', 'ImageSets', 'Main')):
       stem, ext = splitext(list_file)
       if ext != '.txt': continue
-      with open(join(target_path, 'VOC2028', 'ImageSets', 'Main', list_file)) as f:
+      with open(join(target_path, 'VOC2028', 'ImageSets', 'Main', list_file), 'r') as f:
         sample_list = set()
         reader = csv.reader(f)
         for row in reader:
           if len(row) == 0: continue
           sample_list.add(row[0])
-      images = list(filter(lambda x: x["id"] in sample_list, coco_ann['images']))
+      images = list(filter(lambda x: splitext(x["file_name"])[0] in sample_list, coco_ann['images']))
       image_ids = set([image['id'] for image in images])
       annotations = list(filter(lambda x: x["image_id"] in image_ids, coco_ann['annotations']))
       subset_ann = {
