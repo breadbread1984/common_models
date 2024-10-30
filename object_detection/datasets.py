@@ -110,7 +110,7 @@ def voc_to_coco(voc_dir):
     annotations = []
     annotation_id = 0
 
-    for xml_file in os.listdir(voc_dir):
+    for xml_file in listdir(voc_dir):
         if not xml_file.endswith('.xml'):
             continue
 
