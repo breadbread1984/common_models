@@ -3,7 +3,7 @@
 from absl import flags, app
 from abc import ABC, abstractmethod
 from shutil import rmtree
-from os import mkdir
+from os import mkdir, listdir
 from os.path import join, exists, splitext
 import gdown
 import zipfile
