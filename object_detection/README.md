@@ -12,6 +12,16 @@ pycocotools
 matplotlib
 ```
 
+## Datasets
+
+### Download dataset
+
+```shell
+python3 download.py --dataset (safetyhelmet)
+```
+
+## Training
+
 You must modify the following flags:
 
 `--data-path=/path/to/coco/dataset`
