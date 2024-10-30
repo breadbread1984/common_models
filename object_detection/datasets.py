@@ -114,7 +114,7 @@ def voc_to_coco(voc_dir):
         if not xml_file.endswith('.xml'):
             continue
 
-        image_info, voc_annotations = parse_voc_annotation(os.path.join(voc_dir, xml_file))
+        image_info, voc_annotations = parse_voc_annotation(join(voc_dir, xml_file))
         image_id = len(images)
         images.append({
             "id": image_id,
