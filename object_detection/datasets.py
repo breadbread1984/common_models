@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from os.path import join, exists
 from abc import ABC, abstractmethod
+from shutil import copy
 from os import mkdir, listdir
 from os.path import join, exists, splitext, basename
 import gdown
@@ -28,6 +28,11 @@ class SafetyHelmet(CocoDataset):
       mkdir(target_path)
       with zipfile.ZipFile(download_path, 'r') as f:
         f.extractall(target_path)
+    # 1.1) normalize image file name
+    for img in listdir(join(target_path, 'VOC2028', 'JPEGImages')):
+      stem, ext = splitext(img)
+      if ext == '.JPG':
+        copy(join(target_path, 'VOC2028', 'JPEGImages', img), join(target_path, 'VOC2028', 'JPEGImages', stem + '.jpg'))
     # 2) convert VOC to COCO annotation
     coco_ann = voc_to_coco(join(target_path, 'VOC2028', 'Annotations'))
     # 3) load list
