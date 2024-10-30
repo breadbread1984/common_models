@@ -2,59 +2,17 @@
 
 from absl import flags, app
 from abc import ABC, abstractmethod
-from shutil import rmtree
-from os import mkdir, listdir
-from os.path import join, exists, splitext
+from os import mkdir
+from os.path import join, exists
 import gdown
-import zipfile
-import csv
-import json
 from utils import voc_to_coco
+from datasets import SafetyHelmet
 
 FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_enum('dataset', enum_values = {'safetyhelmet'}, default = 'safetyhelmet', help = 'name of dataset')
   flags.DEFINE_string('output', default = 'datasets', help = 'dataset download path')
-
-class PostProcess(ABC):
-  @abstractmethod
-  def process(self, download_path):
-    raise NotImplementedError('PostProcess.process is not implemented!')
-
-class SafetyHelmet(PostProcess):
-  def process(self, download_path):
-    target_path = join(FLAGS.output, 'safetyhelmet')
-    # 1) unzip dataset
-    if not exists(target_path):
-      mkdir(target_path)
-      with zipfile.ZipFile(download_path, 'r') as f:
-        f.extractall(target_path)
-    # 2) convert VOC to COCO annotation
-    coco_ann = voc_to_coco(join(target_path, 'VOC2028', 'Annotations'))
-    # 3) load list
-    label_path = join(FLAGS.output, 'safetyhelmet', 'labels')
-    if not exists(label_path):
-      mkdir(label_path)
-    for list_file in listdir(join(target_path, 'VOC2028', 'ImageSets', 'Main')):
-      stem, ext = splitext(list_file)
-      if ext != '.txt': continue
-      with open(join(target_path, 'VOC2028', 'ImageSets', 'Main', list_file), 'r') as f:
-        sample_list = set()
-        reader = csv.reader(f)
-        for row in reader:
-          if len(row) == 0: continue
-          sample_list.add(row[0])
-      images = list(filter(lambda x: splitext(x["file_name"])[0] in sample_list, coco_ann['images']))
-      image_ids = set([image['id'] for image in images])
-      annotations = list(filter(lambda x: x["image_id"] in image_ids, coco_ann['annotations']))
-      subset_ann = {
-        "images": images,
-        "annotations": annotations,
-        "categories": coco_ann['categories']
-      }
-      with open(join(label_path, stem + '.json'), 'w') as f:
-        f.write(json.dumps(subset_ann, indent = 2, ensure_ascii = False))
 
 def main(unused_argv):
   if not exists(FLAGS.output):
