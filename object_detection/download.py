@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 from os import mkdir
 from os.path import join, exists
 import gdown
-from utils import voc_to_coco
 from datasets import SafetyHelmet
 
 FLAGS = flags.FLAGS
