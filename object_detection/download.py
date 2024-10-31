@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from abc import ABC, abstractmethod
 from os import mkdir
 from os.path import join, exists
 import gdown
@@ -28,10 +27,10 @@ def main(unused_argv):
   if data_info['type'] == 'google drive':
     if not exists(download_file):
       gdown.download(data_info['url'], output = download_file)
-    processor = data_info['postprocess']()
-    processor.process(download_file, output = FLAGS.output)
   else:
     raise Exception('unknown type of dataset')
+  processor = data_info['postprocess']()
+  processor.process(download_file, output = FLAGS.output)
 
 if __name__ == "__main__":
   add_options()
