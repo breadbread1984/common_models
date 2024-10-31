@@ -19,8 +19,7 @@ class Detection(object):
     # 1) convert to RGB
     x = x[:,:,::-1]
     # 2) add batch
-    x = np.ascontiguousarray(np.expand_dims(np.transpose(x, (2,0,1)), axis = 0))
-    x = torch.from_numpy(x).to(torch.float32).to(next(self.model.parameters()).device)
+    x = np.ascontiguousarray(np.expand_dims(np.transpose(x, (2,0,1)), axis = 0)).astype(np.float32)
     # 3) preprocess
     x = self.trans(x)
     # 4) predict
