@@ -22,7 +22,7 @@ def main(unused_argv):
         'train': 'https://drive.google.com/uc?id=19RPVhC0dWpLF9Y_DYjxjUrwLbKUBQZ2K',
         'val': 'https://drive.google.com/uc?id=17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM',
         'test': 'https://drive.google.com/uc?id=1mYOf5USMGNcJRPcvRVJVV1uHEalG5RPl'
-      }
+      },
       'postprocess': iSAID,
     }
   }
