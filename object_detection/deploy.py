@@ -24,7 +24,7 @@ class Detection(object):
     x = self.trans(x)
     # 4) predict
     outputs = self.model(x)
-    outputs = [{k: v.to('cpu') for k, v in t.items()} for t in outputs]
+    outputs = [{k: v.to('cpu').numpy() for k, v in t.items()} for t in outputs]
     return outputs[0]
 
 if __name__ == "__main__":
@@ -34,4 +34,7 @@ if __name__ == "__main__":
   objs = detection.detect(img)
   boxes, scores, labels = objs['boxes'], objs['scores'], objs['labels']
   for box, score, label in zip(boxes, scores, labels):
-    import pdb; pdb.set_trace()
+    color = (255 if label == 0 else 0,255 if label == 1 else 0,255 if label == 2 else 0)
+    cv2.rectangle(img, tuple(box[:2].tolist()), tuple(box[2:].tolist()), color, 2, 1)
+  cv2.imshow('', img)
+  cv2.waitKey()
