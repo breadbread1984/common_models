@@ -3,7 +3,7 @@
 import numpy as np
 import torch
 from torchvision.models import get_model, get_weight
-from torchvision.transforms import Compose, ToTensor
+from torchvision.transforms import Compose, ToTensor, ToDtype
 
 class Detection(object):
   def __init__(self, model = 'retinanet_resnet50_fpn', backbone_weight = 'ResNet50_Weights.IMAGENET1K_V1', n_classes = 4, ckpt_path = 'checkpoint.pth', device = 'cuda'):
@@ -13,7 +13,10 @@ class Detection(object):
     self.model = get_model(model, weights = None, weights_backbone = backbone_weight, num_classes = n_classes).to(device)
     self.model.load_state_dict(state_dict)
     self.model.eval()
-    self.trans = ToTensor()
+    self.trans = Compose([
+      ToTensor(),
+      ToDtype(torch.float, scale = True),
+    ])
   def detect(self, x):
     assert type(x) is np.ndarray
     # 1) convert to RGB
