@@ -20,8 +20,7 @@ def main(unused_argv):
       'type': 'google drive',
       'url': {
         'train': 'https://drive.google.com/drive/folders/19RPVhC0dWpLF9Y_DYjxjUrwLbKUBQZ2K',
-        'val': 'https://drive.google.com/drive/folders/17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM',
-        'test': 'https://drive.google.com/drive/folders/1mYOf5USMGNcJRPcvRVJVV1uHEalG5RPl'
+        'val': 'https://drive.google.com/drive/folders/17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM'
       },
       'postprocess': iSAID,
     }
