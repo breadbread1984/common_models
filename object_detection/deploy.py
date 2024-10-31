@@ -19,7 +19,7 @@ class Detection(object):
     # 1) convert to RGB
     x = x[:,:,::-1]
     # 2) add batch
-    x = np.ascontiguousarray(np.expand_dims(x, axis = 0)).astype(np.float32)
+    x = np.ascontiguousarray(np.expand_dims(x, axis = 0))
     # 3) preprocess
     x = self.trans(x)
     # 4) predict
