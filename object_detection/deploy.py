@@ -36,5 +36,6 @@ if __name__ == "__main__":
   for box, score, label in zip(boxes, scores, labels):
     color = (255 if label == 0 else 0,255 if label == 1 else 0,255 if label == 2 else 0)
     cv2.rectangle(img, tuple(box[:2].astype(np.int32).tolist()), tuple(box[2:].astype(np.int32).tolist()), color, 2, 1)
+  cv2.imwrite('output.png', img)
   cv2.imshow('', img)
   cv2.waitKey()
