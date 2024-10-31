@@ -31,7 +31,7 @@ class Detection(object):
     return outputs[0]
 
 if __name__ == "__main__":
-  detection = Detection()
+  detection = Detection(device = 'cpu')
   import cv2
   img = cv2.imread('datasets/safetyhelmet/VOC2028/JPEGImages/PartB_00161.jpg')
   objs = detection.detect(img)
