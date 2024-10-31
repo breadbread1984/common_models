@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from abc import ABC, abstractmethod
 from os import mkdir
 from os.path import join, exists
 import gdown
