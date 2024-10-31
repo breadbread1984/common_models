@@ -28,20 +28,21 @@ def main(unused_argv):
   data_info = datasets[FLAGS.dataset]
   download_path = join(FLAGS.output, FLAGS.dataset + '.download')
   if data_info['type'] == 'google drive':
-    if type(data_info['url']) is str:
-      if data_info['url'].find('folder') >= 0:
-        gdown.download_folder(data_info['type'], output = download_path)
-      else:
-        gdown.download(data_info['type'], output = download_path)
-    elif type(data_info['url']) is dict:
-      if not exists(download_path): mkdir(download_path)
-      for split, url in data_info['url'].items():
-        if url.find('folder') >= 0:
-          gdown.download_folder(url, output = join(download_path, split))
+    if not exists(download_path):
+      if type(data_info['url']) is str:
+        if data_info['url'].find('folder') >= 0:
+          gdown.download_folder(data_info['type'], output = download_path)
         else:
-          gdown.download(url, output = join(download_path, split))
-    else:
-      raise Exception('unknown type of url')
+          gdown.download(data_info['type'], output = download_path)
+      elif type(data_info['url']) is dict:
+        if not exists(download_path): mkdir(download_path)
+        for split, url in data_info['url'].items():
+          if url.find('folder') >= 0:
+            gdown.download_folder(url, output = join(download_path, split))
+          else:
+            gdown.download(url, output = join(download_path, split))
+      else:
+        raise Exception('unknown type of url')
   else:
     raise Exception('unknown type of dataset')
   processor = data_info['postprocess']()
