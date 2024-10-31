@@ -19,9 +19,9 @@ def main(unused_argv):
     'isaid': {
       'type': 'google drive',
       'url': {
-        'train': 'https://drive.google.com/uc?id=19RPVhC0dWpLF9Y_DYjxjUrwLbKUBQZ2K',
-        'val': 'https://drive.google.com/uc?id=17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM',
-        'test': 'https://drive.google.com/uc?id=1mYOf5USMGNcJRPcvRVJVV1uHEalG5RPl'
+        'train': 'https://drive.google.com/drive/folders/19RPVhC0dWpLF9Y_DYjxjUrwLbKUBQZ2K',
+        'val': 'https://drive.google.com/drive/folders/17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM',
+        'test': 'https://drive.google.com/drive/folders/1mYOf5USMGNcJRPcvRVJVV1uHEalG5RPl'
       },
       'postprocess': iSAID,
     }
@@ -34,7 +34,7 @@ def main(unused_argv):
     elif type(data_info['url']) is dict:
       if not exists(download_path): mkdir(download_path)
       for split, url in data_info['url'].items():
-        gdown.download(url, output = join(download_path, split))
+        gdown.download_folder(url, output = join(download_path, split))
     else:
       raise Exception('unknown type of url')
   else:
