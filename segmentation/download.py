@@ -19,6 +19,8 @@ def main(unused_argv):
     'isaid': {
       'type': 'google drive',
       'url': {
+        'train_image': 'https://drive.google.com/drive/folders/1MvSH7sNaY4p4lhwAU_BG3y7zth6-rtrD',
+        'val_image': 'https://drive.google.com/drive/folders/1RV7Z5MM4nJJJPUs6m9wsxDOJxX6HmQqZ',
         'train': 'https://drive.google.com/drive/folders/19RPVhC0dWpLF9Y_DYjxjUrwLbKUBQZ2K',
         'val': 'https://drive.google.com/drive/folders/17MErPhWQrwr92Ca1Maf4mwiarPS5rcWM'
       },
