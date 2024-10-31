@@ -3,7 +3,7 @@
 import numpy as np
 import torch
 from torchvision.models import get_model, get_weight
-from torchvision.transforms import Compose, ToTensor, ToDtype
+from torchvision.transforms.v2 import Compose, ToTensor, ToDtype
 
 class Detection(object):
   def __init__(self, model = 'retinanet_resnet50_fpn', backbone_weight = 'ResNet50_Weights.IMAGENET1K_V1', n_classes = 4, ckpt_path = 'checkpoint.pth', device = 'cuda'):
