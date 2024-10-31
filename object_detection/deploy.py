@@ -24,7 +24,7 @@ class Detection(object):
     x = self.trans(x)
     # 4) predict
     outputs = self.model(x)
-    outputs = [{k: v.to('cpu').numpy() for k, v in t.items()} for t in outputs]
+    outputs = [{k: v.detach().cpu().numpy() for k, v in t.items()} for t in outputs]
     return outputs[0]
 
 if __name__ == "__main__":
