@@ -16,7 +16,7 @@ class Detection(object):
     self.trans = Compose([
       ToTensor(),
       ToDtype(torch.float, scale = True),
-    ]).to(device)
+    ])
   def detect(self, x):
     assert type(x) is np.ndarray
     # 1) convert to RGB
@@ -24,7 +24,7 @@ class Detection(object):
     # 2) add batch
     x = np.ascontiguousarray(x)
     # 3) preprocess
-    x = self.trans(x).unsqueeze(dim = 0)
+    x = self.trans(x).unsqueeze(dim = 0).to(next(self.model.parameters()).device)
     # 4) predict
     outputs = self.model(x)
     outputs = [{k: v.detach().cpu().numpy() for k, v in t.items()} for t in outputs]
