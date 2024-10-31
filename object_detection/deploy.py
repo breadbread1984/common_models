@@ -19,9 +19,9 @@ class Detection(object):
     # 1) convert to RGB
     x = x[:,:,::-1]
     # 2) add batch
-    x = np.ascontiguousarray(np.expand_dims(x, axis = 0))
+    x = np.ascontiguousarray(x)
     # 3) preprocess
-    x = self.trans(x)
+    x = self.trans(x).unsqueeze(dim = 0)
     # 4) predict
     outputs = self.model(x)
     outputs = [{k: v.detach().cpu().numpy() for k, v in t.items()} for t in outputs]
