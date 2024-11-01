@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from os.path import join, exists
 import zipfile
 import gdown
+import torch
 from torchvision.datasets import CocoDetection
 from transforms import Compose
 from coco_utils import FilterAndRemapCocoCategories, ConvertCocoPolysToMask
