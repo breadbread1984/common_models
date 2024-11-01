@@ -12,6 +12,7 @@ from coco_utils import get_coco
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
+from datasets import iSAID
 
 
 def get_dataset(args, is_train):
@@ -23,15 +24,20 @@ def get_dataset(args, is_train):
         kwargs.pop("use_v2")
         return torchvision.datasets.VOCSegmentation(*args, **kwargs)
 
-    paths = {
-        "voc": (args.data_path, voc, 21),
-        "voc_aug": (args.data_path, sbd, 21),
-        "coco": (args.data_path, get_coco, 21),
-    }
-    p, ds_fn, num_classes = paths[args.dataset]
+    if args.dataset in ['voc', 'voc_aug', 'coco']:
+        paths = {
+            "voc": (args.data_path, voc, 21),
+            "voc_aug": (args.data_path, sbd, 21),
+            "coco": (args.data_path, get_coco, 21),
+        }
+        p, ds_fn, num_classes = paths[args.dataset]
 
-    image_set = "train" if is_train else "val"
-    ds = ds_fn(p, image_set=image_set, transforms=get_transform(is_train, args), use_v2=args.use_v2)
+        image_set = "train" if is_train else "val"
+        ds = ds_fn(p, image_set=image_set, transforms=get_transform(is_train, args), use_v2=args.use_v2)
+    elif args.dataset == 'isaid':
+        isaid = iSAID()
+        ds = isaid.load('datasets/isaid.download', split = image_set, transforms = get_transforms(is_train, args))
+        num_classes = 16
     return ds, num_classes
 
 
