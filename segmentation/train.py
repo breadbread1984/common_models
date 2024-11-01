@@ -36,7 +36,7 @@ def get_dataset(args, is_train):
         ds = ds_fn(p, image_set=image_set, transforms=get_transform(is_train, args), use_v2=args.use_v2)
     elif args.dataset == 'isaid':
         isaid = iSAID()
-        ds = isaid.load('datasets/isaid.download', split = "train" if is_train else "val", transforms = get_transforms(is_train, args))
+        ds = isaid.load('datasets/isaid.download', split = "train" if is_train else "val", transforms = get_transform(is_train, args))
         num_classes = 16
     return ds, num_classes
 
