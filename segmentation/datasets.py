@@ -40,8 +40,8 @@ class iSAID(SegmentDataset):
   def load(self, root_path, split = 'train', transforms = None):
     assert split in {'train', 'val'}
     PATHS = {
-      "train": (join(root_path, "train_image"), join(root_path, 'train', 'Annotations', 'iSAID_train.json')),
-      "val": (join(root_path, "val_image"), join(root_path, "val", "Annotations", "iSAID_val.json"))
+      "train": (join(root_path, "train_image", "images"), join(root_path, 'train', 'Annotations', 'iSAID_train.json')),
+      "val": (join(root_path, "val_image", "images"), join(root_path, "val", "Annotations", "iSAID_val.json"))
     }
     img_folder, ann_file = PATHS[split]
     CAT_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
