@@ -5,6 +5,8 @@ from os.path import join, exists
 import zipfile
 import gdown
 from torchvision.datasets import CocoDetection
+from transforms import Compose
+from coco_utils import FilterAndRemapCocoCategories, ConvertCocoPolysToMask
 
 class SegmentDataset(ABC):
   @abstractmethod
@@ -41,6 +43,8 @@ class iSAID(SegmentDataset):
       "val": (join(root_path, "val_image"), join(root_path, "val", "Annotations", "iSAID_val.json"))
     }
     img_folder, ann_file = PATHS[split]
+    CAT_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    transforms = Compose([FilterAndRemapCocoCategories(CAT_LIST, remap=True), ConvertCocoPolysToMask(), transforms])
     dataset = CocoDetection(img_folder, ann_file, transforms = transforms)
     if split == 'train':
       ids = list()
