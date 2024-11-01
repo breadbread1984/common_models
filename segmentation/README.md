@@ -14,6 +14,14 @@ All models have been trained on 8x V100 GPUs.
 python3 download.py --dataset (isaid)
 ```
 
+**NOTE**:
+
+you may need to do the following modification to avoid download error
+
+| source code | from  | to |
+|-------------|-------|----|
+| <site-package>/gdown/download_folder.py:342 | url="https://drive.google.com/uc?id=" + id, | url="https://drive.google.com/uc?export=download&confirm=pbef&id=" + id, |
+
 ### Add extra datasets
 
 - implement an inherted class of SegmentDataset and put the code in file ***datasets.py***.
