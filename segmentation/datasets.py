@@ -57,3 +57,11 @@ class iSAID(SegmentDataset):
           ids.append(ds_idx)
       dataset = torch.utils.data.Subset(dataset, ids)
     return dataset
+
+if __name__ == "__main__":
+  from presets import SegmentationPresetEval
+  isaid = iSAID()
+  transforms = SegmentationPresetEval(base_size = 520, backend = 'PIL', use_v2 = False)
+  valset = isaid.load(join('datasets', 'isaid.download'), split = 'val', transforms = transforms)
+  for sample in valset:
+    import pdb; pdb.set_trace()
