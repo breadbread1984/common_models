@@ -74,5 +74,5 @@ torchrun --nproc_per_node=8 train.py --dataset coco -b 4 --model lraspp_mobilene
 
 ```shell
 python3 download.py --dataset isaid
-torchrun --nproc_per_node=1 train.py --dataset isaid -b 4 --model deeplabv3_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+torchrun --nproc_per_node=2 train.py --dataset isaid -b 4 --model deeplabv3_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
 ```
