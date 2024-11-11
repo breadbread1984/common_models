@@ -19,7 +19,7 @@ def TGI(host = 'http://localhost:8080/generate'):
           break
       else:
         raise Exception(f'请求失败{response.status_code}')
-      return response.json()
+      return response.json()['generated_text']
     @property
     def _llm_type(self):
       return "tgi"
