@@ -7,6 +7,8 @@ from langchain.llms.base import LLM
 def TGI(host = 'http://localhost:8080/generate'):
   class TGILLM(LLM):
     def __init__(self, host):
+      url: str = None
+      headers: dict = None
       super().__init__()
       self.url = host
       self.headers = {'Authorization': "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"}
