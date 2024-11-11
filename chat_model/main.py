@@ -37,8 +37,8 @@ def create_interface():
 
 def main(unused_argv):
   demo = create_interface()
-  demo.launch(server_name = host,
-              server_port = config.service_port)
+  demo.launch(server_name = FLAGS.host,
+              server_port = FLAGS.port)
 
 if __name__ == "__main__":
   add_options()
