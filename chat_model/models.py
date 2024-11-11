@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import requests
-import json
 from langchain.llms.base import LLM
 
 def TGI(host = 'http://localhost:8080/generate'):
@@ -13,7 +12,6 @@ def TGI(host = 'http://localhost:8080/generate'):
       self.url = host
       self.headers = {'Authorization': "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"}
     def _call(self, prompt, stop = None, run_manager = None, **kwargs):
-      messages = json.loads(prompt)
       data = {"inputs": prompt, "parameters": {"temperature": 0.6, "top_p": 0.9}}
       for i in range(10):
         response = requests.post(self.url, headers = self.headers, json = data)
