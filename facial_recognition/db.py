@@ -16,7 +16,7 @@ class FacialDB(object):
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
     return cls(gpu_index = gpu_index)
   @classmethod
-  def new(cls, hidden_dim, dist = 'ip'):
+  def create(cls, hidden_dim, dist = 'ip'):
     dists = {
       'ip': faiss.GpuIndexFlatIP,
       'l2': faiss.GpuIndexFlatL2,
