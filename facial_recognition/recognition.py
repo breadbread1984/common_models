@@ -18,18 +18,16 @@ class Recognition(object):
     self.device = device
     self.labels = None
   def load_celeba(self,):
-    trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True, transform = PILToTensor())
-    loader = DataLoader(trainset)
+    trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
     batch = list()
     labels = list()
-    for img, label in loader:
-      x = img.to(self.device) # rgb
-      x_aligned, prob = self.mtcnn(x, return_prob = True)
+    for img, label in trainset:
+      x_aligned, prob = self.mtcnn(img, return_prob = True) # x_aligned in [-1,1] RGB
       if x_aligned is None: continue
       batch.append(x_aligned)
       labels.append(label)
       if len(batch) == 64:
-        aligned = torch.stack(batch).to(device)
+        aligned = torch.stack(batch).to(self.device)
         embeddings = self.resnet(aligned).detach().cpu().numpy()
         self.db.add(embeddings)
         batch = list()
