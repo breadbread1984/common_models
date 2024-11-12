@@ -18,9 +18,10 @@ class Recognition(object):
     self.labels = None
   def load_celeba(self,):
     trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True, transform = PILToTensor())
+    loader = DataLoader(trainset)
     batch = list()
     labels = list()
-    for img, label in trainset:
+    for img, label in loader:
       x = img.to(self.device) # rgb
       x_aligned, prob = self.mtcnn(x, return_prob = True)
       if x_aligned is None: continue
@@ -35,7 +36,7 @@ class Recognition(object):
       aligned = torch.stack(batch).to(device)
       embeddings = self.resnet(aligned).detach().cpu().numpy()
       self.db.add(embeddings)
-    self.labels = torch.stack(labels).detach().cpu().numpy()
+    self.labels = torch.cat(labels, dim = 0).detach().cpu().numpy()
   def save(self, ):
     np.save('labels.npy', self.labels)
     self.db.serialize()
