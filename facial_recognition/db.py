@@ -41,9 +41,9 @@ class DB(object):
 if __name__ == "__main__":
   import numpy as np
   db = DB.create(256, dist = 'l2')
-  samples = np.random.normal(size = (100,256))
+  samples = np.random.normal(size = (100,256), dtype = np.float32)
   db.add(samples)
-  samples = np.random.normal(size = (10,256))
+  samples = np.random.normal(size = (10,256), dtype = np.float32)
   D, I = db.match(samples, k = 2)
   db.serialize()
   db2 = DB.deserialize()
