@@ -2,6 +2,7 @@
 
 import numpy as np
 import torch
+from torch.utils.data import DataLoader
 from torchvision.transforms import PILToTensor
 from torchvision.datasets import CelebA
 from facenet_pytorch import MTCNN, InceptionResnetV1
