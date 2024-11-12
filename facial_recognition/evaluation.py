@@ -12,8 +12,8 @@ def add_options():
   flags.DEFINE_boolean('download', default = False, help = 'whether to download celeba')
 
 def main(unused_argv):
-  trainset = CelebA(root = 'celeba', split = 'train', download = FLAGS.download)
-  evalset = CelebA(root = 'celeba', split = 'valid', download = FLAGS.download)
+  trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = FLAGS.download)
+  evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = FLAGS.download)
   trainset_loader = DataLoader(trainset, batch_size = FLAGS.batch, shuffle = True, num_workers = FLAGS.workers)
   evalset_loader = DataLoader(evalset, batch_size = FLAGS.batch, shuffle = True, num_workers = FLAGS.workers)
   for batch in trainset_loader:
