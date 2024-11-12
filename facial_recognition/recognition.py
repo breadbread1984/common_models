@@ -36,6 +36,12 @@ class Recognition(object):
       embeddings = self.resnet(aligned).detach().cpu().numpy()
       self.db.add(embeddings)
     self.labels = torch.stack(labels).detach().cpu().numpy()
+  def save(self, ):
+    np.save('labels.npy', self.labels)
+    self.db.serialize()
+  def load(self, ):
+    self.labels = np.load('labels.npy')
+    self.db = DB.deserialize()
 
 if __name__ == "__main__":
   recog = Recognition()
