@@ -14,7 +14,11 @@ def add_options():
 def create_interface():
   chain = chat_chain(FLAGS.tgi_host)
   def chatbot_response(user_input, history):
-    response = chain.invoke({'input': user_input})
+    chat_history = list()
+    for human, ai in history:
+      chat_history.append(HumanMessage(content = human))
+      chat_history.append(AIMessage(content = ai))
+    response = chain.invoke({'input': user_input, 'chat_history': chat_history})
     history.append((user_input, response))
     return history, history, ""
   with gr.Blocks() as demo:
