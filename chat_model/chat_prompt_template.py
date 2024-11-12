@@ -1,20 +1,22 @@
 #!/usr/bin/python3
 
+from typing import Any, Union
+from collections.abc import Sequence
 from transformers import AutoTokenizer
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts.chat import MessageLikeRepresentation
 
 class HFChatPromptTemplate(ChatPromptTemplate):
+  tokenizer: object = None
   def __init__(self,
-               messages,
+               messages: Sequence[MessageLikeRepresentation],
                *,
-               model_id = None,
-               template_format = "f-string",
-               **kwargs):
-    super(HFChatPromptTemplate, self).__init__(messages, template_format = template_format, **kwargs)
-    self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+               tokenizer: Any):
+    super(HFChatPromptTemplate, self).__init__(messages)
+    self.tokenizer = tokenizer
   @classmethod
-  def from_messages(cls, messages, model_id = None, template_format = "f-string"):
-    return cls(messages, model_id = model_id, template_format = template_format)
+  def from_messages(cls, messages, tokenizer):
+    return cls(messages, tokenizer = tokenizer)
   def format_prompt(self, **kwargs):
     messages = self.format_message(**kwargs)
     string_messages = []
@@ -34,6 +36,6 @@ if __name__ == "__main__":
   prompt = HFChatPromptTemplate.from_messages([
     ('system', "you are a helpful AI bot. Your name is {name}"),
     ('human', '{user_input}')
-  ], model_id = 'Qwen/Qwen2.5-7B-Instruct')
+  ], tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct'))
   txt = prompt.invoke({'user_input': 'what is your name', 'name': 'robot test'})
   print(txt)
