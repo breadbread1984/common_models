@@ -26,3 +26,11 @@ def TGI(host = 'http://localhost:8080/generate'):
   llm = TGILLM(host)
   return llm
 
+def Test():
+  class Test(LLM):
+    def _call(self, prompt, stop = None, run_manager = None, **kwargs):
+      return prompt
+    @property
+    def _llm_type(self):
+      return "test"
+  return Test()
