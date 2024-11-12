@@ -4,21 +4,12 @@ from typing import Any, Union
 from collections.abc import Sequence
 from transformers import AutoTokenizer
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.prompts.chat import MessageLikeRepresentation
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 class HFChatPromptTemplate(ChatPromptTemplate):
-  tokenizer: object = None
-  def __init__(self,
-               messages: Sequence[MessageLikeRepresentation],
-               *,
-               tokenizer: Any):
-    super(HFChatPromptTemplate, self).__init__(messages)
-    self.tokenizer = tokenizer
-  @classmethod
-  def from_messages(cls, messages, tokenizer):
-    return cls(messages, tokenizer = tokenizer)
-  def format_prompt(self, **kwargs):
-    messages = self.format_message(**kwargs)
+  def format(self, **kwargs) -> str:
+    tokenizer = kwargs.get('tokenizer')
+    messages = self.format_messages(**kwargs)
     string_messages = []
     for m in messages:
       if isinstance(m, HumanMessage):
@@ -30,12 +21,17 @@ class HFChatPromptTemplate(ChatPromptTemplate):
       else:
         raise Exception(f'Got unsupported message type: {m}')
     messages.append({'role': role, 'content': m.content})
-    return self.tokenizer.apply_chat_template(messages, tokenize = False, add_generation_prompt = True)
+    return tokenizer.apply_chat_template(messages, tokenize = False, add_generation_prompt = True)
 
 if __name__ == "__main__":
-  prompt = HFChatPromptTemplate.from_messages([
+  messages = [
     ('system', "you are a helpful AI bot. Your name is {name}"),
     ('human', '{user_input}')
-  ], tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct'))
-  txt = prompt.invoke({'user_input': 'what is your name', 'name': 'robot test'})
+  ]
+  prompt = ChatPromptTemplate.from_messages(messages)
+  txt = prompt.format(**{'user_input': 'what is your name', 'name': 'robot test'})
+  print(str(txt))
+  prompt = HFChatPromptTemplate.from_messages(messages)
+  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
+  txt = prompt.format(**{'user_input': 'what is your name', 'name': 'robot test'}, tokenizer = tokenizer)
   print(txt)
