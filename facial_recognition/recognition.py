@@ -20,7 +20,7 @@ class Recognition(object):
     trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
     batch = list()
     labels = list()
-    for img, label in dataset:
+    for img, label in trainset:
       x = PILToTensor(img).to(self.device) # rgb
       x_aligned, prob = self.mtcnn(x, return_prob = True)
       if x_aligned is None: continue
