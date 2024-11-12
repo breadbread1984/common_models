@@ -34,5 +34,6 @@ class FacialDB(object):
   def match(self, samples, k = 1):
     # NOTE: samples.shape = (sample_num, hidden_dim)
     assert samples.shape[1] == self.gpu_index.d
+    faiss.normalize_L2(samples)
     D, I = self.gpu_index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
