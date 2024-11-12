@@ -2,7 +2,7 @@
 
 import faiss
 
-class FacialDB(object):
+class DB(object):
   def __init__(self, gpu_index = None):
     assert gpu_index is not None
     self.gpu_index = gpu_index
@@ -37,3 +37,13 @@ class FacialDB(object):
     faiss.normalize_L2(samples)
     D, I = self.gpu_index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
+
+if __name__ == "__main__":
+  import numpy as np
+  db = DB.create(256, dist = 'l2')
+  samples = np.random.normal(size = (100,256))
+  db.add(samples)
+  samples = np.random.normal(size = (10,256))
+  D, I = db.match(samples, k = 2)
+  db.serialize()
+  db2 = DB.deserialize()
