@@ -83,8 +83,9 @@ def main(unused_argv):
     # evaluation
     model.eval()
     images = model.sample(batch = FLAGS.batch_size) # images.shape = (batch, 3, 32, 32)
-    for idx, image in enumerate(images):
-      tb_writer.add_image(f'sample {idx}', image, global_step = global_step)
+    if dist.get_rank() == 0:
+      for idx, image in enumerate(images):
+        tb_writer.add_image(f'sample {idx}', image, global_step = global_step)
 
 if __name__ == "__main__":
   add_options()
