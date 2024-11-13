@@ -29,12 +29,12 @@ class Diffusion(nn.Module):
       ),
     )
     self.noise_scheduler = DDIMScheduler(num_train_timesteps = timesteps)
-    self.noise_scheduler.set_timesteps(timesteps)
     self.image_size = image_size
   def forward(self, noisy_image, timesteps):
     noise_pred = self.model(noisy_image, timesteps).sample # epsilon
     return noise_pred
-  def sample(self):
+  def sample(self, num_inference_steps = 50):
+    self.noise_scheduler.set_timesteps(num_inference_steps)
     noise = torch.randn((1,3,self.image_size,self.image_size)).to(next(self.parameters()).device)
     with torch.no_grad():
       for t in tqdm(self.noise_scheduler.timesteps):
