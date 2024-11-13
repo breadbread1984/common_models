@@ -97,7 +97,7 @@ class QuantizedDB(object):
   def match(self, samples, k = 1):
     # NOTE: samples.shape = (sample_num, hidden_dim)
     assert samples.shape[1] == self.gpu_index.d
-    assert self.gpu_index.is_trained, f"feed over {self.gpu_index.nlist * self.gpu_index.cp.min_points_per_centroid} samples to train the index before do matching"
+    assert self.gpu_index.is_trained, f"feed over {self.gpu_index.d * self.gpu_index.cp.min_points_per_centroid} samples to train the index before do matching"
     faiss.normalize_L2(samples)
     D, I = self.gpu_index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
