@@ -29,10 +29,10 @@ class Recognition(object):
       x_aligned, prob = self.mtcnn(img, return_prob = True)
       # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
       if x_aligned is None: continue
-      batch.append(x_aligned)
-      labels.append(label)
+      batch.append(x_aligned.detach())
+      labels.append(label.detach().cpu().numpy())
       if len(batch) == batch_size:
-        aligned = torch.stack(batch).to(self.device)
+        aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         self.db.add(embeddings.detach().cpu().numpy())
         batch = list()
@@ -40,7 +40,7 @@ class Recognition(object):
       aligned = torch.stack(batch).to(device)
       embeddings = self.resnet(aligned).detach().cpu().numpy()
       self.db.add(embeddings)
-    self.labels = torch.cat(labels, dim = 0).detach().cpu().numpy() # label.shape = (sample_num,)
+    self.labels = np.concatenate(labels, axis = 0) # label.shape = (sample_num,)
     # 2) match with K-nn
     print('recognition of unknown faces...')
     evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
@@ -50,9 +50,9 @@ class Recognition(object):
     for img, label in tqdm(evalset):
       x_aligned, prob = self.mtcnn(img, return_prob = True)
       if x_aligned is None: continue
-      batch.append(x_aligned)
+      batch.append(x_aligned.detach())
       if len(batch) == batch_size:
-        aligned = torch.stack(batch).to(self.device)
+        aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         D, I = self.db.match(embeddings.detach().cpu().numpy(), k = 5) # I.shape = (batch_size, 5)
         neighbors = self.labels[I] # true_labels.shape = (batch_size, 5)
