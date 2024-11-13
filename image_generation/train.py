@@ -40,6 +40,7 @@ def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_wri
     if global_steps % 100 == 0 and dist.get_rank() == 0:
       print('Step #%d Epoch #%d: loss %f, lr %f' % (global_steps, epoch, loss, scheduler.get_last_lr()[0]))
       tb_writer.add_scalar('loss', loss, global_steps)
+  return global_steps
 
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
@@ -67,8 +68,9 @@ def main(unused_argv):
     start_epoch = ckpt['epoch']
   for epoch in range(start_epoch, FLAGS.epochs):
     train_dataloader.sampler.set_epoch(epoch)
+    # train
     model.train()
-    train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer)
+    global_step = train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer)
     if dist.get_rank() == 0:
       ckpt = {
         'epoch': epoch,
@@ -78,4 +80,13 @@ def main(unused_argv):
       }
       save(ckpt, join(FLAGS.ckpt, 'model.pth'))
     scheduler.step()
+    # evaluation
+    model.eval()
+    images = model.sample(batch = FLAGS.batch_size) # images.shape = (batch, 3, 32, 32)
+    for idx, image in enumerate(images):
+      tb_writer.add_image(f'sample {idx}', image, global_step = global_step)
+
+if __name__ == "__main__":
+  add_options()
+  app.run(main)
 

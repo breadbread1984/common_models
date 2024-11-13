@@ -41,5 +41,5 @@ class Diffusion(nn.Module):
         model_output = self.model(noise, t).sample # epsilon(x_t, t)
         noise = self.noise_scheduler.step(model_output, t, noise).prev_sample # x_{t-1}
     image = ((noise / 2 + 0.5).clamp(0, 1) * 255.).to(torch.uint8)
-    image = torch.permute(image, (0,2,3,1)).cpu().numpy()
+    #image = torch.permute(image, (0,2,3,1)).cpu().numpy()
     return image
