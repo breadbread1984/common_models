@@ -73,7 +73,7 @@ def main(unused_argv):
     global_step = train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer)
     if dist.get_rank() == 0:
       ckpt = {
-        'epoch': epoch,
+        'epoch': epoch + 1,
         'state_dict': model.module.state_dict(),
         'optimizer': optimizer.state_dict(),
         'scheduler': scheduler
