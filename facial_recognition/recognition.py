@@ -10,32 +10,65 @@ from db import DB
 
 class Recognition(object):
   def __init__(self, device = 'cuda'):
-    self.db = DB.create(hidden_dim = 1024)
+    self.db = DB.create(hidden_dim = 512)
     self.mtcnn = MTCNN(image_size = 160, margin = 0, min_face_size = 20,
                        thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
                        device = device).eval()
     self.resnet = InceptionResnetV1(classify = False, pretrained = 'vggface2').to(device).eval()
     self.device = device
     self.labels = None
-  def load_celeba(self,):
+  def test_celeba(self, batch_size = 64):
+    # 1) vectorize images and save into database
     trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
     batch = list()
     labels = list()
     for img, label in trainset:
-      x_aligned, prob = self.mtcnn(img, return_prob = True) # x_aligned in [-1,1] RGB
+      # NOTE: img is PIL image
+      x_aligned, prob = self.mtcnn(img, return_prob = True)
+      # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
       if x_aligned is None: continue
       batch.append(x_aligned)
       labels.append(label)
-      if len(batch) == 64:
+      if len(batch) == batch_size:
         aligned = torch.stack(batch).to(self.device)
-        embeddings = self.resnet(aligned).detach().cpu().numpy()
-        self.db.add(embeddings)
+        embeddings = self.resnet(aligned)
+        self.db.add(embeddings.detach().cpu().numpy())
         batch = list()
     if len(batch):
       aligned = torch.stack(batch).to(device)
       embeddings = self.resnet(aligned).detach().cpu().numpy()
       self.db.add(embeddings)
-    self.labels = torch.cat(labels, dim = 0).detach().cpu().numpy()
+    self.labels = torch.cat(labels, dim = 0).detach().cpu().numpy() # label.shape = (sample_num,)
+    # 2) match with K-nn
+    evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
+    correct = 0
+    total = 0
+    batch = list()
+    for img, label in evalset:
+      x_aligned, prob = self.mtcnn(img, return_prob = True)
+      if x_aligned is None: continue
+      batch.append(x_aligned)
+      if len(batch) == batch_size:
+        aligned = torch.stack(batch).to(self.device)
+        embeddings = self.resnet(aligned)
+        D, I = self.db.match(embeddings.detach().cpu().numpy(), k = 5) # I.shape = (batch_size, 5)
+        neighbors = self.labels[I] # true_labels.shape = (batch_size, 5)
+        for neighbor in neighbors:
+          values, counts = np.unique(neighbor, return_counts = True)
+          pred = values[np.argmax(counts)]
+          if pred == label.detach().cpu().numpy()[0]: correct += 1
+        total += batch_size
+    if len(batch):
+      aligned = torch.stack(batch).to(self.device)
+      embeddings = self.resnet(aligned)
+      D, I = self.db.match(embeddings.detach().cpu().numpy(), k = 5)
+      neighbors = self.labels[I]
+      for neighbor in neighbors:
+        values, counts = np.unique(neighbor, return_counts = True)
+        pred = values[np.argmax(counts)]
+        if pred == label.detach().cpu().numpy()[0]: correct += 1
+      total += len(batch)
+    print(f'accuracy: {correct / total}')
   def save(self, ):
     np.save('labels.npy', self.labels)
     self.db.serialize()
@@ -45,4 +78,4 @@ class Recognition(object):
 
 if __name__ == "__main__":
   recog = Recognition()
-  recog.load_celeba()
+  recog.test_celeba()
