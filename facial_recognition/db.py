@@ -69,7 +69,7 @@ class QuantizedDB(object):
       'ip': faiss.IndexFlatIP,
       'l2': faiss.IndexFlatL2,
     }
-    quantizer = faiss.dists[dist](hidden_dim)
+    quantizer = dists[dist](hidden_dim)
     cpu_index = faiss.IndexIVFPQ(quantizer, hidden_dim, 100, 8, 8)
     res = faiss.StandardGpuResources()
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
