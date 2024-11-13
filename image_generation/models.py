@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from diffusers import UNet2DModel, DDIMScheduler
 
 class Diffusion(nn.Module):
-  def __init__(self, image_size: int, in_channels: int, out_channels: int, timesteps: int):
+  def __init__(self, image_size: int = 32, in_channels: int = 3, out_channels: int = 3, timesteps: int = 1000):
     super().__init__()
     self.model = UNet2DModel(
       sample_size = image_size,
