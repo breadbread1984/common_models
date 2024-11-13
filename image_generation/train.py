@@ -42,7 +42,12 @@ def run_epoch(epoch, model, optimizer, criterion, tb_writer):
     x_noisy = model.noise_scheduler.add_noise(x, noise, t)
     output = model(x_noisy, t)
     loss = criterion(output, noise)
-
+    loss.backward()
+    optimizer.step()
+    global_steps = epoch * len(train_dataloder) + step
+    if global_steps % 100 == 0 and dist.get_rank() == 0:
+      print('Step #%d Epoch #%d: loss %f, lr %f' % (global_steps, epoch, loss, scheduler.get_last_lr()[0]))
+      tb_writer.add_scalar('loss', loss, global_steps)
 
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
@@ -66,4 +71,13 @@ def main(unused_argv):
     scheduler = ckpt['scheduler']
     start_epoch = ckpt['epoch']
   for epoch in range(start_epoch, FLAGS.epochs):
-
+    run_epoch(epoch, model, optimizer, criterion, tb_writer)
+    if dist.get_rank() == 0:
+      ckpt = {
+        'epoch': epoch,
+        'state_dict': model.module.state_dict(),
+        'optimizer': optimizer.state_dict(),
+        'scheduler': scheduler
+      }
+      save(ckpt, join(FLAGS.ckpt, 'model.pth'))
+    scheduler.step()
