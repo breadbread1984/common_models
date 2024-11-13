@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from shutil import rmtree
+from os.path import exists
 import numpy as np
 import faiss
 
@@ -47,13 +49,19 @@ class QuantizedDB(object):
   def serialize(self, db_path = 'index_file.ivfpq'):
     cpu_index = faiss.index_gpu_to_cpu(self.gpu_index)
     faiss.write_index(cpu_index, db_path)
-    np.save('index_file.npy', self.trainset)
+    if self.trainset is not None:
+      np.save('index_file.npy', self.trainset)
+    else:
+      if exists('index_file.npy'): rmtree('index_file.npy')
   @classmethod
   def deserialize(cls, db_path = 'index_file.ivfpq'):
     res = faiss.StandardGpuResources()
     cpu_index = faiss.read_index(db_path)
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-    self.trainset = np.load('index_file.npy')
+    if exists('index_file.npy'):
+      self.trainset = np.load('index_file.npy')
+    else:
+      self.trainset = None
     return cls(gpu_index = gpu_index)
   @classmethod
   def create(cls, hidden_dim, dist = 'ip'):
@@ -71,14 +79,13 @@ class QuantizedDB(object):
     assert samples.shape[1] == self.gpu_index.d
     faiss.normalize_L2(samples)
     if self.gpu_index.is_trained == False:
-      if len(self.trainset) >= 100:
+      # collect trainset if index is not trained
+      self.trainset = np.concatenate([self.trainset, samples], axis = 0)
+      if self.trainset.shape[0] >= 100:
         # train quantizer if trainset is enough to train index
         self.gpu_index.train(self.trainset)
         self.gpu_index.add(self.trainset)
-        del self.trainset
-      else:
-        # collect trainset if trainset is not enough to train index
-        self.trainset = np.concatenate([self.trainset, samples], axis = 0)
+        self.trainset = None
     else:
       # direct add samples to trained index
       self.gpu_index.add(samples)
@@ -92,10 +99,10 @@ class QuantizedDB(object):
 
 if __name__ == "__main__":
   import numpy as np
-  db = DB.create(256, dist = 'l2')
+  db = QuantizedDB.create(256, dist = 'l2')
   samples = np.random.normal(size = (100,256)).astype(np.float32)
   db.add(samples)
   samples = np.random.normal(size = (10,256)).astype(np.float32)
   D, I = db.match(samples, k = 2)
   db.serialize()
-  db2 = DB.deserialize()
+  db2 = QuantizedDB.deserialize()
