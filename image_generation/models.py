@@ -33,13 +33,13 @@ class Diffusion(nn.Module):
   def forward(self, noisy_image, timesteps):
     noise_pred = self.model(noisy_image, timesteps).sample # epsilon
     return noise_pred
-  def sample(self, num_inference_steps = 50):
+  def sample(self, batch = 1, num_inference_steps = 50):
     self.noise_scheduler.set_timesteps(num_inference_steps)
-    noise = torch.randn((1,3,self.image_size,self.image_size)).to(next(self.parameters()).device)
+    noise = torch.randn((batch,3,self.image_size,self.image_size)).to(next(self.parameters()).device)
     with torch.no_grad():
       for t in tqdm(self.noise_scheduler.timesteps):
         model_output = self.model(noise, t).sample # epsilon(x_t, t)
         noise = self.noise_scheduler.step(model_output, t, noise).prev_sample # x_{t-1}
-    image = ((noise / 2 + 0.5).clamp(0, 1) * 255.).squeeze(dim = 0).to(torch.uint8)
-    image = torch.permute(image, (1,2,0)).cpu().numpy()
+    image = ((noise / 2 + 0.5).clamp(0, 1) * 255.).to(torch.uint8)
+    image = torch.permute(image, (0,2,3,1)).cpu().numpy()
     return image
