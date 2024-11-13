@@ -2,6 +2,7 @@
 
 from shutil import rmtree
 from os.path import exists
+import pickle
 import numpy as np
 import faiss
 
@@ -42,35 +43,33 @@ class DB(object):
     return D, I
 
 class QuantizedDB(object):
-  def __init__(self, gpu_index = None):
+  def __init__(self, gpu_index = None, trainset = None):
     assert gpu_index is not None
     self.gpu_index = gpu_index
-    self.trainset = np.zeros((0,self.gpu_index.d))
+    self.trainset = np.zeros((0,self.gpu_index.d)) if trainset is None else trainset
   def serialize(self, db_path = 'index_file.ivfpq'):
     cpu_index = faiss.index_gpu_to_cpu(self.gpu_index)
-    faiss.write_index(cpu_index, db_path)
-    if self.trainset is not None:
-      np.save('index_file.npy', self.trainset)
-    else:
-      if exists('index_file.npy'): rmtree('index_file.npy')
+    index_bytes = faiss.serialize_index(cpu_index)
+    with open(db_path, 'wb') as f:
+      pickle.dump(index_bytes, f)
+      pickle.dump(self.trainset, f)
   @classmethod
   def deserialize(cls, db_path = 'index_file.ivfpq'):
+    with open(db_path, 'rb') as f:
+      index_bytes = pickle.load(f)
+      trainset = pickle.load(f)
+    cpu_index = faiss.deserialize_index(index_bytes)
     res = faiss.StandardGpuResources()
-    cpu_index = faiss.read_index(db_path)
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-    if exists('index_file.npy'):
-      self.trainset = np.load('index_file.npy')
-    else:
-      self.trainset = None
-    return cls(gpu_index = gpu_index)
+    return cls(gpu_index = gpu_index, trainset = trainset)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip'):
+  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8):
     dists = {
       'ip': faiss.IndexFlatIP,
       'l2': faiss.IndexFlatL2,
     }
     quantizer = dists[dist](hidden_dim)
-    cpu_index = faiss.IndexIVFPQ(quantizer, hidden_dim, 100, 8, 8)
+    cpu_index = faiss.IndexIVFPQ(quantizer, hidden_dim, nlist, m, 8)
     res = faiss.StandardGpuResources()
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
     return cls(gpu_index = gpu_index)
