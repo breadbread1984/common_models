@@ -17,7 +17,7 @@ class Recognition(object):
     self.resnet = InceptionResnetV1(classify = False, pretrained = 'vggface2').to(device).eval()
     self.device = device
     self.labels = None
-  def test_celeba(self, batch_size = 64):
+  def test_celeba(self, batch_size = 1024):
     # 1) vectorize images and save into database
     trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
     batch = list()
