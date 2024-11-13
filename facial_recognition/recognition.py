@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
+from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader
 from torchvision.transforms import PILToTensor
@@ -19,10 +20,11 @@ class Recognition(object):
     self.labels = None
   def test_celeba(self, batch_size = 1024):
     # 1) vectorize images and save into database
+    print('building database of known faces...')
     trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
     batch = list()
     labels = list()
-    for img, label in trainset:
+    for img, label in tqdm(trainset):
       # NOTE: img is PIL image
       x_aligned, prob = self.mtcnn(img, return_prob = True)
       # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
@@ -40,11 +42,12 @@ class Recognition(object):
       self.db.add(embeddings)
     self.labels = torch.cat(labels, dim = 0).detach().cpu().numpy() # label.shape = (sample_num,)
     # 2) match with K-nn
+    print('recognition of unknown faces...')
     evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
     correct = 0
     total = 0
     batch = list()
-    for img, label in evalset:
+    for img, label in tqdm(evalset):
       x_aligned, prob = self.mtcnn(img, return_prob = True)
       if x_aligned is None: continue
       batch.append(x_aligned)
