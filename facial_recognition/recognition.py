@@ -7,11 +7,11 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import PILToTensor
 from torchvision.datasets import CelebA
 from facenet_pytorch import MTCNN, InceptionResnetV1
-from db import DB
+from db import QuantizedDB
 
 class Recognition(object):
   def __init__(self, device = 'cuda'):
-    self.db = DB.create(hidden_dim = 512)
+    self.db = QuantizedDB.create(hidden_dim = 512)
     self.mtcnn = MTCNN(image_size = 160, margin = 0, min_face_size = 20,
                        thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
                        device = device).eval()
