@@ -24,16 +24,8 @@ def add_options():
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
-def run_epoch(epoch, model, optimizer, criterion, tb_writer):
-  # random split
-  trainset, valset = load_datasets()
-  trainset_sampler = distributed.DistributedSampler(trainset)
-  valset_sampler = distributed.DistributedSampler(valset)
-  train_dataloader = DataLoader(trainset, batch_size = FLAGS.batch_size, shuffle = False, num_workers = FLAGS.workers, sampler = trainset_sampler, pin_memory = False)
-  eval_dataloader = DataLoader(evalset, batch_size = FLAGS.batch_size, shuffle = False, num_workers = FLAGS.workers, sampler = evalset_sampler, pin_memory = False)
+def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer):
   # training
-  train_dataloader.sampler.set_epoch(epoch)
-  model.train()
   for step, (x, label) in tqdm(enumerate(train_dataloader)):
     optimizer.zero_grad()
     x = x.to(device(FLAGS.device))
@@ -56,6 +48,9 @@ def main(unused_argv):
   model = Diffusion()
   model.to(device(FLAGS.device))
   model = DDP(model, device_ids = [dist.get_rank()], output_device = dist.get_rank(), find_unused_parameters = True)
+  trainset = load_datasets()
+  trainset_sampler = distributed.DistributedSampler(trainset)
+  train_dataloader = DataLoader(trainset, batch_size = FLAGS.batch_size, shuffle = False, num_workers = FLAGS.workers, sampler = trainset_sampler, pin_memory = False)
   criterion = nn.MSELoss()
   optimizer = Adam(model.parameters(), lr = FLAGS.lr)
   scheduler = CosineAnnealingWarmRestarts(optimizer, T_0 = 5, T_mult = 2)
@@ -71,7 +66,9 @@ def main(unused_argv):
     scheduler = ckpt['scheduler']
     start_epoch = ckpt['epoch']
   for epoch in range(start_epoch, FLAGS.epochs):
-    run_epoch(epoch, model, optimizer, criterion, tb_writer)
+    train_dataloader.sampler.set_epoch(epoch)
+    model.train()
+    train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer)
     if dist.get_rank() == 0:
       ckpt = {
         'epoch': epoch,
@@ -81,3 +78,4 @@ def main(unused_argv):
       }
       save(ckpt, join(FLAGS.ckpt, 'model.pth'))
     scheduler.step()
+
