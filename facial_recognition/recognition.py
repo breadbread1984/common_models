@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from os.path import exists, join
 import numpy as np
 from tqdm import tqdm
 import torch
@@ -21,28 +22,32 @@ class Recognition(object):
   def test_celeba(self, batch_size = 1024):
     # 1) vectorize images and save into database
     print('building database of known faces...')
-    trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
-    batch = list()
-    labels = list()
-    for img, label in tqdm(trainset):
-      # NOTE: img is PIL image
-      x_aligned, prob = self.mtcnn(img, return_prob = True)
-      # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
-      if x_aligned is None: continue
-      batch.append(x_aligned.detach())
-      labels.append(label.detach().cpu().numpy())
-      if len(batch) == batch_size:
+    if not exists('index_file.ivfpq'):
+      trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
+      batch = list()
+      labels = list()
+      for img, label in tqdm(trainset):
+        # NOTE: img is PIL image
+        x_aligned, prob = self.mtcnn(img, return_prob = True)
+        # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
+        if x_aligned is None: continue
+        batch.append(x_aligned.detach())
+        labels.append(label.detach().cpu().numpy())
+        if len(batch) == batch_size:
+          aligned = torch.stack(batch).detach().to(self.device)
+          embeddings = self.resnet(aligned)
+          self.db.add(embeddings.detach().cpu().numpy())
+          batch = list()
+      if len(batch):
         aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         self.db.add(embeddings.detach().cpu().numpy())
-        batch = list()
-    if len(batch):
-      aligned = torch.stack(batch).to(device)
-      embeddings = self.resnet(aligned).detach().cpu().numpy()
-      self.db.add(embeddings)
-    self.labels = np.concatenate(labels, axis = 0) # label.shape = (sample_num,)
+      self.labels = np.concatenate(labels, axis = 0) # label.shape = (sample_num,)
+      self.save()
     # 2) match with K-nn
     print('recognition of unknown faces...')
+    if exists('index_file.ivfpq'):
+      self.load()
     evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
     correct = 0
     total = 0
