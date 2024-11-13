@@ -58,6 +58,7 @@ class Recognition(object):
           pred = values[np.argmax(counts)]
           if pred == label.detach().cpu().numpy()[0]: correct += 1
         total += batch_size
+        batch = list()
     if len(batch):
       aligned = torch.stack(batch).to(self.device)
       embeddings = self.resnet(aligned)
