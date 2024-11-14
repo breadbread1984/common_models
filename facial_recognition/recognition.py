@@ -42,7 +42,7 @@ class Recognition(object):
         aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         self.db.add(embeddings.detach().cpu().numpy())
-      self.labels = np.concatenate(labels, axis = 0) # label.shape = (sample_num,)
+      self.labels = np.array([labels]) # label.shape = (sample_num,)
       self.save()
     # 2) match with K-nn
     print('recognition of unknown faces...')
@@ -64,7 +64,7 @@ class Recognition(object):
         for neighbor in neighbors:
           values, counts = np.unique(neighbor, return_counts = True)
           pred = values[np.argmax(counts)]
-          if pred == label.detach().cpu().numpy()[0]: correct += 1
+          if pred == label.detach().cpu().numpy(): correct += 1
         total += batch_size
         batch = list()
     if len(batch):
@@ -75,7 +75,7 @@ class Recognition(object):
       for neighbor in neighbors:
         values, counts = np.unique(neighbor, return_counts = True)
         pred = values[np.argmax(counts)]
-        if pred == label.detach().cpu().numpy()[0]: correct += 1
+        if pred == label.detach().cpu().numpy(): correct += 1
       total += len(batch)
     print(f'accuracy: {correct / total}')
   def save(self, ):
