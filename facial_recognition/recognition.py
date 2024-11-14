@@ -52,30 +52,37 @@ class Recognition(object):
     correct = 0
     total = 0
     batch = list()
+    labels = list()
     for img, label in tqdm(evalset):
       x_aligned, prob = self.mtcnn(img, return_prob = True)
       if x_aligned is None: continue
       batch.append(x_aligned.detach())
+      labels.append(label.detach().cpu().numpy())
       if len(batch) == batch_size:
         aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         D, I = self.db.match(embeddings.detach().cpu().numpy(), k = 5) # I.shape = (batch_size, 5)
         neighbors = self.labels[I] # true_labels.shape = (batch_size, 5)
+        preds = list()
         for neighbor in neighbors:
           values, counts = np.unique(neighbor, return_counts = True)
           pred = values[np.argmax(counts)]
-          if pred == label.detach().cpu().numpy(): correct += 1
+          preds.append(pred)
+        correct += np.sum((np.array(labels) == np.array(preds)).astype(np.int32))
         total += batch_size
         batch = list()
+        labels = list()
     if len(batch):
       aligned = torch.stack(batch).to(self.device)
       embeddings = self.resnet(aligned)
       D, I = self.db.match(embeddings.detach().cpu().numpy(), k = 5)
       neighbors = self.labels[I]
+      preds = list()
       for neighbor in neighbors:
         values, counts = np.unique(neighbor, return_counts = True)
         pred = values[np.argmax(counts)]
-        if pred == label.detach().cpu().numpy(): correct += 1
+        preds.append(pred)
+      correct += np.sum((np.array(labels) == np.array(preds)).astype(np.int32))
       total += len(batch)
     print(f'accuracy: {correct / total}')
   def save(self, ):
