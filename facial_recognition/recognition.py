@@ -42,7 +42,7 @@ class Recognition(object):
         aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
         self.db.add(embeddings.detach().cpu().numpy())
-      self.labels = np.array([labels]) # label.shape = (sample_num,)
+      self.labels = np.array(labels) # label.shape = (sample_num,)
       self.save()
     # 2) match with K-nn
     print('recognition of unknown faces...')
