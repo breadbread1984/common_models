@@ -83,7 +83,7 @@ class Recognition(object):
     self.db.serialize()
   def load(self, ):
     self.labels = np.load('labels.npy')
-    self.db = DB.deserialize()
+    self.db = QuantizedDB.deserialize()
 
 if __name__ == "__main__":
   recog = Recognition()
