@@ -21,6 +21,10 @@ def add_options():
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
+def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer_G, optimizer_D, tb_writer):
+  for step, (x, label) in tqdm(enumerate(train_dataloader)):
+    # TODO
+
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
   generator = Generator().to(device(FLAGS.device))
