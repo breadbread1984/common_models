@@ -38,7 +38,7 @@ class DB(object):
     if device == 'gpu':
       res = faiss.StandardGpuResources()
       index = faiss.index_cpu_to_gpu(res, 0, index)
-    return cls(index = index)
+    return cls(index = index, device = device)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
     assert samples.shape[1] == self.index.d
@@ -80,7 +80,7 @@ class QuantizedDB(object):
       index = faiss.index_cpu_to_gpu(res, 0, index)
     return cls(index = index, trainset = trainset, device = device)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 10, device = 'gpu'):
+  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 8, device = 'gpu'):
     dists = {
       'ip': faiss.IndexFlatIP,
       'l2': faiss.IndexFlatL2,
