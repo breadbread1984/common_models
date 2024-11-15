@@ -135,13 +135,17 @@ if __name__ == "__main__":
   base = np.array(base)
   query = np.array(query)
   ground_truth = np.array(ground_truth)
-  db = QuantizedDB.create(128, dist = 'l2')
-  db.add(base)
-  D, I = db.match(query, k = 5)
   def compute_accuracy(I, ground_truth, k = 5):
     correct = (I == ground_truth[:, :k]).sum()
     total = ground_truth.shape[0] * k
     return correct / total
-  print(compute_accuracy(I, ground_truth, k = 5))
-  db.serialize()
-  db2 = QuantizedDB.deserialize()
+  # index
+  db = DB.create(128, dist = 'l2')
+  db.add(base)
+  D, I = db.match(query, k = 5)
+  print('faiss.Index accuracy: ', compute_accuracy(I, ground_truth, k = 5))
+  # quantized index
+  db = QuantizedDB.create(128, dist = 'l2')
+  db.add(base)
+  D, I = db.match(query, k = 5)
+  print('faiss.IndexIVFPQ accuracy: ', compute_accuracy(I, ground_truth, k = 5))
