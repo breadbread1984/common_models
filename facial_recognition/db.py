@@ -45,33 +45,27 @@ class DB(object):
     return D, I
 
 class QuantizedDB(object):
-  def __init__(self, gpu_index = None, trainset = None, nlist = 100, m = 8):
+  def __init__(self, gpu_index = None, trainset = None):
     assert gpu_index is not None
     self.gpu_index = gpu_index
     self.trainset = np.zeros((0,self.gpu_index.d)) if trainset is None else trainset
-    self.nlist = nlist
-    self.m = m
   def serialize(self, db_path = 'index_file.ivfpq'):
     cpu_index = faiss.index_gpu_to_cpu(self.gpu_index)
     index_bytes = faiss.serialize_index(cpu_index)
     with open(db_path, 'wb') as f:
       pickle.dump(index_bytes, f)
       pickle.dump(self.trainset, f)
-      pickle.dump(self.nlist, f)
-      pickle.dump(self.m, f)
   @classmethod
   def deserialize(cls, db_path = 'index_file.ivfpq'):
     with open(db_path, 'rb') as f:
       index_bytes = pickle.load(f)
       trainset = pickle.load(f)
-      nlist = pickle.load(f)
-      m = pickle.load(f)
     cpu_index = faiss.deserialize_index(index_bytes)
     res = faiss.StandardGpuResources()
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
     return cls(gpu_index = gpu_index, trainset = trainset, nlist = nlist, m = m)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8):
+  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 10):
     dists = {
       'ip': faiss.IndexFlatIP,
       'l2': faiss.IndexFlatL2,
@@ -80,6 +74,7 @@ class QuantizedDB(object):
     cpu_index = faiss.IndexIVFPQ(quantizer, hidden_dim, nlist, m, 8)
     res = faiss.StandardGpuResources()
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
+    gpu_index.nprobe = nprobe
     return cls(gpu_index = gpu_index, nlist = nlist, m = m)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
