@@ -141,8 +141,8 @@ if __name__ == "__main__":
   query = np.array(query)
   ground_truth = np.array(ground_truth)
   db = QuantizedDB.create(128, dist = 'l2')
-  db.add(trainset)
-  D, I = db.match(valset, k = 5)
+  db.add(base)
+  D, I = db.match(query, k = 5)
   def compute_accuracy(I, ground_truth, k = 5):
     correct = (I == ground_truth[:, :k]).sum()
     total = ground_truth.shape[0] * k
