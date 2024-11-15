@@ -116,6 +116,44 @@ class QuantizedDB(object):
     D, I = self.index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
 
+class HashDB(object):
+  def __init__(self, index = None, device = device):
+    assert index is not None
+    assert device in {'cpu', 'gpu'}
+    self.index = index
+    self.device = device
+  def serialize(self, db_path = 'index_file.lsh'):
+    if self.device == 'gpu':
+      index = faiss.index_gpu_to_cpu(self.index)
+    index_bytes = faiss.serialize_index(self.index)
+    with open(db_path, 'wb') as f:
+      pickle.dump(index_bytes, f)
+      pickle.dump(self.device, f)
+  @classmethod
+  def deserialize(cls, db_path = 'index_file.lsh'):
+    with open(db_path, 'rb') as f:
+      index_bytes = pickle.load(f)
+      device = pickle.load(f)
+    index = faiss.deserialize_index(index_bytes)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(res, 0, index)
+    return cls(index = index, device = device)
+  @classmethod
+  def create(cls, hidden_dim, n_bits, device = 'gpu'):
+    index = faiss.IndexLSH(hidden_dim, n_bits)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(resm 0, index)
+    return cls(index = index, device = device)
+  def add(self, samples):
+    assert samples.shape[1] == self.index.d
+    self.index.add(samples)
+  def match(self, samples, k = 1):
+    assert samples.shape[1] == self.index.d
+    D, I = self.index.search(samples, k)
+    return D, I
+
 if __name__ == "__main__":
   from os.path import exists, join
   from wget import download
@@ -159,3 +197,8 @@ if __name__ == "__main__":
   db.serialize()
   db2 = QuantizedDB.deserialize()
   print('faiss.IndexIVFPQ accuracy: ', compute_accuracy(I, ground_truth, k = 5))
+  db = HashDB.create(128, n_bits = 2 * int(128 / 8), device = 'cpu')
+  db.add(base)
+  D, I = db.match(query, k = 5)
+  db.serialize()
+  db2 = HashDB.deserialize()
