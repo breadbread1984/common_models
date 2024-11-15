@@ -152,7 +152,7 @@ if __name__ == "__main__":
   D, I = db.match(query, k = 5)
   print('faiss.Index accuracy: ', compute_accuracy(I, ground_truth, k = 5))
   # quantized index
-  db = QuantizedDB.create(128, dist = 'l2')
+  db = QuantizedDB.create(128, dist = 'l2', device = 'cpu')
   db.add(base)
   D, I = db.match(query, k = 5)
   print('faiss.IndexIVFPQ accuracy: ', compute_accuracy(I, ground_truth, k = 5))
