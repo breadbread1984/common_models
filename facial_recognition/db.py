@@ -15,7 +15,7 @@ class DB(object):
   def serialize(self, db_path = 'index_file.faiss'):
     if self.device == 'gpu':
       index = faiss.index_gpu_to_cpu(self.index)
-    index_bytes = faiss.serialize_index(index)
+    index_bytes = faiss.serialize_index(self.index)
     with open(db_path, 'wb') as f:
       pickle.dump(index_bytes, f)
       pickle.dump(self.device, f)
@@ -64,7 +64,7 @@ class QuantizedDB(object):
   def serialize(self, db_path = 'index_file.ivfsq'):
     if self.device == 'gpu':
       index = faiss.index_gpu_to_cpu(self.index)
-    index_bytes = faiss.serialize_index(index)
+    index_bytes = faiss.serialize_index(self.index)
     with open(db_path, 'wb') as f:
       pickle.dump(index_bytes, f)
       pickle.dump(self.trainset, f)
@@ -149,9 +149,13 @@ if __name__ == "__main__":
   db = DB.create(128, dist = 'l2', device = 'cpu')
   db.add(base)
   D, I = db.match(query, k = 5)
+  db.serialize()
+  db2 = DB.deserialize()
   print('faiss.Index accuracy: ', compute_accuracy(I, ground_truth, k = 5))
   # quantized index
   db = QuantizedDB.create(128, dist = 'l2', device = 'cpu')
   db.add(base)
   D, I = db.match(query, k = 5)
+  db.serialize()
+  db2 = QuantizedDB.deserialize()
   print('faiss.IndexIVFPQ accuracy: ', compute_accuracy(I, ground_truth, k = 5))
