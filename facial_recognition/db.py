@@ -7,41 +7,50 @@ import numpy as np
 import faiss
 
 class DB(object):
-  def __init__(self, gpu_index = None):
-    assert gpu_index is not None
-    self.gpu_index = gpu_index
+  def __init__(self, index = None, device = 'gpu'):
+    assert index is not None
+    self.index = index
+    self.device = device
   def serialize(self, db_path = 'index_file.faiss'):
-    cpu_index = faiss.index_gpu_to_cpu(self.gpu_index)
-    faiss.write_index(cpu_index, db_path)
+    if self.device == 'gpu':
+      index = faiss.index_gpu_to_cpu(self.index)
+    index_bytes = faiss.serialize_index(index)
+    with open(db_path, 'wb') as f:
+      pickle.dump(index_bytes, f)
+      pickle.dump(self.device, f)
   @classmethod
   def deserialize(cls, db_path = 'index_file.faiss'):
-    res = faiss.StandardGpuResources()
-    cpu_index = faiss.read_index(db_path)
-    gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-    return cls(gpu_index = gpu_index)
+    with open(db_path, 'rb') as f:
+      index_bytes = pickle.load(f)
+      device = pickle.load(f)
+    index = faiss.deserialize_index(index_bytes)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(res, 0, index)
+    return cls(index = index, device = device)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip'):
+  def create(cls, hidden_dim, dist = 'ip', device = 'gpu'):
     dists = {
-      'ip': faiss.GpuIndexFlatIP,
-      'l2': faiss.GpuIndexFlatL2,
+      'ip': faiss.IndexFlatIP,
+      'l2': faiss.IndexFlatL2,
     }
-    res = faiss.StandardGpuResources()
-    flat_config = faiss.GpuIndexFlatConfig()
-    flat_config.device = 0
-    gpu_index = dists[dist](res, hidden_dim, flat_config)
-    return cls(gpu_index = gpu_index)
+    index = dists[dist](hidden_dim)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(res, 0, index)
+    return cls(index = index)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
-    assert samples.shape[1] == self.gpu_index.d
-    if self.gpu_index.metric_type == faiss.METRIC_INNER_PRODUCT:
+    assert samples.shape[1] == self.index.d
+    if self.index.metric_type == faiss.METRIC_INNER_PRODUCT:
       faiss.normalize_L2(samples)
-    self.gpu_index.add(samples)
+    self.index.add(samples)
   def match(self, samples, k = 1):
     # NOTE: samples.shape = (sample_num, hidden_dim)
-    assert samples.shape[1] == self.gpu_index.d
-    if self.gpu_index.metric_type == faiss.METRIC_INNER_PRODUCT:
+    assert samples.shape[1] == self.index.d
+    if self.index.metric_type == faiss.METRIC_INNER_PRODUCT:
       faiss.normalize_L2(samples)
-    D, I = self.gpu_index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
+    D, I = self.index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
 
 class QuantizedDB(object):
