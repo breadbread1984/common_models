@@ -202,3 +202,4 @@ if __name__ == "__main__":
   D, I = db.match(query, k = 5)
   db.serialize()
   db2 = HashDB.deserialize()
+  print('faiss.IndexLSH accuracy: ', compute_accuracy(I, ground_truth, k = 5))
