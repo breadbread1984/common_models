@@ -117,7 +117,7 @@ class QuantizedDB(object):
     return D, I
 
 class HashDB(object):
-  def __init__(self, index = None, device = device):
+  def __init__(self, index = None, device = 'gpu'):
     assert index is not None
     assert device in {'cpu', 'gpu'}
     self.index = index
