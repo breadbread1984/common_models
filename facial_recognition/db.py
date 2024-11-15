@@ -144,7 +144,7 @@ class HashDB(object):
     index = faiss.IndexLSH(hidden_dim, n_bits)
     if device == 'gpu':
       res = faiss.StandardGpuResources()
-      index = faiss.index_cpu_to_gpu(resm 0, index)
+      index = faiss.index_cpu_to_gpu(res, 0, index)
     return cls(index = index, device = device)
   def add(self, samples):
     assert samples.shape[1] == self.index.d
