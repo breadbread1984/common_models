@@ -107,11 +107,46 @@ class QuantizedDB(object):
     return D, I
 
 if __name__ == "__main__":
+  from os.path import exists, join
+  from wget import download
+  import tarfile
   import numpy as np
-  db = QuantizedDB.create(256, dist = 'l2')
-  samples = np.random.normal(size = (3900,256)).astype(np.float32)
-  db.add(samples)
-  samples = np.random.normal(size = (10,256)).astype(np.float32)
-  D, I = db.match(samples, k = 2)
+  if not exists('siftsmall.tar.gz')
+    download('ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz', out = 'siftsmall.tar.gz')
+  file = tarfile.open('siftsmall.tar.gz')
+  file.extractall('siftsmall.tar.gz')
+  file.close()
+  def read_fvecs(file):
+    with open(file, 'rb') as f:
+      while True:
+        dim_bytes = f.read(4)
+        if not dim_bytes:
+          break
+        dim = int(np.frombuffer(dim_bytes, dtype=np.int32)[0])
+        vector = np.frombuffer(f.read(4 * dim), dtype=np.float32)
+        yield vector
+  def read_ivecs(file):
+    with open(file, 'rb') as f:
+      while True:
+        dim_bytes = f.read(4)
+        if not dim_bytes:
+          break
+        dim = int(np.frombuffer(dim_bytes, dtype=np.int32)[0])
+        vector = np.frombuffer(f.read(4 * dim), dtype=np.int32)
+        yield vector
+  base = list(read_fvecs(join('siftsmall', 'siftsmall_base.fvecs')))
+  query = list(read_fvecs(join('siftsmall', 'siftsmall_query.fvecs')))
+  ground_truth = list(read_ivecs(join('siftsmall', 'siftsmall_groundtruth.ivecs')))
+  base = np.array(base)
+  query = np.array(query)
+  ground_truth = np.array(ground_truth)
+  db = QuantizedDB.create(128, dist = 'l2')
+  db.add(trainset)
+  D, I = db.match(valset, k = 5)
+  def compute_accuracy(I, ground_truth, k = 5):
+    correct = (I == ground_truth[:, :k]).sum()
+    total = ground_truth.shape[0] * k
+    return correct / total
+  print(compute_accuracy(I, ground_truth, k = 5))
   db.serialize()
   db2 = QuantizedDB.deserialize()
