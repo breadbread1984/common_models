@@ -9,6 +9,7 @@ import faiss
 class DB(object):
   def __init__(self, index = None, device = 'gpu'):
     assert index is not None
+    assert device in {'gpu', 'cpu'}
     self.index = index
     self.device = device
   def serialize(self, db_path = 'index_file.faiss'):
