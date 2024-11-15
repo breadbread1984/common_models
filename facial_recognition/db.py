@@ -111,7 +111,7 @@ if __name__ == "__main__":
   from wget import download
   import tarfile
   import numpy as np
-  if not exists('siftsmall.tar.gz')
+  if not exists('siftsmall.tar.gz'):
     download('ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz', out = 'siftsmall.tar.gz')
   file = tarfile.open('siftsmall.tar.gz')
   file.extractall('siftsmall.tar.gz')
