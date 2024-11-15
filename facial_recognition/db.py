@@ -61,7 +61,7 @@ class QuantizedDB(object):
     self.index = index
     self.trainset = np.zeros((0,self.index.d)) if trainset is None else trainset
     self.device = device
-  def serialize(self, db_path = 'index_file.ivfpq'):
+  def serialize(self, db_path = 'index_file.ivfsq'):
     if self.device == 'gpu':
       index = faiss.index_gpu_to_cpu(self.index)
     index_bytes = faiss.serialize_index(index)
@@ -70,7 +70,7 @@ class QuantizedDB(object):
       pickle.dump(self.trainset, f)
       pickle.dump(self.device, f)
   @classmethod
-  def deserialize(cls, db_path = 'index_file.ivfpq'):
+  def deserialize(cls, db_path = 'index_file.ivfsq'):
     with open(db_path, 'rb') as f:
       index_bytes = pickle.load(f)
       trainset = pickle.load(f)
@@ -81,17 +81,15 @@ class QuantizedDB(object):
       index = faiss.index_cpu_to_gpu(res, 0, index)
     return cls(index = index, trainset = trainset, device = device)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 8, device = 'gpu'):
+  def create(cls, hidden_dim, dist = 'ip', device = 'gpu'):
     dists = {
-      'ip': faiss.IndexFlatIP,
-      'l2': faiss.IndexFlatL2,
+      'ip': faiss.METRIC_INNER_PRODUCT,
+      'l2': faiss.METRIC_L2,
     }
-    quantizer = dists[dist](hidden_dim)
-    index = faiss.IndexIVFPQ(quantizer, hidden_dim, nlist, m, 8)
+    index = faiss.IndexScalarQuantizer(hidden_dim, faiss.ScalarQuantizer.QT_8bit, dists[dist])
     if device == 'gpu':
       res = faiss.StandardGpuResources()
       index = faiss.index_cpu_to_gpu(res, 0, index)
-    index.nprobe = nprobe
     return cls(index = index, device = device)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
