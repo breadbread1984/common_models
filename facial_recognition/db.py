@@ -84,7 +84,7 @@ class QuantizedDB(object):
     if self.gpu_index.is_trained == False:
       # collect trainset if index is not trained
       self.trainset = np.concatenate([self.trainset, samples], axis = 0)
-      if self.trainset.shape[0] >= self.gpu_index.nlist * self.gpu_index.cp.min_points_per_centroid:
+      if self.trainset.shape[0] >= 10000:
         # train quantizer if trainset is enough to train index
         self.gpu_index.train(self.trainset)
         self.gpu_index.add(self.trainset)
