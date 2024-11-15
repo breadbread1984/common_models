@@ -114,7 +114,7 @@ if __name__ == "__main__":
   if not exists('siftsmall.tar.gz'):
     download('ftp://ftp.irisa.fr/local/texmex/corpus/siftsmall.tar.gz', out = 'siftsmall.tar.gz')
   file = tarfile.open('siftsmall.tar.gz')
-  file.extractall('siftsmall.tar.gz')
+  file.extractall()
   file.close()
   def read_fvecs(file):
     with open(file, 'rb') as f:
