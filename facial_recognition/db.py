@@ -45,60 +45,67 @@ class DB(object):
     return D, I
 
 class QuantizedDB(object):
-  def __init__(self, gpu_index = None, trainset = None):
-    assert gpu_index is not None
-    self.gpu_index = gpu_index
-    self.trainset = np.zeros((0,self.gpu_index.d)) if trainset is None else trainset
+  def __init__(self, index = None, trainset = None, device = 'gpu'):
+    assert index is not None
+    assert device in {'cpu', 'gpu'}
+    self.index = index
+    self.trainset = np.zeros((0,self.index.d)) if trainset is None else trainset
+    self.device = device
   def serialize(self, db_path = 'index_file.ivfpq'):
-    cpu_index = faiss.index_gpu_to_cpu(self.gpu_index)
-    index_bytes = faiss.serialize_index(cpu_index)
+    if self.device == 'gpu':
+      index = faiss.index_gpu_to_cpu(self.index)
+    index_bytes = faiss.serialize_index(index)
     with open(db_path, 'wb') as f:
       pickle.dump(index_bytes, f)
       pickle.dump(self.trainset, f)
+      pickle.dump(self.device, f)
   @classmethod
   def deserialize(cls, db_path = 'index_file.ivfpq'):
     with open(db_path, 'rb') as f:
       index_bytes = pickle.load(f)
       trainset = pickle.load(f)
-    cpu_index = faiss.deserialize_index(index_bytes)
-    res = faiss.StandardGpuResources()
-    gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-    return cls(gpu_index = gpu_index, trainset = trainset, nlist = nlist, m = m)
+      device = pickle.load(f)
+    index = faiss.deserialize_index(index_bytes)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(res, 0, index)
+    return cls(index = index, trainset = trainset, device = device)
   @classmethod
-  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 10):
+  def create(cls, hidden_dim, dist = 'ip', nlist = 100, m = 8, nprobe = 10, device = 'gpu'):
     dists = {
       'ip': faiss.IndexFlatIP,
       'l2': faiss.IndexFlatL2,
     }
     quantizer = dists[dist](hidden_dim)
-    cpu_index = faiss.IndexIVFPQ(quantizer, hidden_dim, nlist, m, 8)
-    res = faiss.StandardGpuResources()
-    gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-    gpu_index.nprobe = nprobe
-    return cls(gpu_index = gpu_index)
+    index = faiss.IndexIVFPQ(quantizer, hidden_dim, nlist, m, 8)
+    if device == 'gpu':
+      res = faiss.StandardGpuResources()
+      index = faiss.index_cpu_to_gpu(res, 0, index)
+    index.nprobe = nprobe
+    return cls(index = index, device = device)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
-    assert samples.shape[1] == self.gpu_index.d
-    if self.gpu_index.metric_type == faiss.METRIC_INNER_PRODUCT:
+    assert samples.shape[1] == self.index.d
+    if self.index.metric_type == faiss.METRIC_INNER_PRODUCT:
       faiss.normalize_L2(samples)
-    if self.gpu_index.is_trained == False:
+    if self.index.is_trained == False:
       # collect trainset if index is not trained
       self.trainset = np.concatenate([self.trainset, samples], axis = 0)
       if self.trainset.shape[0] >= 10000:
         # train quantizer if trainset is enough to train index
-        self.gpu_index.train(self.trainset)
-        self.gpu_index.add(self.trainset)
+        self.index.train(self.trainset)
+        self.index.add(self.trainset)
         self.trainset = None
     else:
       # direct add samples to trained index
-      self.gpu_index.add(samples)
+      self.index.add(samples)
   def match(self, samples, k = 1):
     # NOTE: samples.shape = (sample_num, hidden_dim)
-    assert samples.shape[1] == self.gpu_index.d
-    assert self.gpu_index.is_trained, f"feed over {self.gpu_index.d * self.gpu_index.cp.min_points_per_centroid} samples to train the index before do matching"
-    if self.gpu_index.metric_type == faiss.METRIC_INNER_PRODUCT:
+    assert samples.shape[1] == self.index.d
+    assert self.index.is_trained, f"feed over 10000 samples to train the index before do matching"
+    if self.index.metric_type == faiss.METRIC_INNER_PRODUCT:
       faiss.normalize_L2(samples)
-    D, I = self.gpu_index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
+    D, I = self.index.search(samples, k) # D.shape = (sample_num, k) I.shape = (sample_num, k)
     return D, I
 
 if __name__ == "__main__":
