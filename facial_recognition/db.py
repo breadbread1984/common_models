@@ -147,7 +147,7 @@ if __name__ == "__main__":
     total = ground_truth.shape[0] * k
     return correct / total
   # index
-  db = DB.create(128, dist = 'l2')
+  db = DB.create(128, dist = 'l2', device = 'cpu')
   db.add(base)
   D, I = db.match(query, k = 5)
   print('faiss.Index accuracy: ', compute_accuracy(I, ground_truth, k = 5))
