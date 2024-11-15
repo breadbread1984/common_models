@@ -75,7 +75,7 @@ class QuantizedDB(object):
     res = faiss.StandardGpuResources()
     gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
     gpu_index.nprobe = nprobe
-    return cls(gpu_index = gpu_index, nlist = nlist, m = m)
+    return cls(gpu_index = gpu_index)
   def add(self, samples):
     # NOTE: samples.shape = (sample_num, hidden_dim)
     assert samples.shape[1] == self.gpu_index.d
