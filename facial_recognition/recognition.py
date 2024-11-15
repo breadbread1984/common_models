@@ -27,7 +27,7 @@ class Recognition(object):
       labels = list()
       for img, label in tqdm(trainset):
         # NOTE: img is PIL image
-        x_aligned, prob = self.mtcnn(img, return_prob = True)
+        x_aligned = self.mtcnn(img)
         # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
         if x_aligned is None: continue
         batch.append(x_aligned.detach())
@@ -43,17 +43,17 @@ class Recognition(object):
         self.db.add(embeddings.detach().cpu().numpy())
       self.labels = np.array(labels) # label.shape = (sample_num,)
       self.save()
+    else:
+      self.load()
     # 2) match with K-nn
     print('recognition of unknown faces...')
-    if exists('index_file.ivfpq'):
-      self.load()
     evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
     correct = 0
     total = 0
     batch = list()
     labels = list()
     for img, label in tqdm(evalset):
-      x_aligned, prob = self.mtcnn(img, return_prob = True)
+      x_aligned = self.mtcnn(img)
       if x_aligned is None: continue
       batch.append(x_aligned.detach())
       labels.append(label.detach().cpu().numpy())
