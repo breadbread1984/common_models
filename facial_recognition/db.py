@@ -118,27 +118,18 @@ if __name__ == "__main__":
   file = tarfile.open('siftsmall.tar.gz')
   file.extractall()
   file.close()
-  def read_fvecs(file):
+  def read_vecs(file, dtype = np.float32):
     with open(file, 'rb') as f:
       while True:
         dim_bytes = f.read(4)
         if not dim_bytes:
           break
         dim = int(np.frombuffer(dim_bytes, dtype=np.int32)[0])
-        vector = np.frombuffer(f.read(4 * dim), dtype=np.float32)
+        vector = np.frombuffer(f.read(4 * dim), dtype=dtype)
         yield vector
-  def read_ivecs(file):
-    with open(file, 'rb') as f:
-      while True:
-        dim_bytes = f.read(4)
-        if not dim_bytes:
-          break
-        dim = int(np.frombuffer(dim_bytes, dtype=np.int32)[0])
-        vector = np.frombuffer(f.read(4 * dim), dtype=np.int32)
-        yield vector
-  base = list(read_fvecs(join('siftsmall', 'siftsmall_base.fvecs')))
-  query = list(read_fvecs(join('siftsmall', 'siftsmall_query.fvecs')))
-  ground_truth = list(read_ivecs(join('siftsmall', 'siftsmall_groundtruth.ivecs')))
+  base = list(read_vecs(join('siftsmall', 'siftsmall_base.fvecs'), dtype = np.float32))
+  query = list(read_vecs(join('siftsmall', 'siftsmall_query.fvecs'), dtype = np.float32))
+  ground_truth = list(read_vecs(join('siftsmall', 'siftsmall_groundtruth.ivecs'), dtype = np.int32))
   base = np.array(base)
   query = np.array(query)
   ground_truth = np.array(ground_truth)
