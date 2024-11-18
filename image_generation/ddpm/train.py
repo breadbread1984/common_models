@@ -28,7 +28,7 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
   flags.DEFINE_integer('workers', default = 4, help = 'worker number')
 
-@classclass
+@dataclass
 class Trainingconfig:
   image_size = 32
   train_batch_size = FLAGS.batch_size

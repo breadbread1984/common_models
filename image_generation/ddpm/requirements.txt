@@ -3,3 +3,4 @@ tqdm
 absl-py
 torch
 torchvision
+accelerate
