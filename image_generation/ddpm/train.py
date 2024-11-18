@@ -38,7 +38,7 @@ def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_wri
     loss = criterion(output, noise)
     loss.backward()
     optimizer.step()
-    global_steps = epoch * len(train_dataloder) + step
+    global_steps = epoch * len(train_dataloader) + step
     if global_steps % 100 == 0 and dist.get_rank() == 0:
       print('Step #%d Epoch #%d: loss %f, lr %f' % (global_steps, epoch, loss, scheduler.get_last_lr()[0]))
       tb_writer.add_scalar('loss', loss, global_steps)
