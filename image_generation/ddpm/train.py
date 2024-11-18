@@ -5,7 +5,7 @@ from os.path import exists, join
 from absl import flags, app
 from tqdm import tqdm
 import torch
-from torch import nn
+from torch import nn, autograd
 import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
