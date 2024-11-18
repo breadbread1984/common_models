@@ -12,7 +12,7 @@ from db import DB
 
 class Recognition(object):
   def __init__(self, device = 'cuda'):
-    self.db = DB.create(hidden_dim = 512, dist = 'l2', device = 'cpu')
+    self.db = DB.create(hidden_dim = 512, dist = 'ip', device = 'cpu')
     self.mtcnn = MTCNN(image_size = 160, margin = 0, min_face_size = 20,
                        device = device).eval()
     self.resnet = InceptionResnetV1(pretrained = 'vggface2').to(device).eval()
