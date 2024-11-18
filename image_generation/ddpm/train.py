@@ -6,7 +6,7 @@ from absl import flags, app
 from tqdm import tqdm
 import torch
 from torch import nn
-from torch import device, save, load, no_grad, autograd
+import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from models import Diffusion
@@ -61,7 +61,6 @@ def main(unused_argv):
   model.to(device(FLAGS.device))
   trainset = load_datasets()
   train_dataloader = DataLoader(trainset, batch_size = config.train_batch_size, shuffle = True, num_workers = FLAGS.workers)
-  criterion = nn.MSELoss()
   optimizer = AdamW(model.parameters(), lr = config.learning_rate)
   lr_scheduler = get_cosine_schedule_with_warmup(
     optimizer = optimizer,
@@ -97,8 +96,8 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
       )
       noisy_images = accelerator.unwrap_model(model).noise_scheduler.add_noise(clean_images, noise, timesteps)
       with accelerator.accumulate(model):
-        noise_pred = model(noisy_images, timesteps, return_dict = False)[0]
-        loss = criterion(noise_pred, noise)
+        noise_pred = model(noisy_images, timesteps)
+        loss = F.mse_loss(noise_pred, noise)
         accelerator.backward(loss)
         if accelerator.sync_gradients:
           accelerator.clip_grad_norm_(model.paramters(), 1.0)
