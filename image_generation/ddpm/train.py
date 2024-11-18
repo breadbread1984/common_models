@@ -60,7 +60,7 @@ def main(unused_argv):
   args = (config, model, optimizer, train_dataloader, lr_scheduler)
   notebook_launcher(train_loop, args, num_processes = FLAGS.processes)
 
-def evaluate(config, epoch, pipline):
+def evaluate(config, epoch, pipeline):
   images = pipeline(
     batch_size = config.eval_batch_size,
     generator = torch.Generator(device = 'cpu').manual_seed(config.seed)
