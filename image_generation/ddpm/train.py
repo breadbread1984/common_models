@@ -23,6 +23,7 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 600, help = 'number of epochs')
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
+  flags.DEFINE_integer('workers', default = 4, help = 'worker number')
 
 def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer):
   # training
