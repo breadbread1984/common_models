@@ -26,7 +26,7 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
   flags.DEFINE_integer('workers', default = 4, help = 'worker number')
 
-def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer):
+def train_one_epoch(epoch, train_dataloader, model, optimizer, scheduler, criterion, tb_writer):
   # training
   for step, (x, label) in tqdm(enumerate(train_dataloader)):
     optimizer.zero_grad()
@@ -72,7 +72,7 @@ def main(unused_argv):
     train_dataloader.sampler.set_epoch(epoch)
     # train
     model.train()
-    global_step = train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_writer)
+    global_step = train_one_epoch(epoch, train_dataloader, model, optimizer, scheduler, criterion, tb_writer)
     if dist.get_rank() == 0:
       ckpt = {
         'epoch': epoch + 1,
