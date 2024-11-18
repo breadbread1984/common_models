@@ -112,7 +112,7 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
 
     # evaluation
     if accelerator.is_main_process:
-      pipeline = DDPMPipline(unet = accelerator.unwrap_model(model), scheduler = accelerator.unwrap_model(model).noise_scheduler)
+      pipeline = DDPMPipeline(unet = accelerator.unwrap_model(model), scheduler = accelerator.unwrap_model(model).noise_scheduler)
       if (epoch + 1) % config.save_image_epochs == 0 or epoch == config.num_epochs - 1:
         evaluate(config, epoch, pipeline)
 
