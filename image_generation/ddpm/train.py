@@ -40,7 +40,7 @@ def evaluate(config, epoch, pipline):
 
 def main(unused_argv):
   @dataclass
-  class Trainingconfig:
+  class TrainingConfig:
     image_size = 32
     train_batch_size = FLAGS.batch_size
     eval_batch_size = FLAGS.batch_size
