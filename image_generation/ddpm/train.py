@@ -33,7 +33,7 @@ def main(unused_argv):
   class TrainingConfig:
     image_size = 32
     train_batch_size = FLAGS.batch_size
-    eval_batch_size = FLAGS.batch_size
+    eval_batch_size = 16
     num_epochs = FLAGS.epochs
     gradient_accumulation_steps = 1
     learning_rate = FLAGS.lr
