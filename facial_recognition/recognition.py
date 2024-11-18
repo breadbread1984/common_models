@@ -21,7 +21,7 @@ class Recognition(object):
   def test_celeba(self, batch_size = 1024):
     # 1) vectorize images and save into database
     print('building database of known faces...')
-    if not exists('index_file.ivfpq'):
+    if not exists('index_file.faiss'):
       trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
       batch = list()
       labels = list()
@@ -89,7 +89,7 @@ class Recognition(object):
     self.db.serialize()
   def load(self, ):
     self.labels = np.load('labels.npy')
-    self.db = QuantizedDB.deserialize()
+    self.db = DB.deserialize()
 
 if __name__ == "__main__":
   recog = Recognition()
