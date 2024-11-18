@@ -28,23 +28,6 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
   flags.DEFINE_integer('workers', default = 4, help = 'worker number')
 
-@dataclass
-class Trainingconfig:
-  image_size = 32
-  train_batch_size = FLAGS.batch_size
-  eval_batch_size = FLAGS.batch_size
-  num_epochs = FLAGS.epochs
-  gradient_accumulation_steps = 1
-  learning_rate = FLAGS.lr
-  lr_warmup_steps = 500
-  save_image_epochs = 10
-  save_model_epochs = 30
-  mixed_precision = "fp16"
-  output_dir = FLAGS.ckpt
-  push_to_hub = False
-  overwrite_output_dir = True
-  seed = 0
-
 def evaluate(config, epoch, pipline):
   images = pipeline(
     batch_size = config.eval_batch_size,
@@ -56,6 +39,22 @@ def evaluate(config, epoch, pipline):
   image_grid.save(f"{test_dir}/{epoch:04d}.png")
 
 def main(unused_argv):
+  @dataclass
+  class Trainingconfig:
+    image_size = 32
+    train_batch_size = FLAGS.batch_size
+    eval_batch_size = FLAGS.batch_size
+    num_epochs = FLAGS.epochs
+    gradient_accumulation_steps = 1
+    learning_rate = FLAGS.lr
+    lr_warmup_steps = 500
+    save_image_epochs = 10
+    save_model_epochs = 30
+    mixed_precision = "fp16"
+    output_dir = FLAGS.ckpt
+    push_to_hub = False
+    overwrite_output_dir = True
+    seed = 0
   config = TrainingConfig()
   autograd.set_detect_anomaly(True)
   model = Diffusion()
