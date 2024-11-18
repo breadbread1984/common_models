@@ -58,7 +58,7 @@ def main(unused_argv):
   scheduler = CosineAnnealingWarmRestarts(optimizer, T_0 = 5, T_mult = 2)
   if dist.get_rank() == 0:
     if not exists(FLAGS.ckpt): mkdir(FLAGS.ckpt)
-    tb_writer = SummaryWriter(log_dir = join(FLAG.ckpt, 'summaries'))
+    tb_writer = SummaryWriter(log_dir = join(FLAGS.ckpt, 'summaries'))
   start_epoch = 0
   if exists(join(FLAGS.ckpt, 'model.pth')):
     ckpt = load(join(FLAGS.ckpt, 'model.pth'))
