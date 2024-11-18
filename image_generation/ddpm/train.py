@@ -28,16 +28,6 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
   flags.DEFINE_integer('workers', default = 4, help = 'worker number')
 
-def evaluate(config, epoch, pipline):
-  images = pipeline(
-    batch_size = config.eval_batch_size,
-    generator = torch.Generator(device = 'cpu').manual_seed(config.seed)
-  ).images
-  image_grid = make_image_grid(images, rows = 4, cols = 4)
-  test_dir = join(config.output_dir, "samples")
-  makedirs(test_dir, exist_ok = True)
-  image_grid.save(f"{test_dir}/{epoch:04d}.png")
-
 def main(unused_argv):
   @dataclass
   class TrainingConfig:
@@ -69,6 +59,16 @@ def main(unused_argv):
   )
   args = (config, model, optimizer, train_dataloader, lr_scheduler)
   notebook_launcher(train_loop, args, num_processes = FLAGS.processes)
+
+def evaluate(config, epoch, pipline):
+  images = pipeline(
+    batch_size = config.eval_batch_size,
+    generator = torch.Generator(device = 'cpu').manual_seed(config.seed)
+  ).images
+  image_grid = make_image_grid(images, rows = 4, cols = 4)
+  test_dir = join(config.output_dir, "samples")
+  makedirs(test_dir, exist_ok = True)
+  image_grid.save(f"{test_dir}/{epoch:04d}.png")
 
 def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
   accelerator = Accelerator(
