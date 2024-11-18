@@ -23,7 +23,7 @@ def add_options():
 
 def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer_G, optimizer_D, tb_writer):
   for step, (x, label) in tqdm(enumerate(train_dataloader)):
-    # TODO
+    
 
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
