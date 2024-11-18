@@ -80,7 +80,7 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
   )
   if accelerator.is_main_process:
     if config.output_dir is not None:
-      mkdir(config.output_dir, exists_ok = True)
+      makedirs(config.output_dir, exist_ok = True)
     accelerator.init_trackers("train_example")
   model, optimizer, train_dataloader, lr_scheduler = accelerator.prepare(model, optimizer, train_dataloader, lr_scheduler)
   global_step = 0
