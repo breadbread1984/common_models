@@ -13,7 +13,7 @@ from models import Diffusion
 from datasets import load_datasets
 from dataclasses import dataclass
 from diffusers import DDPMPipeline
-from differs.utils import make_image_grid
+from diffusers.utils import make_image_grid
 from diffusers.optimization import get_cosine_schedule_with_warmup
 from accelerate import Accelerator, notebook_launcher
 
