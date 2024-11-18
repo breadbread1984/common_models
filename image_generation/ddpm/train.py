@@ -31,7 +31,7 @@ def train_one_epoch(epoch, train_dataloader, model, optimizer, criterion, tb_wri
   for step, (x, label) in tqdm(enumerate(train_dataloader)):
     optimizer.zero_grad()
     x = x.to(device(FLAGS.device))
-    t = torch.randint(0, model.noise_scheduler.num_train_timesteps, (x.size(0),), device = device(FLAGS.device))
+    t = torch.randint(0, model.module.noise_scheduler.num_train_timesteps, (x.size(0),), device = device(FLAGS.device))
     noise = torch.randn_like(x)
     x_noisy = model.noise_scheduler.add_noise(x, noise, t)
     output = model(x_noisy, t)
