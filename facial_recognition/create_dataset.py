@@ -9,7 +9,7 @@ from facenet_pytorch import MTCNN
 
 FLAGS = flags.FLAGS
 
-def add_option():
+def add_options():
   flags.DEFINE_string('output_dir', default = 'cropped', help = 'output directory')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
 
