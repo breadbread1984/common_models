@@ -13,6 +13,7 @@ python3 -m pip install -r requirements.txt
 ## finetuning on target dataset
 
 ```shell
+python3 create_dataset.py
 python3 train.py
 ```
 
