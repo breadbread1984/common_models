@@ -21,9 +21,10 @@ class Generator(nn.Module):
       nn.Linear(1024, int(np.prod([3, img_size, img_size]))),
       nn.Tanh()
     )
+    self.img_size = img_size
   def forward(self, z):
     img = self.model(z)
-    img = torch.reshape(img, (img.shape[0], 3, img_size, img_size))
+    img = torch.reshape(img, (img.shape[0], 3, self.img_size, slef.img_size))
     return img
 
 class Discriminator(nn.Module):
