@@ -12,6 +12,6 @@ def load_datasets(config):
     transforms.ToTensor(),
     transforms.Normalize([0.5], [0.5])
   ])
-  dastaset.set_transform(lambda examples: {"images": [trans(image.convert('RGB')) for image in examples["image"]]})
+  dataset.set_transform(lambda examples: {"images": [trans(image.convert('RGB')) for image in examples["image"]]})
   return dataset
 
