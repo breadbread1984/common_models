@@ -47,7 +47,7 @@ def main(unused_argv):
     seed = 0
   config = TrainingConfig()
   autograd.set_detect_anomaly(True)
-  model = Diffusion()
+  model = Diffusion(image_size = config.image_size)
   model.to(device(FLAGS.device))
   trainset = load_datasets(config)
   train_dataloader = DataLoader(trainset, batch_size = config.train_batch_size, shuffle = True, num_workers = FLAGS.workers)
