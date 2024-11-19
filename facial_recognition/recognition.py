@@ -31,7 +31,7 @@ class Recognition(object):
         # x_aligned range in [-1,1], shape = (3, 160, 160) in RGB order
         if x_aligned is None: continue
         batch.append(x_aligned.detach())
-        labels.append(label.detach().cpu().numpy())
+        labels.append(label)
         if len(batch) == batch_size:
           aligned = torch.stack(batch).detach().to(self.device)
           embeddings = self.resnet(aligned)
@@ -56,7 +56,7 @@ class Recognition(object):
       x_aligned = self.mtcnn(img)
       if x_aligned is None: continue
       batch.append(x_aligned.detach())
-      labels.append(label.detach().cpu().numpy())
+      labels.append(label)
       if len(batch) == batch_size:
         aligned = torch.stack(batch).detach().to(self.device)
         embeddings = self.resnet(aligned)
