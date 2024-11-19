@@ -28,7 +28,7 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def compute_gradient_penalty(D, real_samples, fake_samples):
-  alpha = torch.rand((real_samples.shape[0], 1, 1, 1))
+  alpha = torch.rand((real_samples.shape[0], 1, 1, 1)).to(next(D.parameters()).device)
   interpolates = (alpha * real_samples + (1 - alpha) * fake_samples)
   interpolates.requires_grad = True
   d_interpolates = D(interpolates)
