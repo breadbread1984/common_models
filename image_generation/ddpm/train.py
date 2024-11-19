@@ -49,7 +49,7 @@ def main(unused_argv):
   autograd.set_detect_anomaly(True)
   model = Diffusion()
   model.to(device(FLAGS.device))
-  trainset = load_datasets()
+  trainset = load_datasets(config)
   train_dataloader = DataLoader(trainset, batch_size = config.train_batch_size, shuffle = True, num_workers = FLAGS.workers)
   optimizer = AdamW(model.parameters(), lr = config.learning_rate)
   lr_scheduler = get_cosine_schedule_with_warmup(
@@ -86,8 +86,8 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
   for epoch in range(FLAGS.epochs):
     progress_bar = tqdm(total = len(train_dataloader), disable = not accelerator.is_local_main_process)
     progress_bar.set_description(f"Epoch {epoch}")
-    for step, (img, label) in enumerate(train_dataloader):
-      clean_images = img
+    for step, batch in enumerate(train_dataloader):
+      clean_images = batch['images']
       noise = torch.randn(clean_images.shape, device = clean_images.device)
       bs = clean_images.shape[0]
       timesteps = torch.randint(

@@ -14,8 +14,9 @@ class Diffusion(nn.Module):
       in_channels = in_channels,
       out_channels = out_channels,
       layers_per_block = 2,
-      block_out_channels = (128, 128, 256, 512, 512),
+      block_out_channels = (128, 128, 256, 256, 512, 512),
       down_block_types=(
+        "DownBlock2D",
         "DownBlock2D",
         "DownBlock2D",
         "DownBlock2D",
@@ -25,6 +26,7 @@ class Diffusion(nn.Module):
       up_block_types=(
         "UpBlock2D",
         "AttnUpBlock2D",
+        "UpBlock2D",
         "UpBlock2D",
         "UpBlock2D",
         "UpBlock2D",
