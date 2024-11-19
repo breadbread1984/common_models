@@ -32,7 +32,7 @@ class CelebA(Dataset):
   def __len__(self):
     return len(self.paths)
   def __getitem__(self, index):
-    sample = torch.load(self.list[index])
+    sample = torch.load(self.paths[index])
     return sample['image'], sample['label']
 
 def main(unused_argv):
