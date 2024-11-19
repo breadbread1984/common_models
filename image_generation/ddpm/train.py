@@ -22,7 +22,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_integer('processes', default = 1, help = 'number of process')
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to the checkpoint')
-  flags.DEFINE_integer('batch_size', default = 1024, help = 'batch size')
+  flags.DEFINE_integer('batch_size', default = 16, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 50, help = 'number of epochs')
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
@@ -31,7 +31,7 @@ def add_options():
 def main(unused_argv):
   @dataclass
   class TrainingConfig:
-    image_size = 32
+    image_size = 128
     train_batch_size = FLAGS.batch_size
     eval_batch_size = 16
     num_epochs = FLAGS.epochs
