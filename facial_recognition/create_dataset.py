@@ -27,7 +27,7 @@ def main(unused_argv):
     image_size = 160, margin = 0, min_face_size = 20,
     thresholds = [0.6, 0.7, 0.7], factor = 0.709, post_process = True,
     device = FLAGS.device)
-  unique_ids = torch.unique(torch.Tensor(trainset.targets, dtype = torch.int32))
+  unique_ids = torch.unique(torch.Tensor(trainset.targets).to(torch.int32))
   for sample_id, (image, label) in enumerate(tqdm(trainset)):
     x_aligned = mtcnn(image)
     if x_aligned is None:
