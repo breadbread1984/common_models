@@ -6,7 +6,7 @@ from os.path import join, exists
 from absl import flags, app
 from tqdm import tqdm
 import torch
-from torchvision.datasets import CelebA
+from torchvision.datasets import LFWPeople
 from facenet_pytorch import MTCNN
 
 FLAGS = flags.FLAGS
@@ -16,8 +16,8 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
 
 def main(unused_argv):
-  trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
-  valset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
+  trainset = LFWPeople(root = 'lfw', split = 'train', download = True)
+  valset = LFWPeople(root = 'lfw', split = 'test', download = True)
   if exists(FLAGS.output_dir):
     rmtree(FLAGS.output_dir)
   mkdir(FLAGS.output_dir)
