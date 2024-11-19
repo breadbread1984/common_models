@@ -60,11 +60,8 @@ def main(unused_argv):
   args = (config, model, optimizer, train_dataloader, lr_scheduler)
   notebook_launcher(train_loop, args, num_processes = FLAGS.processes)
 
-def evaluate(config, epoch, pipeline):
-  images = pipeline(
-    batch_size = config.eval_batch_size,
-    generator = torch.Generator(device = 'cpu').manual_seed(config.seed)
-  ).images
+def evaluate(config, epoch, model):
+  images = model.sample(batch = config.eval_batch_size)
   image_grid = make_image_grid(images, rows = 4, cols = 4)
   test_dir = join(config.output_dir, "samples")
   makedirs(test_dir, exist_ok = True)
@@ -112,9 +109,9 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
 
     # evaluation
     if accelerator.is_main_process:
-      pipeline = DDPMPipeline(unet = accelerator.unwrap_model(model).model, scheduler = accelerator.unwrap_model(model).noise_scheduler)
+      #pipeline = DDPMPipeline(unet = accelerator.unwrap_model(model).model, scheduler = accelerator.unwrap_model(model).noise_scheduler)
       if (epoch + 1) % config.save_image_epochs == 0 or epoch == config.num_epochs - 1:
-        evaluate(config, epoch, pipeline)
+        evaluate(config, epoch, accelerator.unwrap_model(model))
 
 if __name__ == "__main__":
   add_options()
