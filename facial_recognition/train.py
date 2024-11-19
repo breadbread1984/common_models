@@ -72,7 +72,7 @@ def main(unused_argv):
   )
 
   for epoch in range(FLAGS.epochs):
-    print('\nEpoch {}/{}'.format(epoch + 1, epochs))
+    print('\nEpoch {}/{}'.format(epoch + 1, FLAGS.epochs))
     print('-' * 10)
 
     resnet.train()
