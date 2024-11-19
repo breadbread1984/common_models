@@ -41,7 +41,7 @@ def main(unused_argv):
   resnet = InceptionResnetV1(
     classify = True,
     pretrained = 'vggface2',
-    num_classes = 8192).to(FLAGS.device)
+    num_classes = 4038).to(FLAGS.device)
   optimizer = optim.Adam(resnet.parameters(), lr = FLAGS.lr)
   scheduler = MultiStepLR(optimizer, [5, 10])
   train_loader = DataLoader(
