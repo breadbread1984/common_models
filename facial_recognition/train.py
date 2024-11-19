@@ -28,7 +28,7 @@ class CelebA(Dataset):
     for f in os.listdir(root_path):
       stem, ext = os.path.splitext(f)
       if ext != '.pt': continue
-      self.paths.append(join(root_path,f))
+      self.paths.append(os.path.join(root_path,f))
   def __len__(self):
     return len(self.paths)
   def __getitem__(self, index):
