@@ -41,7 +41,7 @@ def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer
   for step, (x, label) in tqdm(enumerate(train_dataloader)):
     # train discriminator
     optimizer_D.zero_grad()
-    z = torch.normal(mean = 0, std = 1, size = (x.shape[0], FLAGS.dim)).to(generator.device)
+    z = torch.normal(mean = 0, std = 1, size = (x.shape[0], FLAGS.dim)).to(next(generator.parameters()).device)
     fake_imgs = generator(z)
     real_validity = discriminator(real_imgs)
     fake_validity = discriminator(fake_imgs)
