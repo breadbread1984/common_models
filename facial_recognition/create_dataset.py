@@ -33,14 +33,14 @@ def main(unused_argv):
       print('no face detected skiped!')
       continue
     idx = torch.argmax((label == unique_ids).to(torch.int32), dim = 0)
-    torch.save(join(FLAGS.output_dir, 'train', f"{sample_id}.pt"), {'image': x_aligned, 'label': idx})
+    torch.save({'image': x_aligned, 'label': idx}, join(FLAGS.output_dir, 'train', f"{sample_id}.pt"))
   for sample_id, (image, label) in enumerate(valset):
     x_aligned = mtcnn(image)
     if x_aligned is None:
       print('no face detected skiped!')
       continue
     idx = torch.argmax((label == unique_ids).to(torch.int32), dim = 0)
-    torch.save(join(FLAGS.output_dir, 'valid', f"{sample_id}.pt"), {'image': x_aligned, 'label': idx})
+    torch.save({'image': x_aligned, 'label': idx}, join(FLAGS.output_dir, 'valid', f"{sample_id}.pt"))
 
 if __name__ == "__main__":
   add_options()
