@@ -113,6 +113,9 @@ def train_loop(config, model, optimizer, train_dataloader, lr_scheduler):
       if (epoch + 1) % config.save_image_epochs == 0 or epoch == config.num_epochs - 1:
         evaluate(config, epoch, accelerator.unwrap_model(model))
 
+  model = accelerator.unwrap_model(model)
+  torch.save(model.state_dict(), 'ddpm.pt')
+
 if __name__ == "__main__":
   add_options()
   app.run(main)
