@@ -4,7 +4,7 @@ from absl import flags, app
 import os
 from facenet_pytorch import MTCNN, InceptionResnetV1, fixed_image_standardization, training
 import torch
-from torch.utils.data import DataLoader, SubsetRandomSampler
+from torch.utils.data import DataLoader
 from torch import optim
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.tensorboard import SummaryWriter
@@ -55,21 +55,15 @@ def main(unused_argv):
     num_classes = unique_ids.shape[0]).to(FLAGS.device)
   optimizer = optim.Adam(resnet.parameters(), lr = FLAGS.lr)
   scheduler = MultiStepLR(optimizer, [5, 10])
-  img_inds = np.arange(len(trainset))
-  np.random.shuffle(img_inds)
-  train_inds = img_inds[:int(0.8 * len(img_inds))]
-  val_inds = img_inds[int(0.8 * len(img_inds)):]
   train_loader = DataLoader(
     trainset,
     num_workers = FLAGS.workers,
     batch_size = FLAGS.batch_size,
-    sampler = SubsetRandomSampler(train_inds)
   )
   val_loader = DataLoader(
     valset,
     num_workers = FLAGS.workers,
     batch_size = FLAGS.batch_size,
-    sampler = SubsetRandomSampler(val_inds)
   )
   loss_fn = torch.nn.CrossEntropyLoss()
   metrics = {
