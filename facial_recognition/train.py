@@ -22,7 +22,7 @@ def add_options():
   flags.DEFINE_float('lr', default = 0.001, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
 
-class CelebA(Dataset):
+class LFW(Dataset):
   def __init__(self, root_path):
     self.paths = list()
     for f in os.listdir(root_path):
@@ -36,8 +36,8 @@ class CelebA(Dataset):
     return sample['image'], sample['label']
 
 def main(unused_argv):
-  trainset = CelebA(root_path = os.path.join(FLAGS.dataset, 'train'))
-  valset = CelebA(root_path = os.path.join(FLAGS.dataset, 'valid'))
+  trainset = LFW(root_path = os.path.join(FLAGS.dataset, 'train'))
+  valset = LFW(root_path = os.path.join(FLAGS.dataset, 'valid'))
   resnet = InceptionResnetV1(
     classify = True,
     pretrained = 'vggface2',
