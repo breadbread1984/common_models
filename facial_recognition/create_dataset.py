@@ -4,6 +4,7 @@ from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
 from absl import flags, app
+import torch
 from torchvision.datasets import CelebA
 from facenet_pytorch import MTCNN
 
