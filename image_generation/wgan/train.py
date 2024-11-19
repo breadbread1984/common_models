@@ -3,6 +3,7 @@
 from os import mkdir
 from os.path import exists, join
 from absl import flags, app
+from tqdm import tqdm
 import torch
 from torch import nn
 from torch import device, save, load, no_grad, autograd
