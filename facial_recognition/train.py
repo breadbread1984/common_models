@@ -90,6 +90,7 @@ def main(unused_argv):
     )
 
   writer.close()
+  torch.save(resnet.state_dict(), 'resnet.pth')
 
 if __name__ == "__main__":
   add_options()
