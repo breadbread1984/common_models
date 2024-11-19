@@ -32,7 +32,12 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
   interpolates = (alpha * real_samples + (1 - alpha) * fake_samples)
   interpolates.requires_grad_(True)
   d_interpolates = D(interpolates)
-  gradients = autograd.grad(outputs = d_interpolates, inputs = interpolates, create_graph = True, retain_graph = True, only_inputs = True)[0]
+  gradients = autograd.grad(
+    outputs = d_interpolates,
+    inputs = interpolates,
+    create_graph = True,
+    retain_graph = True,
+    only_inputs = True)[0]
   gradients = torch.reshape(gradients, (gradients.shape[0], -1))
   gradient_penalty = ((gradients.norm(2, dim = 1) - 1) ** 2).mean()
   return gradient_penalty
