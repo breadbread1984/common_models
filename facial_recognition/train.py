@@ -28,7 +28,7 @@ class CropFace(object):
       thresholds = [0.6, 0.7, 0.7], factor = 0.709, post_process = True,
       device = FLAGS.device)
   def __call__(self, image):
-    x_aligned = self.mtcnn(img)
+    x_aligned = self.mtcnn(image)
     return x_aligned
 
 class Identity(object):
