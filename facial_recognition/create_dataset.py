@@ -4,6 +4,7 @@ from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
 from absl import flags, app
+from tqdm import tqdm
 import torch
 from torchvision.datasets import CelebA
 from facenet_pytorch import MTCNN
@@ -27,14 +28,14 @@ def main(unused_argv):
     thresholds = [0.6, 0.7, 0.7], factor = 0.709, post_process = True,
     device = FLAGS.device)
   unique_ids = torch.unique(trainset.identity)
-  for sample_id, (image, label) in enumerate(trainset):
+  for sample_id, (image, label) in enumerate(tqdm(trainset)):
     x_aligned = mtcnn(image)
     if x_aligned is None:
       print('no face detected skiped!')
       continue
     idx = torch.argmax((label == unique_ids).to(torch.int32), dim = 0)
     torch.save({'image': x_aligned, 'label': idx}, join(FLAGS.output_dir, 'train', f"{sample_id}.pt"))
-  for sample_id, (image, label) in enumerate(valset):
+  for sample_id, (image, label) in enumerate(tqdm(valset)):
     x_aligned = mtcnn(image)
     if x_aligned is None:
       print('no face detected skiped!')
