@@ -4,3 +4,4 @@ absl-py
 torch
 torchvision
 accelerate
+datasets
