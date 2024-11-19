@@ -71,7 +71,7 @@ def main(unused_argv):
     writer=writer
   )
 
-  for epoch in range(epochs):
+  for epoch in range(FLAGS.epochs):
     print('\nEpoch {}/{}'.format(epoch + 1, epochs))
     print('-' * 10)
 
