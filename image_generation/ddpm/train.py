@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from models import Diffusion
-from datasets import load_datasets
+from create_datasets import load_datasets
 from dataclasses import dataclass
 from diffusers import DDPMPipeline
 from diffusers.utils import make_image_grid
