@@ -6,7 +6,7 @@ from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader
 from torchvision.transforms import PILToTensor
-from torchvision.datasets import CelebA
+from torchvision.datasets import LFWPeople
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from db import DB
 
@@ -22,7 +22,7 @@ class Recognition(object):
     # 1) vectorize images and save into database
     print('building database of known faces...')
     if not exists('index_file.faiss'):
-      trainset = CelebA(root = 'celeba', split = 'train', target_type = 'identity', download = True)
+      trainset = LFWPeople(root = 'lfw', split = 'train', download = True)
       batch = list()
       labels = list()
       for img, label in tqdm(trainset):
@@ -47,7 +47,7 @@ class Recognition(object):
       self.load()
     # 2) match with K-nn
     print('recognition of unknown faces...')
-    evalset = CelebA(root = 'celeba', split = 'valid', target_type = 'identity', download = True)
+    evalset = LFWPeople(root = 'lfw', split = 'test', download = True)
     correct = 0
     total = 0
     batch = list()
