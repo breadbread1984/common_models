@@ -24,7 +24,7 @@ class Generator(nn.Module):
     self.img_size = img_size
   def forward(self, z):
     img = self.model(z)
-    img = torch.reshape(img, (img.shape[0], 3, self.img_size, slef.img_size))
+    img = torch.reshape(img, (img.shape[0], 3, self.img_size, self.img_size))
     return img
 
 class Discriminator(nn.Module):
