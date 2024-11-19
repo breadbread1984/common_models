@@ -84,7 +84,7 @@ def main(unused_argv):
   resnet.eval()
   training.pass_epoch(
     resnet, loss_fn, val_loader,
-    batch_metrics=metrics, show_running=True, device=device,
+    batch_metrics=metrics, show_running=True, device=FLAGS.device,
     writer=writer
   )
 
@@ -95,14 +95,14 @@ def main(unused_argv):
     resnet.train()
     training.pass_epoch(
         resnet, loss_fn, train_loader, optimizer, scheduler,
-        batch_metrics=metrics, show_running=True, device=device,
+        batch_metrics=metrics, show_running=True, device=FLAGS.device,
         writer=writer
     )
 
     resnet.eval()
     training.pass_epoch(
         resnet, loss_fn, val_loader,
-        batch_metrics=metrics, show_running=True, device=device,
+        batch_metrics=metrics, show_running=True, device=FLAGS.device,
         writer=writer
     )
 
