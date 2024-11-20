@@ -22,7 +22,7 @@ def add_options():
   flags.DEFINE_integer('img_size', default = 32, help = 'image size')
   flags.DEFINE_integer('dim', default = 100, help = 'hidden dimension')
   flags.DEFINE_integer('n_critic', default = 5, help = 'number of training steps for dscriminator per iter')
-  flags.DEFINE_integer('epochs', default = 200, help = 'number of epochs')
+  flags.DEFINE_integer('epochs', default = 60, help = 'number of epochs')
   flags.DEFINE_integer('workers', default = 4, help = 'number of workers')
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
