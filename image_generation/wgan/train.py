@@ -62,6 +62,7 @@ def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer
       fake_validity = discriminator(fake_imgs)
       g_loss = -torch.mean(fake_validity)
       g_loss.backward()
+      optimizer_G.step()
       global_steps = epoch * len(train_dataloader) + step
       tb_writer.add_scalar('D loss', d_loss.item(), global_steps)
       tb_writer.add_scalar('G loss', g_loss.item(), global_steps)
