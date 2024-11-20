@@ -33,7 +33,7 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
   interpolates.requires_grad_(True)
   d_interpolates = D(interpolates)
   gradients = autograd.grad(
-    outputs = torch.squeeze(d_interpolates, dim = 1),
+    outputs = d_interpolates,
     inputs = interpolates,
     create_graph = True,
     retain_graph = True,
