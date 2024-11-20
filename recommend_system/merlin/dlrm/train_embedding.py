@@ -21,7 +21,9 @@ def load_datasets(root_path):
 def main(unused_argv):
   output = ['userId', 'movieId'] >> nvt.ops.Categorify()
   output += ['rating'] >> nvt.ops.AddMetadata(tags = [Tags.REGRESSION, Tags.TARGET])
-  output.graph.render(filename = "graph.png")
+  output.graph.render(filename = "graph.dot")
+  # NOTE: generate png with "dot -Tps graph.dot -o graph.png"
+  workflow = nvt.Workflow(output)
 
 if __name__ == "__main__":
   add_options()
