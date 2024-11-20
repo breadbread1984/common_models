@@ -19,7 +19,6 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to the checkpoint')
   flags.DEFINE_integer('batch_size', default = 64, help = 'batch size')
-  flags.DEFINE_integer('img_size', default = 32, help = 'image size')
   flags.DEFINE_integer('dim', default = 100, help = 'hidden dimension')
   flags.DEFINE_integer('n_critic', default = 5, help = 'number of training steps for dscriminator per iter')
   flags.DEFINE_integer('epochs', default = 60, help = 'number of epochs')
@@ -72,7 +71,7 @@ def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer
 
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
-  generator = Generator(img_size = FLAGS.img_size, latent_dim = FLAGS.dim).to(device(FLAGS.device))
+  generator = Generator(latent_dim = FLAGS.dim).to(device(FLAGS.device))
   discriminator = Discriminator(img_size = FLAGS.img_size).to(device(FLAGS.device))
   trainset = load_datasets()
   train_dataloader = DataLoader(trainset, batch_size = FLAGS.batch_size, shuffle = True, num_workers = FLAGS.workers)
