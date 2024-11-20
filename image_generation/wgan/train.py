@@ -43,7 +43,7 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
   return gradient_penalty
 
 def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer_G, optimizer_D, tb_writer):
-  for step, (real_imgs, label) in tqdm(enumerate(train_dataloader)):
+  for step, (real_imgs, label) in enumerate(tqdm(train_dataloader)):
     real_imgs = real_imgs.to(next(generator.parameters()).device)
     # train discriminator
     optimizer_D.zero_grad()
