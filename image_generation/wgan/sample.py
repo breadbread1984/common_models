@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from os.path import join, exists
 from absl import flags, app
 import torch
 from torch import device, load
@@ -17,6 +18,8 @@ def add_options():
 
 def main(unused_argv):
   generator = Generator(img_size = FLAGS.img_size, latent_dim = FLAGS.dim).to(device(FLAGS.device))
+  state_dict = torch.load(join(FLAGS.ckpt, 'generator.pt'))
+  generator.load_state_dict(state_dict)
   z = torch.normal(mean = 0, std = 1, size = (FLAGS.batch, FLAGS.dim)).to(next(generator.parameters()).device)
   fake_imgs = generator(z)
   imgs = ((fake_imgs / 2 + 0.5).clamp(0,1) * 255.).to(torch.uint8)
