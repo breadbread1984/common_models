@@ -12,13 +12,13 @@ class Generator(nn.Module):
       nn.Unflatten(1, (256,4,4)),
       nn.BatchNorm2d(256),
       nn.LeakyReLU(0.2, inplace = True),
-      nn.ConvTranspose2d(256, 128, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 128, 8, 8)
+      nn.ConvTranspose2d(256, 128, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 128, 8, 8)
       nn.BatchNorm2d(128),
       nn.LeakyReLU(0.2, inplace = True),
-      nn.ConvTranspose2d(128, 64, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 64, 16, 16)
+      nn.ConvTranspose2d(128, 64, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 64, 16, 16)
       nn.BatchNorm2d(64),
       nn.LeakyReLU(0.2, inplace = True),
-      nn.ConvTranspose2d(64, 3, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 3, 32, 32)
+      nn.ConvTranspose2d(64, 3, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 3, 32, 32)
       nn.Tanh()
     )
   def forward(self, z):
@@ -29,13 +29,13 @@ class Discriminator(nn.Module):
   def __init__(self, ):
     super(Discriminator, self).__init__()
     self.model = nn.Sequential(
-      nn.Conv2d(3, 64, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 64, 16, 16)
+      nn.Conv2d(3, 64, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 64, 16, 16)
       nn.LeakyReLU(0.2, inplace = True),
       nn.Dropout(0.3),
-      nn.Conv2d(64, 128, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 128, 8, 8)
+      nn.Conv2d(64, 128, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 128, 8, 8)
       nn.LeakyReLU(0.2, inplace = True),
       nn.Dropout(0.3),
-      nn.Conv2d(128, 256, kernel_size = (3,3), stride = (2,2), padding = 1), # shape = (batch, 256, 4, 4)
+      nn.Conv2d(128, 256, kernel_size = (4,4), stride = (2,2), padding = 1), # shape = (batch, 256, 4, 4)
       nn.LeakyReLU(0.2, inplace = True),
       nn.Dropout(0.3),
       nn.Flatten(),
@@ -46,3 +46,11 @@ class Discriminator(nn.Module):
     validity = self.model(img)
     return validity
 
+if __name__ == "__main__":
+  z = torch.normal(mean = 0, std = 1, size = (4, 100))
+  generator = Generator()
+  fake = generator(z)
+  print(fake.shape)
+  discriminator = Discriminator()
+  validity = discriminator(fake)
+  print(validity.shape)
