@@ -72,7 +72,7 @@ def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer
 def main(unused_argv):
   autograd.set_detect_anomaly(True)
   generator = Generator(latent_dim = FLAGS.dim).to(device(FLAGS.device))
-  discriminator = Discriminator(img_size = FLAGS.img_size).to(device(FLAGS.device))
+  discriminator = Discriminator().to(device(FLAGS.device))
   trainset = load_datasets()
   train_dataloader = DataLoader(trainset, batch_size = FLAGS.batch_size, shuffle = True, num_workers = FLAGS.workers)
   optimizer_G = Adam(generator.parameters(), lr = FLAGS.lr)
