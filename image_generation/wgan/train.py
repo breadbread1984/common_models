@@ -33,7 +33,7 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
   interpolates.requires_grad_(True)
   d_interpolates = D(interpolates)
   gradients = autograd.grad(
-    outputs = d_interpolates,
+    outputs = torch.sum(d_interpolates),
     inputs = interpolates,
     create_graph = True,
     retain_graph = True,
@@ -65,7 +65,7 @@ def train_one_epoch(epoch, train_dataloader, generator, discriminator, optimizer
       global_steps = epoch * len(train_dataloader) + step
       tb_writer.add_scalar('D loss', d_loss.item(), global_steps)
       tb_writer.add_scalar('G loss', g_loss.item(), global_steps)
-  imgs = ((fake / 2 + 0.5).clamp(0,1) * 255.).to(torch.uint8)
+  imgs = ((fake_imgs / 2 + 0.5).clamp(0,1) * 255.).to(torch.uint8)
   grid = torchvision.utils.make_grid(imgs[:9], nrow = 3)
   tb_writer.add_image('fake', grid, global_steps)
 
