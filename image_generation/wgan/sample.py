@@ -11,12 +11,13 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to the checkpoint')
+  flags.DEFINE_integer('img_size', default = 32, help = 'image size')
   flags.DEFINE_integer('dim', default = 100, help = 'hidden dimension')
   flags.DEFINE_integer('batch', default = 1, help = 'how many images are sampled')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def main(unused_argv):
-  generator = Generator(latent_dim = FLAGS.dim).to(device(FLAGS.device))
+  generator = Generator(img_size = FLAGS.img_size, latent_dim = FLAGS.dim).to(device(FLAGS.device))
   state_dict = torch.load(join(FLAGS.ckpt, 'generator.pt'))
   generator.load_state_dict(state_dict)
   z = torch.normal(mean = 0, std = 1, size = (FLAGS.batch, FLAGS.dim)).to(next(generator.parameters()).device)
