@@ -1,9 +1,9 @@
 #!/bin/bash/python3
 
 from absl import flags, app
-from merlin.core.dispath import get_lib
+from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
-from nvtabular as nvt
+import nvtabular as nvt
 
 FLAGS = flags.FLAGS
 
