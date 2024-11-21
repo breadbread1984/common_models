@@ -5,6 +5,7 @@ import torch
 import pytorch_lightning as pl
 from merlin.dataloader.torch import Loader
 import merlin.models.torch as mm
+from merlin.schema import ColumnSchema
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
@@ -23,7 +24,7 @@ def main(unused_argv):
     embedding_dim = 64,
     bottom_block = mm.MLPBlock([128, 64]), # mlp for input
     top_block = mm.MLPBlock([128, 64, 32]), # mlp for output
-    output_block = mm.RegressionOutput('rating')
+    output_block = mm.RegressionOutput(ColumnSchema('rating'))
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,
