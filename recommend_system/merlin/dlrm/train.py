@@ -21,7 +21,7 @@ def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
   model = mm.DLRMModel(
     train_transformed.schema,
-    embedding_dim = 64,
+    dim = 64,
     bottom_block = mm.MLPBlock([128, 64]), # mlp for input
     top_block = mm.MLPBlock([128, 64, 32]), # mlp for output
     output_block = mm.RegressionOutput(ColumnSchema('rating'))
