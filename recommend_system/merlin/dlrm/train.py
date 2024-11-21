@@ -23,7 +23,7 @@ def main(unused_argv):
     embedding_dim = 64,
     bottom_block = mm.MLPBlock([128, 64]), # mlp for input
     top_block = mm.MLPBlock([128, 64, 32]), # mlp for output
-    prediction_tasks = mm.RegressionTask('rating')
+    output_block = mm.RegressionOutput('rating')
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,
