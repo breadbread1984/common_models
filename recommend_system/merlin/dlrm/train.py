@@ -15,7 +15,6 @@ def add_options():
   flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 5, help = 'epochs')
-  flags.DEFINE_integer('workers', default = 8, help = 'workers')
 
 def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
@@ -26,7 +25,11 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]), # mlp for output
     prediction_tasks = mm.RegressionTask('rating')
   )
-  trainer = pl.Trainer(enable_checkpointing = True, check_val_every_n_epoch = 1, default_root_dir = FLAGS.ckpt)
+  trainer = pl.Trainer(
+    enable_checkpointing = True,
+    check_val_every_n_epoch = 1,
+    default_root_dir = FLAGS.ckpt,
+    max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
   trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
 
