@@ -33,6 +33,7 @@ def main(unused_argv):
     max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
   trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
+  trainer.validate(model, val_dataloader)
 
 if __name__ == "__main__":
   add_options()
