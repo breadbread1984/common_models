@@ -28,12 +28,11 @@ def main(unused_argv):
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,
-    check_val_every_n_epoch = 1,
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
   trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
-  trainer.validate(model, val_dataloader)
+  trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
 
 if __name__ == "__main__":
   add_options()
