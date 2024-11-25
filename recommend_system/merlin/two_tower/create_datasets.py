@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from merlin.datasets.synthetic import generate_data
-from mermlin.models.utils.dataset import unique_rows_by_features
+from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.schema.tags import Tags
 
 def load_datasets():
