@@ -24,7 +24,7 @@ def main(unused_argv):
   # 3)all elements in the upper triangle are flatten in to a vector
   # 4)map feature through top_block to map the interaction to target vector
   model = mm.DLRMModel(
-    train_transformed.schema,
+    train_transformed.schema, # .without('genres')
     dim = 64, # embedding dim for categorical inputs
     bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
