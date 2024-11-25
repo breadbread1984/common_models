@@ -28,7 +28,7 @@ def main(unused_argv):
     dim = 64, # embedding dim for categorical inputs
     bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
-    output_block = mm.BinaryOutput(ColumnSchema('rating_binary'))
+    output_block = mm.BinaryOutput(ColumnSchema('binary_rating'))
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,
