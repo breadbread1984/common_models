@@ -7,6 +7,8 @@ from merlin.datasets.entertainment import get_movielens
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
 import nvtabular as nvt
+from dask.distributed import Client
+from create_cluster import load_cluster
 
 FLAGS = flags.FLAGS
 
@@ -34,6 +36,8 @@ def load_datasets(root_path, n_part = 2):
   train_ds.shuffle_by_keys('userId')
   valid_ds.shuffle_by_keys('userId')
   # 1) create preprocess workflow
+  cluster = load_cluster()
+  client = Client(cluster)
   # id may not be in integer format, change id to category
   genres = ['movieId'] >> nvt.ops.JoinExternal(movies, on = 'movieId', columns_ext = ['movieId', 'genres'])
   genres = genres >> nvt.ops.Categorify(freq_threshold = 10) # convert and filt
