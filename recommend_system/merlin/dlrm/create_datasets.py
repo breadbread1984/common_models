@@ -17,22 +17,26 @@ def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   get_movielens(variant="ml-1m", path = FLAGS.output_dir)
 
-def load_datasets(root_path):
+def load_datasets(root_path, n_part = 2):
   # 0) load original dataset
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
   valid = get_lib().read_parquet(join(root_path, 'ml-1m', 'valid.parquet'))
+  movies = get_lib().read_parquet(join(root_path, 'ml-1m', 'movies_converted.parquet'))
   # train and valid are in DataFrame format
   # table head: userId  movieId     rating  timestamp
-  train_ds = nvt.Dataset(train)
+  train_ds = nvt.Dataset(train, npartitions = n_part) # use npartitions to reduce memory usage for processing one chunk
   valid_ds = nvt.Dataset(valid)
+  train_ds.shuffle_by_keys('userId')
+  valid_ds.shuffle_by_keys('userId')
   # 1) create preprocess workflow
   # id may not be in integer format, change id to category
-  output = ['userId', 'movieId'] >> nvt.ops.Categorify()
-  # tag label for regression task
-  output += ['rating'] >> nvt.ops.AddMetadata(tags = [Tags.REGRESSION, Tags.TARGET])
-  output.graph.render(filename = "graph.dot")
-  # NOTE: generate png with "dot -Tps graph.dot -o graph.png"
-  workflow = nvt.Workflow(output)
+  genres = ['movieId'] >> nvt.ops.JoinExternal(movies, on = 'movieId', columns_ext = ['movieId', 'genres'])
+  genres = genres >> nvt.ops.Categorify(freq_threshold = 10) # convert and filt
+  binary_rating = ['rating'] >> nvt.ops.LambdaOp(lambda col: col > 3) >> nvt.ops.Rename(name = 'binary_rating')
+  binary_rating = binary_rating >> nvt.ops.AddTags(tags=[Tags.TARGET, Tags.BINARY_CLASSIFICATION])
+  userId = ['userId'] >> nvt.ops.Categorify() >> nvt.ops.AddTags(tags = [Tags.USER_ID, Tags.CATEGORICAL, Tags.USER])
+  movieId = ['movieId'] >> nvt.ops.Categorify() >> nvt.ops.AddTags(tags=[Tags.ITEM_ID, Tags.CATEGORICAL, Tags.ITEM])
+  workflow = nvt.Workflow(userId + movieId + genres + binary_rating)
   # 2) preprocess dataset
   # fit category on trainset and save to directory train
   workflow.fit_transform(train_ds).to_parquet('train')
