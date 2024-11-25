@@ -19,7 +19,7 @@ def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   get_movielens(variant="ml-1m", path = FLAGS.output_dir)
 
-def load_datasets(root_path, n_part = 2):
+def load_datasets(root_path, n_part = 2, use_cluster = False):
   # 0) load original dataset
   '''
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
@@ -36,8 +36,9 @@ def load_datasets(root_path, n_part = 2):
   train_ds.shuffle_by_keys('userId')
   valid_ds.shuffle_by_keys('userId')
   # 1) create preprocess workflow
-  cluster = load_cluster()
-  client = Client(cluster)
+  if use_cluter:
+    cluster = load_cluster()
+    client = Client(cluster)
   # id may not be in integer format, change id to category
   genres = ['movieId'] >> nvt.ops.JoinExternal(movies, on = 'movieId', columns_ext = ['movieId', 'genres'])
   genres = genres >> nvt.ops.Categorify(freq_threshold = 10) # convert and filt
