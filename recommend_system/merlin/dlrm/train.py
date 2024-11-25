@@ -13,7 +13,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('dataset', default = 'dataset', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to ckpt')
-  flags.DEFINE_float('lr', default = 1e-4, help = 'learning rate')
+  flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 5, help = 'epochs')
 
@@ -28,7 +28,7 @@ def main(unused_argv):
     dim = 64, # embedding dim for categorical inputs
     bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
-    output_block = mm.RegressionOutput(ColumnSchema('rating'))
+    output_block = mm.BinaryOutput(ColumnSchema('rating_binary'))
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,

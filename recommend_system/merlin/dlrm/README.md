@@ -10,4 +10,8 @@ this repo implements DLRM training
 python3 create_datasets.py [--output_dir dataset]
 ```
 
+## Train model
 
+```shell
+python3 train.py
+```
