@@ -15,7 +15,7 @@ def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to ckpt')
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
-  flags.DEFINE_integer('epochs', default = 5, help = 'epochs')
+  flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
 
 def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
