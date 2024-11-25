@@ -4,6 +4,7 @@ from shutil import rmtree
 from os.path import join, exists
 from absl import flags, app
 from merlin.datasets.ecommerce import get_aliccp
+from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
 
@@ -19,7 +20,8 @@ def main(unused_argv):
 def load_datasets(root_path = 'dataset'):
   train = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
   valid = get_lib().read_parquet(join(root_path, 'transformed', 'valid.parquet'))
-  user_id_raw = []
+  item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
+  item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
 
 if __name__ == "__main__":
   add_options()
