@@ -19,8 +19,13 @@ def main(unused_argv):
 
 def load_datasets(root_path, n_part = 2):
   # 0) load original dataset
+  '''
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
   valid = get_lib().read_parquet(join(root_path, 'ml-1m', 'valid.parquet'))
+  '''
+  data = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet')).sample(frac=1)
+  train = data.iloc[:600_000]
+  valid = data.iloc[600_000:]
   movies = get_lib().read_parquet(join(root_path, 'ml-1m', 'movies_converted.parquet'))
   # train and valid are in DataFrame format
   # table head: userId  movieId     rating  timestamp
@@ -35,7 +40,7 @@ def load_datasets(root_path, n_part = 2):
   binary_rating = ['rating'] >> nvt.ops.LambdaOp(lambda col: col > 3) >> nvt.ops.Rename(name = 'binary_rating')
   binary_rating = binary_rating >> nvt.ops.AddTags(tags=[Tags.TARGET, Tags.BINARY_CLASSIFICATION])
   userId = ['userId'] >> nvt.ops.Categorify() >> nvt.ops.AddTags(tags = [Tags.USER_ID, Tags.CATEGORICAL, Tags.USER])
-  movieId = ['movieId'] >> nvt.ops.Categorify() >> nvt.ops.AddTags(tags=[Tags.ITEM_ID, Tags.CATEGORICAL, Tags.ITEM])
+  movieId = ['movieId'] >> nvt.ops.Categorify() >> nvt.ops.AddTags(tags = [Tags.ITEM_ID, Tags.CATEGORICAL, Tags.ITEM])
   workflow = nvt.Workflow(userId + movieId + genres + binary_rating)
   # 2) preprocess dataset
   # fit category on trainset and save to directory train
