@@ -21,6 +21,7 @@ def load_datasets(root_path):
   # 0) load original dataset
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
   valid = get_lib().read_parquet(join(root_path, 'ml-1m', 'valid.parquet'))
+  # train and valid are in DataFrame format
   # table head: userId  movieId     rating  timestamp
   train_ds = nvt.Dataset(train)
   valid_ds = nvt.Dataset(valid)
