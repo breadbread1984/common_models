@@ -19,11 +19,15 @@ def add_options():
 
 def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
+  # 1)stack categorical input vectors with continuous input vectors to form a matrix F of n x dim(64)
+  # 2)interaction is done by dot(F, transpose(F)) whose dimension is n x n
+  # 3)all elements in the upper triangle are flatten in to a vector
+  # 4)map feature through top_block to map the interaction to target vector
   model = mm.DLRMModel(
     train_transformed.schema,
-    dim = 64,
-    bottom_block = mm.MLPBlock([128, 64]), # mlp for input
-    top_block = mm.MLPBlock([128, 64, 32]), # mlp for output
+    dim = 64, # embedding dim for categorical inputs
+    bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
+    top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
     output_block = mm.RegressionOutput(ColumnSchema('rating'))
   )
   trainer = pl.Trainer(
