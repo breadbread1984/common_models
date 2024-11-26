@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from shutil import rmtree
+from os import mkdir
 from os.path import join, exists
 from absl import flags, app
 from merlin.datasets.ecommerce import get_aliccp, transform_aliccp
@@ -18,6 +19,7 @@ def add_options():
 
 def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
+  mkdir(FLAGS.output_dir)
   get_aliccp(path = FLAGS.output_dir)
 
 def load_datasets(root_path = 'dataset'):
