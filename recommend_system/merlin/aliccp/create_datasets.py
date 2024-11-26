@@ -17,7 +17,7 @@ def add_options():
   flags.DEFINE_string('dataset', default = 'dataset', help = 'aliccp root directory')
 
 def main(unused_argv):
-  get_aliccp(path = FLAGS.dataset)
+  get_aliccp(path = FLAGS.dataset, convert_train = True, convert_test = True)
   transform_datasets(FLAGS.dataset)
 
 def transform_datasets(root_path = 'dataset'):
