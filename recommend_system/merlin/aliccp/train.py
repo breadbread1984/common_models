@@ -8,6 +8,7 @@ from merlin.schema import ColumnSchema
 from merlin.schema.tags import Tags
 import torch
 import pytorch_lightning as pl
+from merlin.dataloader.torch import Loader
 
 FLAGS = flags.FLAGS
 
