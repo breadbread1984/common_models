@@ -39,7 +39,7 @@ def transform_datasets(root_path = 'dataset'):
   outputs = outputs >> nvt.ops.Dropna()
   outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
-  transform_sliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
+  transform_aliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
 
 if __name__ == "__main__":
   add_options()
