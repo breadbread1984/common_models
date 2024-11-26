@@ -9,7 +9,7 @@ from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
 import nvtabular as nvt
 from merlin.dag.ops.subgraph import Subgraph
-import merling.models.torch as mm
+from merlin.io.dataset import Dataset
 
 FLAGS = flags.FLAGS
 
@@ -38,9 +38,10 @@ def load_datasets(root_path = 'dataset'):
   outputs = subgraph_user + subgraph_item + targets
   outputs = outputs >> nvt.ops.Dropna()
   workflow = nvt.Workflow(outputs)
+  workflow.plot('workflow.dot')
   transform_sliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
-  train = get_lib().read_parquet(join(root_path, 'processed', 'train.parquet'))
-  valid = get_lib().read_parquet(join(root_path, 'processed', 'valid.parquet'))
+  train = Dataset(join(root_path, 'processed', 'train', '*.parquet'))
+  valid = Dataset(join(root_path, 'processed', 'valid', '*.parquet'))
   return train, valid
 
 if __name__ == "__main__":
