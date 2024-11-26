@@ -18,8 +18,9 @@ def add_options():
 
 def main(unused_argv):
   get_aliccp(path = FLAGS.dataset)
+  transform_datasets(FLAGS.dataset)
 
-def load_datasets(root_path = 'dataset'):
+def transform_datasets(root_path = 'dataset'):
   train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
   valid_raw = get_lib().read_parquet(join(root_path, 'transformed', 'valid.parquet'))
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
