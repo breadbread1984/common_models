@@ -22,8 +22,6 @@ def main(unused_argv):
   transform_datasets(FLAGS.aliccp)
 
 def transform_datasets(root_path = 'dataset'):
-  train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train', '*.parquet'))
-  valid_raw = get_lib().read_parquet(join(root_path, 'transformed', 'valid', '*.parquet'))
   #item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   #item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
   # define attributes subsets
@@ -39,7 +37,11 @@ def transform_datasets(root_path = 'dataset'):
   outputs = outputs >> nvt.ops.Dropna()
   outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
-  transform_aliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
+  transform_aliccp((join(root_path, 'transformed', 'train', '*.parquet'),
+                    join(root_path, 'transformed', 'valid', '*.parquet')),
+                   join(root_path, 'processed'),
+                   nvt_workflow = workflow,
+                   workflow_name = "workflow")
 
 if __name__ == "__main__":
   add_options()
