@@ -4,6 +4,7 @@ from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
 from absl import flags, app
+from pathlib import Path
 from merlin.datasets.ecommerce import get_aliccp, transform_aliccp
 #from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.core.dispatch import get_lib
@@ -37,8 +38,8 @@ def transform_datasets(root_path = 'dataset'):
   outputs = outputs >> nvt.ops.Dropna()
   outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
-  transform_aliccp(join(root_path, 'transformed'),
-                   join(root_path, 'processed'),
+  transform_aliccp(Path(join(root_path, 'transformed')),
+                   Path(join(root_path, 'processed')),
                    nvt_workflow = workflow,
                    workflow_name = "workflow")
 
