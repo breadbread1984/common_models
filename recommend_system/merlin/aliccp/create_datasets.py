@@ -17,13 +17,13 @@ def add_options():
   flags.DEFINE_string('aliccp', default = 'aliccp', help = 'aliccp root directory')
 
 def main(unused_argv):
-  if not exists(join(FLAGS.aliccp, 'raw')):
+  if not exists(join(FLAGS.aliccp, 'transformed')):
     get_aliccp(path = FLAGS.aliccp, convert_train = True, convert_test = True)
   transform_datasets(FLAGS.dataset)
 
 def transform_datasets(root_path = 'dataset'):
-  train_raw = get_lib().read_parquet(join(root_path, 'raw', 'train','*.parquet'))
-  valid_raw = get_lib().read_parquet(join(root_path, 'raw', 'test','*.parquet'))
+  train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train','*.parquet'))
+  valid_raw = get_lib().read_parquet(join(root_path, 'transformed', 'test','*.parquet'))
   #item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   #item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
   # define attributes subsets
