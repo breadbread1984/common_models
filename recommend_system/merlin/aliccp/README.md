@@ -15,7 +15,14 @@ tar xzvf sample_train.tar.gz --directory=aliccp/train
 tar xzvf sample_test.tar.gz --directory=aliccp/test
 ```
 
+## Convert raw dataset to parquet format
+
 ```shell
 python3 create_datasets.py --dataset aliccp
 ```
 
+## Training DLRM
+
+```shell
+python3 train.py
+```
