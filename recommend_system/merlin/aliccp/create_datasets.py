@@ -5,7 +5,7 @@ from os import mkdir
 from os.path import join, exists
 from absl import flags, app
 from merlin.datasets.ecommerce import get_aliccp, transform_aliccp
-from merlin.models.utils.dataset import unique_rows_by_features
+#from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
 import nvtabular as nvt
