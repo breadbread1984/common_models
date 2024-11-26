@@ -20,6 +20,8 @@ def add_options():
 def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   mkdir(FLAGS.output_dir)
+  mkdir(join(FLAGS.output_dir, 'train'))
+  mkdir(join(FLAGS.output_dir, 'valid'))
   get_aliccp(path = FLAGS.output_dir)
 
 def load_datasets(root_path = 'dataset'):
