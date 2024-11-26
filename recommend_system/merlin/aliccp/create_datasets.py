@@ -21,8 +21,8 @@ def main(unused_argv):
   transform_datasets(FLAGS.dataset)
 
 def transform_datasets(root_path = 'dataset'):
-  train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
-  valid_raw = get_lib().read_parquet(join(root_path, 'transformed', 'valid.parquet'))
+  train_raw = get_lib().read_parquet(join(root_path, 'raw', 'train','*.parquet'))
+  valid_raw = get_lib().read_parquet(join(root_path, 'raw', 'test','*.parquet'))
   #item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   #item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
   # define attributes subsets
