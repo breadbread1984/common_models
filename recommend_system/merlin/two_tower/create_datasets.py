@@ -15,14 +15,10 @@ from merlin.io.dataset import Dataset
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('output_dir', default = 'dataset', help = 'output directory')
+  flags.DEFINE_string('dataset', default = 'dataset', help = 'aliccp root directory')
 
 def main(unused_argv):
-  if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
-  mkdir(FLAGS.output_dir)
-  mkdir(join(FLAGS.output_dir, 'train'))
-  mkdir(join(FLAGS.output_dir, 'valid'))
-  get_aliccp(path = FLAGS.output_dir)
+  get_aliccp(path = FLAGS.dataset)
 
 def load_datasets(root_path = 'dataset'):
   train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
