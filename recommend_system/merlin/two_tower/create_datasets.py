@@ -31,7 +31,7 @@ def load_datasets(root_path = 'dataset'):
   user_id = ["user_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserID()
   user_features = ["user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                    "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserFeatures()
-  subgraph_item = Subgraph("item", Subgraph("items_cat", items) + item_id + item_features)
+  subgraph_item = Subgraph("item", item_id + item_features)
   subgraph_user = Subgraph("user", user_id + user_features)
   targets = ["click"] >> nvt.ops.AddMetadata(tags = [Tags.BINARY_CLASSIFICATION, "target"])
   outputs = subgraph_user + subgraph_item + targets
