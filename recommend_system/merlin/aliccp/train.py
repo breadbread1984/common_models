@@ -17,16 +17,18 @@ def add_options():
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
+  flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
   valid = Dataset(join(FLAGS.dataset, 'processed', 'valid', '*.parquet'), part_size = "500MB")
+  # train.schema.select_by_tag(Tags.TARGET).column_names
   model = mm.DLRMModel(
     train.schema,
     dim = 64,
     bottom_block = mm.MLPBlock([128, 64]),
     top_block = mm.MLPBlock([128, 64, 32]),
-    output_block = mm.BinaryOutput(ColumnSchema(train.schema.select_by_tag(Tags.TARGET).column_names[0])),
+    output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)),
   )
   trainer = pl.Trainer(
     enable_checkpointing = True,
