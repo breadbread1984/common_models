@@ -14,7 +14,7 @@ from merlin.dag.ops.subgraph import Subgraph
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('dataset', default = 'dataset', help = 'aliccp root directory')
+  flags.DEFINE_string('aliccp', default = 'aliccp', help = 'aliccp root directory')
 
 def main(unused_argv):
   get_aliccp(path = FLAGS.dataset, convert_train = True, convert_test = True)
