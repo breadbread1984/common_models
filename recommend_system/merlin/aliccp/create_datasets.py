@@ -19,7 +19,7 @@ def add_options():
 def main(unused_argv):
   if not exists(join(FLAGS.aliccp, 'transformed')):
     get_aliccp(path = FLAGS.aliccp, convert_train = True, convert_test = True)
-  transform_datasets(FLAGS.dataset)
+  transform_datasets(FLAGS.aliccp)
 
 def transform_datasets(root_path = 'dataset'):
   train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train', '*.parquet'))
