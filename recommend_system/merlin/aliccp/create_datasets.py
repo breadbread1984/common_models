@@ -26,9 +26,8 @@ def transform_datasets(root_path = 'dataset'):
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
   # define attributes subsets
-  items = ["item_id", "item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32")
-  item_id = items["item_id"] >> nvt.ops.TagAsItemID() # equals to >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
-  item_features = items["item_category", "item_shop", "item_brand"] >> nvt.ops.TagAsItemFeatures()
+  item_id = ["item_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
+  item_features = ["item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemFeatures()
   user_id = ["user_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserID()
   user_features = ["user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                    "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserFeatures()
