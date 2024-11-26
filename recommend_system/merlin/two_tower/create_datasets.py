@@ -34,7 +34,7 @@ def transform_datasets(root_path = 'dataset'):
                    "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserFeatures()
   subgraph_item = Subgraph("item", item_id + item_features)
   subgraph_user = Subgraph("user", user_id + user_features)
-  targets = ["click"] >> nvt.ops.AddMetadata(tags = [Tags.BINARY_CLASSIFICATION, "target"])
+  targets = ["click"] >> nvt.ops.AddMetadata(tags = [Tags.BINARY_CLASSIFICATION, Tags.TARGET])
   outputs = subgraph_user + subgraph_item + targets
   outputs = outputs >> nvt.ops.Dropna()
   workflow = nvt.Workflow(outputs)
