@@ -11,14 +11,14 @@ download [Alibaba Click and Convresion Prediction](https://tianchi.aliyun.com/da
 | file |  uncompressed path |
 |------|--------------------|
 |sample_train.tar.gz | dataset/train |
-|sample_test.tar.gz | dataset/test |
+|sample_test.tar.gz | dataset/valid |
 
 you may use the following command
 
 ```shell
 mkdir -p dataset/train
-mkdir -p dataset/test
-tar xzvf sample_(train|test).tar.gz --directory=dataset/(train|test)
+mkdir -p dataset/valid
+tar xzvf sample_(train|test).tar.gz --directory=dataset/(train|valid)
 ```
 
 ```shell
