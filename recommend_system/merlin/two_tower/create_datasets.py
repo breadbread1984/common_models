@@ -21,13 +21,13 @@ def main(unused_argv):
   get_aliccp(path = FLAGS.output_dir)
 
 def load_datasets(root_path = 'dataset'):
-  train = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
-  valid = get_lib().read_parquet(join(root_path, 'transformed', 'valid.parquet'))
+  train_raw = get_lib().read_parquet(join(root_path, 'transformed', 'train.parquet'))
+  valid_raw = get_lib().read_parquet(join(root_path, 'transformed', 'valid.parquet'))
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
   # define attributes subsets
   items = ["item_id", "item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32")
-  item_id = items["item_id"] >> nvt.ops.TagAsItemID()
+  item_id = items["item_id"] >> nvt.ops.TagAsItemID() # equals to >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
   item_features = items["item_category", "item_shop", "item_brand"] >> nvt.ops.TagAsItemFeatures()
   user_id = ["user_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserID()
   user_features = ["user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
@@ -36,6 +36,12 @@ def load_datasets(root_path = 'dataset'):
   subgraph_user = Subgraph("user", user_id + user_features)
   targets = ["click"] >> nvt.ops.AddMetadata(tags = [Tags.BINARY_CLASSIFICATION, "target"])
   outputs = subgraph_user + subgraph_item + targets
+  outputs = outputs >> nvt.ops.Dropna()
+  workflow = nvt.Workflow(outputs)
+  transform_sliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
+  train = get_lib().read_parquet(join(root_path, 'processed', 'train.parquet'))
+  valid = get_lib().read_parquet(join(root_path, 'processed', 'valid.parquet'))
+  return train, valid
 
 if __name__ == "__main__":
   add_options()
