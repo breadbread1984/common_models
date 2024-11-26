@@ -38,8 +38,8 @@ def transform_datasets(root_path = 'dataset'):
   outputs = outputs >> nvt.ops.Dropna()
   outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
-  transform_aliccp((join(root_path, 'transformed', 'train'),
-                    join(root_path, 'transformed', 'valid')),
+  transform_aliccp((nvt.Dataset(join(root_path, 'transformed', 'train'), engine = 'parquet'),
+                    nvt.Dataset(join(root_path, 'transformed', 'valid'), engine = 'parquet')),
                    Path(join(root_path, 'processed')),
                    nvt_workflow = workflow,
                    workflow_name = "workflow")
