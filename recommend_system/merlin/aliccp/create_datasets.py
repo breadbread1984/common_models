@@ -37,8 +37,8 @@ def transform_datasets(root_path = 'dataset'):
   targets = ["click", "conversion"] >> nvt.ops.AddMetadata(tags = [Tags.BINARY_CLASSIFICATION, Tags.TARGET])
   outputs = subgraph_user + subgraph_item + targets
   outputs = outputs >> nvt.ops.Dropna()
+  outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
-  workflow.plot('workflow.dot')
   transform_sliccp((train_raw, valid_raw), join(root_path, 'processed'), nvt_workflow = workflow, workflow_name = "workflow")
 
 if __name__ == "__main__":
