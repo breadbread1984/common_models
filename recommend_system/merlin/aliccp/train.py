@@ -36,8 +36,8 @@ def main(unused_argv):
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
-  trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
-  trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
+  trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
+  trainer.validate(model, Loader(valid, batch_size = FLAGS.batch))
 
 if __name__ == "__main__":
   add_options()
