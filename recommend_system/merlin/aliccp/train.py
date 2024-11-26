@@ -12,7 +12,7 @@ import pytorch_lightning as pl
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('dataset', default = 'dataset', help = 'path to dataset')
+  flags.DEFINE_string('dataset', default = 'aliccp', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to ckpt')
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
