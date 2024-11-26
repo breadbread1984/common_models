@@ -6,19 +6,12 @@ this project demonstrates how to create customized dataset and train two-tower m
 
 ## Download dataset
 
-download [Alibaba Click and Convresion Prediction](https://tianchi.aliyun.com/dataset/408) and uncompress the the .tar.gz file as the following paths
-
-| file |  uncompressed path |
-|------|--------------------|
-|sample_train.tar.gz | dataset/train |
-|sample_test.tar.gz | dataset/valid |
-
-you may use the following command
+download [Alibaba Click and Convresion Prediction](https://tianchi.aliyun.com/dataset/408) and uncompress the the .tar.gz file with the following commands
 
 ```shell
-mkdir -p dataset/train
-mkdir -p dataset/valid
-tar xzvf sample_(train|test).tar.gz --directory=dataset/(train|valid)
+mkdir -p dataset/raw
+tar xzvf sample_train.tar.gz --directory=dataset/raw
+tar xzvf sample_test.tar.gz --directory=dataset/raw
 ```
 
 ```shell
