@@ -21,6 +21,12 @@ tar xzvf sample_test.tar.gz --directory=aliccp/test
 python3 create_datasets.py --dataset aliccp
 ```
 
+## Training TwoTower
+
+```shell
+python3 train_twotower.py --dataset aliccp
+```
+
 ## Training DLRM
 
 ```shell
@@ -32,5 +38,5 @@ python3 train_dlrm.py --dataset aliccp
 ### export model to torchscript
 
 ```shell
-python3 export.py --ckpt <path/to/ckpt> --output aliccp_click_model --dataset aliccp
+python3 export_dlrm.py --ckpt <path/to/ckpt> --output aliccp_click_model --dataset aliccp
 ```
