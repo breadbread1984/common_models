@@ -24,7 +24,7 @@ python3 create_datasets.py --dataset aliccp
 ## Training DLRM
 
 ```shell
-python3 train.py --dataset aliccp
+python3 train_dlrm.py --dataset aliccp
 ```
 
 ## Deployment
