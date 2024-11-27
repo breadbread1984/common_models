@@ -41,6 +41,8 @@ python3 train_dlrm.py --dataset aliccp
 python3 extract_item_feature.py --dataset aliccp
 ```
 
+recommend items to users with extracted item features by measuring the inner product between a user feature and item features
+
 ### export model to torchscript
 
 ```shell
