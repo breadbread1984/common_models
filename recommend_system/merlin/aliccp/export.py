@@ -6,6 +6,7 @@ from os import mkdir
 from os.path import join, exists
 import torch
 import merlin.models.torch as mm
+from merlin.io.dataset import Dataset
 
 FLAGS = flags.FLAGS
 
@@ -19,6 +20,7 @@ def main(unused_argv):
   if exists(FLAGS.output): rmtree(FLAGS.output)
   mkdir(FLAGS.output)
   mkdir(join(FLAGS.output,'1'))
+  train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
   model = mm.DLRMModel(
     train.schema,
     dim = 64,
