@@ -7,6 +7,7 @@ from os.path import join, exists
 import torch
 import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
+from merlin.io.dataset import Dataset
 
 FLAGS = flags.FLAGS
 
@@ -21,7 +22,14 @@ def main(unused_argv):
   if exists(FLAGS.output): rmtree(FLAGS.output)
   mkdir(FLAGS.output)
   mkdir(join(FLAGS.output,'1'))
-  mm.DLRMModel.load_from_checkpoint(FLAGS.ckpt)
+  train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
+  model = mm.DLRMModel.load_from_checkpoint(
+    FLAGS.ckpt,
+    schema = train.schema,
+    dim = 64,
+    bottom_block = mm.MLPBlock([128, 64]),
+    top_block = mm.MLPBlock([128, 64, 32]),
+    output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)))
   model.eval()
   scripted_model = torch.jit.script(model)
   scripted_model.save(join(FLAGS.output,'1','dlrm_model.pt'))
