@@ -33,7 +33,7 @@ def main(unused_argv):
     output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)),
   )
   model.eval()
-  model(next(loader)[0])
+  model(next(loader)[0].to(next(model.parameters()).device))
   model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
   scripted_model = torch.jit.script(model)
   scripted_model.save(join(FLAGS.output,'1','dlrm_model.pt'))
