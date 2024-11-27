@@ -31,9 +31,12 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]),
     output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)))
   model.eval()
+  # NOTE: call forward to initialize members enclosed in register buffer
   model.forward({k:v.to(next(model.parameters()).device) for k,v in next(Loader(train, batch_size = 1))[0].items()})
   model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
-  scripted_model = torch.jit.script(model)
+  # NOTE: https://github.com/Lightning-AI/pytorch-lightning/issues/14036
+  #scripted_model = torch.jit.script(model)
+  scripted_model = model.to_torchscript(method = "trace")
   scripted_model.save(join(FLAGS.output,'1','dlrm_model.pt'))
 
 if __name__ == "__main__":
