@@ -35,6 +35,12 @@ python3 train_dlrm.py --dataset aliccp
 
 ## Deployment
 
+### extract item feature with trained two tower model
+
+```shell
+python3 extract_item_feature.py --dataset aliccp
+```
+
 ### export model to torchscript
 
 ```shell
