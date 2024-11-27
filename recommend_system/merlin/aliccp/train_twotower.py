@@ -4,6 +4,7 @@ from absl import flags, app
 from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
+import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 from merlin.schema.tags import Tags
@@ -31,9 +32,16 @@ def main(unused_argv):
     loss = "categorical_crossentropy",
     metrics = [mm.RecallAt(10), mm.NDCGAt(10)]
   )
-  if exists(join(FLAGS.ckpt, 'twotower_weights.h5')):
-    model.load_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
-  model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs)
+  if exists(FLAGS.ckpt):
+    model.load_weights(FLAGS.ckpt)
+  checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=FLAGS.ckpt,
+    save_weights_only=True,  # 仅保存权重。如果想保存整个模型，设置为 False。
+    monitor="val_loss",  # 根据验证集 loss 保存最优模型
+    save_best_only=True,  # 只保存最优的模型
+    mode="min"
+  )
+  model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
   model.save_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
   '''
   query_tower = model.retrieval_block.query_block()
