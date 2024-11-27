@@ -6,6 +6,7 @@ from os import mkdir
 from os.path import join, exists
 import torch
 import merlin.models.torch as mm
+from merlin.schema import ColumnSchema
 from merlin.io.dataset import Dataset
 
 FLAGS = flags.FLAGS
