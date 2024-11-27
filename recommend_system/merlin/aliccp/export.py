@@ -4,7 +4,7 @@ from absl import flags, app
 from os import mkdir
 from os.path import join, exists
 import torch
-from merlin.models.torch import DLRMModel
+from merlin.models.torch import mm
 
 FLAGS = flags.FLAGS
 
