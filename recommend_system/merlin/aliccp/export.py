@@ -8,6 +8,7 @@ import torch
 import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
 from merlin.io.dataset import Dataset
+from merlin.dataloader.torch import Loader
 
 FLAGS = flags.FLAGS
 
