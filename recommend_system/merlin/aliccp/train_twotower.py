@@ -35,7 +35,7 @@ def main(unused_argv):
     metrics = [mm.RecallAt(10), mm.NDCGAt(10)]
   )
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs)
-  model.save(join(FLAGS.ckpt, 'twotower.keras'))
+  model.save_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
   '''
   query_tower = model.retrieval_block.query_block()
   query_tower.save(join(FLAGS.ckpt, 'query_tower'))
