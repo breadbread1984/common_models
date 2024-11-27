@@ -23,6 +23,7 @@ def main(unused_argv):
   mkdir(FLAGS.output)
   mkdir(join(FLAGS.output,'1'))
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
+  loader = Loader(train, batch_size = 1)
   model = mm.DLRMModel(
     train.schema,
     dim = 64,
