@@ -17,8 +17,6 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 5, help = 'epochs')
 
 def main(unused_argv):
-  if exists(FLAGS.ckpt): rmtree(FLAGS.ckpt)
-  mkdir(FLAGS.ckpt)
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
   valid = Dataset(join(FLAGS.dataset, 'processed', 'valid', '*.parquet'), part_size = "500MB")
   model = mm.TwoTowerModel(
@@ -33,6 +31,8 @@ def main(unused_argv):
     loss = "categorical_crossentropy",
     metrics = [mm.RecallAt(10), mm.NDCGAt(10)]
   )
+  if exists(join(FLAGS.ckpt, 'twotower_weights.h5')):
+    model.load_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs)
   model.save_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
   '''
