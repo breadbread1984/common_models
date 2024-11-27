@@ -31,8 +31,8 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]),
     output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)),
   )
-  model.initialize(train)
-  model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
+  model.load_from_checkpoint(FLAGS.ckpt)
+  model.eval()
   scripted_model = torch.jit.script(model)
   scripted_model.save(join(FLAGS.output,'1','dlrm_model.pt'))
 
