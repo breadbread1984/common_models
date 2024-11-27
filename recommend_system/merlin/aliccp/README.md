@@ -26,3 +26,11 @@ python3 create_datasets.py --dataset aliccp
 ```shell
 python3 train.py --dataset aliccp
 ```
+
+## Deployment
+
+### export model to torchscript
+
+```shell
+python3 export.py --ckpt <path/to/ckpt> --output aliccp_click_model --dataset aliccp
+```
