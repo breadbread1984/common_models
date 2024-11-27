@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
 import torch
@@ -15,6 +16,7 @@ def add_options():
 
 def main(unused_argv):
   assert FLAGS.output
+  if exists(FLAGS.output): rmtree(FLAGS.output)
   mkdir(FLAGS.output)
   mkdir(join(FLAGS.output,'1'))
   model = mm.DLRMModel(
