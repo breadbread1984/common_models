@@ -24,7 +24,6 @@ def main(unused_argv):
   mkdir(FLAGS.output)
   mkdir(join(FLAGS.output,'1'))
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
-  loader = Loader(train, batch_size = 1)
   model = mm.DLRMModel(
     train.schema,
     dim = 64,
@@ -32,9 +31,7 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]),
     output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)),
   )
-  model.eval()
-  device = next(model.parameters()).device
-  model.forward({k:v.to(device) for k,v in next(loader)[0].items()})
+  model.initialize(train)
   model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
   scripted_model = torch.jit.script(model)
   scripted_model.save(join(FLAGS.output,'1','dlrm_model.pt'))
