@@ -31,12 +31,14 @@ python3 train_twotower.py --dataset aliccp
 
 ```shell
 python3 train_dlrm.py --dataset aliccp
+python3 export_dlrm.py --dataset aliccp --ckpt dlrm_ckpt
 ```
 
 or
 
 ```shell
 python3 train_dlrm_torch.py --dataset aliccp
+python3 export_dlrm_torch.py --dataset aliccp --ckpt dlrm_ckpt
 ```
 
 ## Deployment
