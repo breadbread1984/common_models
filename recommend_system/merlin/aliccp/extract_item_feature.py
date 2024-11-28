@@ -21,7 +21,7 @@ def main(unused_argv):
   item_features.to_parquet(join(FLAGS.dataset, 'data', 'item_features.parquet'))
   # load trained two tower model
   model = mm.TwoTowerModel(
-    train.schema.select_by_tag([Tags.ITEM_ID, Tags.USER_ID, Tags.ITEM, Tags.USER]).without(['click','conversion'])
+    train.schema.select_by_tag([Tags.ITEM_ID, Tags.USER_ID, Tags.ITEM, Tags.USER]).without(['click','conversion']),
     query_tower=mm.MLPBlock([128, 64], no_activation_last_layer=True),
     samplers=[mm.InBatchSampler()],
     embedding_options=mm.EmbeddingOptions(infer_embedding_sizes=True),
