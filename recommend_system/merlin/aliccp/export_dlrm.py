@@ -31,7 +31,7 @@ def main(unused_argv):
     prediction_tasks=mm.BinaryClassificationTask(FLAGS.target),
   )
   model.compile(optimizer="adam", run_eagerly=False, metrics=[tf.keras.metrics.AUC()])
-  model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
+  model.fit(train, batch_size = 1, epochs = 1, steps_per_epoch = 1)
   model.load_weights(join(FLAGS.ckpt, 'dlrm_ckpt'))
   tf.saved_model.save(model, join(FLAGS.output, '1'))
 
