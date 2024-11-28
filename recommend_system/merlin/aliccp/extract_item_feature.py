@@ -5,6 +5,7 @@ from os.path import exists, join
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 import nvtabular as nvt
+from merlin.schema.tags import Tags
 from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
