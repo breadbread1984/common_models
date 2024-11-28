@@ -24,11 +24,11 @@ def main(unused_argv):
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features.to_parquet(join('feast_repo', 'data', 'item_features.parquet'))
   # load trained two tower model
-  model = tf.keras.models.load_model(join(FLAGS.ckpt, 'tt_ckpt'))
+  model = tf.keras.models.load_model(join(FLAGS.ckpt, 'item_tower'))
   # create feature extraction workflow
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
-          PredictTensorflow(model.first.item_block())
+          PredictTensorflow(model)
   workflow = nvt.Workflow(['item_id'] + feature)
   item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
