@@ -28,7 +28,7 @@ def main(unused_argv):
     samplers=[mm.InBatchSampler()],
     embedding_options=mm.EmbeddingOptions(infer_embedding_sizes=True),
   )
-  model.load_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
+  model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
   item_id = ["item_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
   item_features = ["item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemFeatures()
