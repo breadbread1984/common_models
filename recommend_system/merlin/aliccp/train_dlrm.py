@@ -15,7 +15,7 @@ def add_options():
   flags.DEFINE_string('ckpt', default = 'dlrm_ckpt', help = 'path to ckpt')
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 16 * 1024, help = 'batch size')
-  flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
+  flags.DEFINE_integer('epochs', default = 20, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
 
