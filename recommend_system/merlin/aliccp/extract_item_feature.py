@@ -23,14 +23,7 @@ def main(unused_argv):
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features.to_parquet(join('feast_repo', 'data', 'item_features.parquet'))
   # load trained two tower model
-  model = mm.TwoTowerModel(
-    train.schema.select_by_tag([Tags.ITEM_ID, Tags.USER_ID, Tags.ITEM, Tags.USER]).without(['click','conversion']),
-    query_tower=mm.MLPBlock([128, 64], no_activation_last_layer=True),
-    samplers=[mm.InBatchSampler()],
-    embedding_options=mm.EmbeddingOptions(infer_embedding_sizes=True),
-  )
-  model(next(train))
-  model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
+  model = tf.keras.models.load_model(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
