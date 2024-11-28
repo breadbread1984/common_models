@@ -37,9 +37,7 @@ def main(unused_argv):
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
       filepath=join(FLAGS.ckpt, 'tt_ckpt'),
       save_weights_only=True,  # 仅保存权重。如果想保存整个模型，设置为 False。
-      monitor="val_loss",  # 根据验证集 loss 保存最优模型
-      save_best_only=True,  # 只保存最优的模型
-      mode="min"
+      save_freq = 'epoch'
     )
     model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
   else:
