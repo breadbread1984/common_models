@@ -22,10 +22,7 @@ def main(unused_argv):
     get_aliccp(path = FLAGS.aliccp, convert_train = True, convert_test = True)
   transform_datasets(FLAGS.aliccp)
 
-def transform_datasets(root_path = 'dataset'):
-  #item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
-  #item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
-  # define attributes subsets
+def get_workflow():
   item_id = ["item_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
   item_features = ["item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemFeatures()
   user_id = ["user_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsUserID()
@@ -38,6 +35,13 @@ def transform_datasets(root_path = 'dataset'):
   outputs = outputs >> nvt.ops.Dropna()
   outputs.graph.render('workflow.dot')
   workflow = nvt.Workflow(outputs)
+  return workflow
+
+def transform_datasets(root_path = 'dataset'):
+  #item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
+  #item_features.to_parquet(join(root_path, 'data', 'item_features.parquet'))
+  # define attributes subsets
+  workflow = get_workflow()
   transform_aliccp((nvt.Dataset(join(root_path, 'transformed', 'train'), engine = 'parquet'),
                     nvt.Dataset(join(root_path, 'transformed', 'valid'), engine = 'parquet')),
                    Path(join(root_path, 'processed')),
