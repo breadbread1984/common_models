@@ -4,7 +4,7 @@ from absl import flags, app
 from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
-import tensorflow
+import tensorflow as tf
 import merlin.models.tf as mm
 from merlin.schema import ColumnSchema
 from merlin.io.dataset import Dataset
