@@ -29,8 +29,16 @@ def main(unused_argv):
     prediction_tasks=mm.BinaryClassificationTask(FLAGS.target),
   )
   model.compile(optimizer="adam", run_eagerly=False, metrics=[tf.keras.metrics.AUC()])
-  model.fit(train, validation_data=valid, batch_size=FLAGS.batch)
-  model.save(join(FLAGS.ckpt, 'dlrm_model.keras'))
+  if exists(FLAGS.ckpt):
+    model.load_weights(join(FLAGS.ckpt, 'dlrm_ckpt'))
+  checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath = join(FLAGS.ckpt, 'dlrm_ckpt'),
+    save_weights_only = True,
+    monitor = "val_loss",
+    save_best_only = True,
+    mode = "min"
+  )
+  model.fit(train, validation_data=valid, batch_size=FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
 
 if __name__ == "__main__":
   add_options()
