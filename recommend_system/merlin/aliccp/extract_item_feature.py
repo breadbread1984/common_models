@@ -35,7 +35,7 @@ def main(unused_argv):
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> TransformWorkflow(transform_workflow) >> PredictTensorflow(model.first.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
   item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
-  item_embeddings.to_parquet(join(FLAGS.dataset, 'data', 'item_embeddings.parquet'))
+  item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
 if __name__ == "__main__":
   add_options()
