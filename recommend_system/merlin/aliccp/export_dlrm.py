@@ -14,6 +14,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('dataset', default = 'aliccp', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = None, help = 'path to ckpt')
+  flags.DEFINE_integer('batch', default = 16 * 1024, help = 'batch size')
   flags.DEFINE_string('output', default = 'aliccp_model', help = 'path to exported model')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
 
@@ -31,7 +32,7 @@ def main(unused_argv):
     prediction_tasks=mm.BinaryClassificationTask(FLAGS.target),
   )
   model.compile(optimizer="adam", run_eagerly=False, metrics=[tf.keras.metrics.AUC()])
-  model.fit(train, batch_size = 1, epochs = 1, steps_per_epoch = 1)
+  model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
   model.load_weights(join(FLAGS.ckpt, 'dlrm_ckpt'))
   tf.saved_model.save(model, join(FLAGS.output, '1'))
 
