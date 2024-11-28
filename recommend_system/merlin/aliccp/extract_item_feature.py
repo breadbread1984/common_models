@@ -31,8 +31,9 @@ def main(unused_argv):
   )
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
-  transform_workflow = get_workflow().get_subworkflow("item")
-  feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> TransformWorkflow(transform_workflow) >> PredictTensorflow(model.first.item_block())
+  feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
+          TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
+          PredictTensorflow(model.first.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
   item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
