@@ -42,7 +42,6 @@ def main(unused_argv):
     mode="min"
   )
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
-  model.save_weights(join(FLAGS.ckpt, 'twotower_weights.h5'))
   '''
   query_tower = model.retrieval_block.query_block()
   query_tower.save(join(FLAGS.ckpt, 'query_tower'))
