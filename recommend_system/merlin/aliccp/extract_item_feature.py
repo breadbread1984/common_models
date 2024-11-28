@@ -30,6 +30,7 @@ def main(unused_argv):
     embedding_options=mm.EmbeddingOptions(infer_embedding_sizes=True),
   )
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
+  model(next(train))
   # create feature extraction workflow
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
