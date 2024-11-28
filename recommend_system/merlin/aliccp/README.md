@@ -33,6 +33,12 @@ python3 train_twotower.py --dataset aliccp
 python3 train_dlrm.py --dataset aliccp
 ```
 
+or
+
+```shell
+python3 train_dlrm_torch.py --dataset aliccp
+```
+
 ## Deployment
 
 ### extract item feature with trained two tower model

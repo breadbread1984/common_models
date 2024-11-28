@@ -17,6 +17,7 @@ def add_options():
   flags.DEFINE_integer('batch', default = 16 * 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
+  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
@@ -31,14 +32,17 @@ def main(unused_argv):
   model.compile(optimizer="adam", run_eagerly=False, metrics=[tf.keras.metrics.AUC()])
   if exists(FLAGS.ckpt):
     model.load_weights(join(FLAGS.ckpt, 'dlrm_ckpt'))
-  checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath = join(FLAGS.ckpt, 'dlrm_ckpt'),
-    save_weights_only = True,
-    monitor = "val_loss",
-    save_best_only = True,
-    mode = "min"
-  )
-  model.fit(train, validation_data=valid, batch_size=FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
+  if not FLAGS.eval_only:
+    checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+      filepath = join(FLAGS.ckpt, 'dlrm_ckpt'),
+      save_weights_only = True,
+      monitor = "val_loss",
+      save_best_only = True,
+      mode = "min"
+    )
+    model.fit(train, validation_data=valid, batch_size=FLAGS.batch, epochs = FLAGS.epochs, callbacks = [checkpoint_callback])
+  else:
+    model.evaluate(validation_data = valid, batch_size = FLAGS.batch)
 
 if __name__ == "__main__":
   add_options()
