@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from os.path import exists, join
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 import nvtabular as nvt
