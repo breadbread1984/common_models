@@ -9,7 +9,7 @@ from merlin.schema.tags import Tags
 from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
-from merlin.dag.ops.subgraph import Subgraph
+from create_datasets import get_workflow
 
 FLAGS = flags.FLAGS
 
@@ -31,9 +31,7 @@ def main(unused_argv):
   )
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
-  item_id = ["item_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
-  item_features = ["item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemFeatures()
-  subgraph_item = Subgraph("item", item_id + item_features).connect(nvt.ops.Dropna())
+  subgraph_item = get_workflow.get_subworkflow("item")
   transform_workflow = nvt.Workflow(subgraph_item)
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> TransformWorkflow(transform_workflow) >> PredictTensorflow(model.first.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
