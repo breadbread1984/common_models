@@ -9,6 +9,7 @@ from merlin.schema.tags import Tags
 from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
+from merlin.dag.ops.subgraph import Subgraph
 
 FLAGS = flags.FLAGS
 
