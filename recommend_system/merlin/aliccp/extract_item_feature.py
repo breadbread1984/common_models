@@ -2,6 +2,7 @@
 
 from absl import flags, app
 from os.path import exists, join
+import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 import nvtabular as nvt
