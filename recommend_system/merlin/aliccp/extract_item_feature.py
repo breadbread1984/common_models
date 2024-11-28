@@ -33,7 +33,7 @@ def main(unused_argv):
   # create feature extraction workflow
   item_id = ["item_id"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemID()
   item_features = ["item_category", "item_shop", "item_brand"] >> nvt.ops.Categorify(dtype = "int32") >> nvt.ops.TagAsItemFeatures()
-  subgraph_item = [Subgraph("item", item_id + item_features)] >> nvt.ops.Dropna()
+  subgraph_item = Subgraph("item", item_id + item_features).connect(nvt.ops.Dropna())
   transform_workflow = nvt.Workflow(subgraph_item)
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> TransformWorkflow(transform_workflow) >> PredictTensorflow(model.first.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
