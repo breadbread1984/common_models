@@ -33,9 +33,9 @@ def main(unused_argv):
     metrics = [mm.RecallAt(10), mm.NDCGAt(10)]
   )
   if exists(FLAGS.ckpt):
-    model.load_weights(FLAGS.ckpt)
+    model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=FLAGS.ckpt,
+    filepath=join(FLAGS.ckpt, 'tt_ckpt'),
     save_weights_only=True,  # 仅保存权重。如果想保存整个模型，设置为 False。
     monitor="val_loss",  # 根据验证集 loss 保存最优模型
     save_best_only=True,  # 只保存最优的模型
