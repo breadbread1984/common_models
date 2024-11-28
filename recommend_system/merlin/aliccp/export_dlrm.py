@@ -15,7 +15,7 @@ def add_options():
   flags.DEFINE_string('dataset', default = 'aliccp', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = None, help = 'path to ckpt')
   flags.DEFINE_integer('batch', default = 16 * 1024, help = 'batch size')
-  flags.DEFINE_string('output', default = 'aliccp_model', help = 'path to exported model')
+  flags.DEFINE_string('output', default = 'dlrm_model', help = 'path to exported model')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
 
 def main(unused_argv):
