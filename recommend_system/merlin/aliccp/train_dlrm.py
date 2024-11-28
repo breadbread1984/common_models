@@ -44,7 +44,7 @@ def main(unused_argv):
   else:
     model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
     model.load_weights(join(FLAGS.ckpt, 'dlrm_ckpt'))
-    metrics = model.evaluate(validation_data = valid, batch_size = FLAGS.batch, return_dict = True)
+    metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
     print(metrics)
 
 if __name__ == "__main__":
