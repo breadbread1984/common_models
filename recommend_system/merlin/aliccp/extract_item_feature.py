@@ -20,7 +20,7 @@ def main(unused_argv):
   # get item features
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
-  item_features.to_parquet(join(FLAGS.dataset, 'data', 'item_features.parquet'))
+  item_features.to_parquet(join('feast_repo', 'data', 'item_features.parquet'))
   # load trained two tower model
   model = mm.TwoTowerModel(
     train.schema.select_by_tag([Tags.ITEM_ID, Tags.USER_ID, Tags.ITEM, Tags.USER]).without(['click','conversion']),
