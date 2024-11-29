@@ -11,7 +11,7 @@ from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
 from create_datasets import get_workflow
-from merlin.schma import Schema, columnSchema
+from merlin.schema import Schema, columnSchema
 from merlin.dtypes import int32, float32
 
 FLAGS = flags.FLAGS
