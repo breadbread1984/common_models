@@ -45,7 +45,7 @@ def main(unused_argv):
           PredictTensorflow(model.retrieval_block.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
   # workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
-  item_embeddings = workflow.fit_transform(Dataset(item_features))
+  item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
 if __name__ == "__main__":
