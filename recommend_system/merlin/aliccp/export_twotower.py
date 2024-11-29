@@ -8,6 +8,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('dataset', default = 'aliccp', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = 'tt_ckpt', help = 'path to ckpt')
+  flags.DEFINE_integer('batch', default = 1024 * 8, help = 'batch size')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
