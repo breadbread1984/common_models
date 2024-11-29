@@ -42,10 +42,11 @@ def main(unused_argv):
   model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
+  item_id = ['item_id'] >> nvt.ops.TagAsItemID()
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
-          PredictTensorflow(model.retrieval_block.item_block())
-  workflow = nvt.Workflow(['item_id'] + feature)
+          PredictTensorflow(model.retrieval_block.item_block()) >> nvt.ops.TagAsItemFeatures()
+  workflow = nvt.Workflow(item_id + feature)
   output_schema = Schema([
     ColumnSchema("item_id", dtype = int32),
     ColumnSchema("output_1", dtype = float32, dims = (64,))
