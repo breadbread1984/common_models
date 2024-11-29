@@ -2,6 +2,7 @@
 
 from absl import flags, app
 import merlin.models.tf as mm
+from merlin.io.dataset import Dataset
 
 FLAGS = flags.FLAGS
 
