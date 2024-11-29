@@ -11,7 +11,9 @@ def add_options():
 
 def main(unused_argv):
   train, test = IMDB()
-  print(train)
+  for label, text in train:
+    print(label, text)
+    break
 
 if __name__ == "__main__":
   add_options()
