@@ -44,9 +44,8 @@ def main(unused_argv):
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
           PredictTensorflow(model.retrieval_block.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
-  df = workflow.fit_transform(Dataset(item_features)).to_ddf()
-  print(df.head())
-  item_embeddings = df.compute()
+  # workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
+  item_embeddings = workflow.fit_transform(Dataset(item_features))
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
 if __name__ == "__main__":
