@@ -11,6 +11,8 @@ from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
 from create_datasets import get_workflow
+from merlin.schma import Schema, columnSchema
+from merlin.dtypes import int32, float32
 
 FLAGS = flags.FLAGS
 
@@ -44,8 +46,12 @@ def main(unused_argv):
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
           PredictTensorflow(model.retrieval_block.item_block())
   workflow = nvt.Workflow(['item_id'] + feature)
-  # workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
-  item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf()
+  output_schema = Schema([
+    ColumnSchema("item_id", dtype = int32),
+    ColumnSchema("output_1", dtype = float32, dims = (64,))
+  ])
+  workflow.output_schema = output_schema
+  item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
 if __name__ == "__main__":
