@@ -42,11 +42,15 @@ def main(unused_argv):
   model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
   # create feature extraction workflow
-  item_id = ['item_id'] >> nvt.ops.AddMetadata(tags = {'item_id': {"schema": ColumnSchema("item_id", dtype = int32)}})
   feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(get_workflow().get_subworkflow("item")) >> \
-          PredictTensorflow(model.retrieval_block.item_block()) >> nvt.ops.AddMetadata(tags = {'output_1': {"schema": ColumnSchema("output_1", dtype = float32, dims = (64,))}})
-  workflow = nvt.Workflow(item_id + feature)
+          PredictTensorflow(model.retrieval_block.item_block())
+  workflow = nvt.Workflow(['item_id'] + feature)
+  schema = Schema([
+    ColumnSchema("item_id", dtype = int32),
+    ColumnSchema("output_1", dtype = float32, dims = (64,))
+  ])
+  workflow.fit_schema(schema)
   item_embeddings = workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
