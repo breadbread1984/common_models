@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from os.path import join, exists
 import merlin.models.tf as mm
 from merlin.io.dataset import Dataset
 
