@@ -29,6 +29,10 @@ def main(unused_argv):
   )
   model.fit(train, batch_size = FLAGS.batch, epochs = 1, steps_per_epoch = 1)
   model.load_weights(join(FLAGS.ckpt, 'tt_ckpt'))
+  query_tower = model.retrieval_block.query_block()
+  query_tower.save(join(FLAGS.ckpt, 'query_tower.keras'))
+  item_tower = model.retrieval_block.item_block()
+  item_tower.save(join(FLAGS.ckpt, 'item_tower.keras'))
 
 if __name__ == "__main__":
   add_options()
