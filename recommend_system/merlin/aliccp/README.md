@@ -47,6 +47,7 @@ python3 export_dlrm_torch.py --dataset aliccp --ckpt dlrm_ckpt
 
 ```shell
 python3 extract_item_feature.py --dataset aliccp
+python3 extract_user_feature.py --dataset aliccp
 ```
 
 recommend items to users with extracted item features by measuring the inner product between a user feature and item features
