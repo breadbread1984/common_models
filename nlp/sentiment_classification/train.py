@@ -37,8 +37,6 @@ def main(unused_argv):
     weight_decay = 0.01,
     logging_dir = "./logs",
     logging_steps = 10,
-    load_best_model_at_end = True,
-    metric_for_best_model = "accuracy",
     resume_from_checkpoint = FLAGS.load_ckpt)
   train, valid = load_imdb(tokenizer)
   trainer = Trainer(
