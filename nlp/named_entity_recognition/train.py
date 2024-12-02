@@ -55,7 +55,7 @@ def main(unused_argv):
   trainer = Trainer(
     model = model,
     args = training_args, 
-    training_dataset = train,
+    train_dataset = train,
     eval_dataset = valid,
     compute_metrics = compute_metrics)
   if not FLAGS.eval_only:
