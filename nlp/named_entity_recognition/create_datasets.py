@@ -27,4 +27,8 @@ def load_conll2003(tokenizer):
   valid = load_dataset('conll2003', split = 'validation')
   train = train.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
   valid = valid.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
-  train = train.rename_column()
+
+if __name__ == "__main__":
+  from transformers import AutoTokenizer
+  tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
+  load_conll2003(tokenizer)
