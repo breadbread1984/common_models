@@ -21,6 +21,6 @@ if __name__ == "__main__":
   from huggingface_hub import login
   from transformers import AutoTokenizer
   login('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')
-  tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-based-uncased') 
+  tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased') 
   train, valid = load_imdb(tokenizer)
   print(train)
