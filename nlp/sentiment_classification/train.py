@@ -25,7 +25,7 @@ def compute_metrics(eval_pred):
 
 def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
-  model = BertForSequenceClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = 2)
+  model = BertForSequenceClassification.from_pretrained('google-bert/bert-base-uncased' if not FLAGS.eval_only else FLAGS.load_ckpt, num_labels = 2)
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
@@ -49,7 +49,7 @@ def main(unused_argv):
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     trainer.save_model('best_model')
   else:
-    eval_res = trainer.evaluate(resume_from_checkpoint = FLAGS.load_ckpt)
+    eval_res = trainer.evaluate()
     print(eval_res)
 
 if __name__ == "__main__":
