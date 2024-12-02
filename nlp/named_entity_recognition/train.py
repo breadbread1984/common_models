@@ -49,14 +49,17 @@ def main(unused_argv):
   model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = len(ner_labels), id2label = id_to_label, label2id = label_to_id)
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
-    num_train_epochs = FLAGS.epochs,
+    evaluation_strategy = "epoch",
+    save_strategy = "epoch",
+    learning_rate = FLAGS.lr,
     per_device_train_batch_size = FLAGS.batch,
     per_device_eval_batch_size = FLAGS.batch,
     num_train_epochs = FLAGS.epochs,
     warmup_steps = 500,
     weight_decay = 0.01,
     logging_dir = "./logs",
-    logging_steps = 10)
+    logging_steps = 10,
+    resume_from_checkpoint = FLAGS.load_ckpt)
   trainer = Trainer(
     model = model,
     args = training_args, 
