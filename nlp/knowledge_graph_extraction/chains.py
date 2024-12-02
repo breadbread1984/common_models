@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from transformers import AutoTokenizer
 from models import TGI
 from prompts import extract_triplets_template
 
