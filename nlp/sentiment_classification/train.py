@@ -11,6 +11,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
   flags.DEFINE_string('pth', default = None, help = 'checkpoint file to resume')
+  flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_float('lr', default = 2e-4, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
   flags.DEFINE_boolean('eval_only', default = False, help = 'only do evaluation')
@@ -30,8 +31,8 @@ def main(unused_argv):
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
-    per_device_train_batch_size = 8,
-    per_device_eval_batch_size = 8,
+    per_device_train_batch_size = FLAGS.batch,
+    per_device_eval_batch_size = FLAGS.batch,
     num_train_epochs = FLAGS.epochs,
     weight_decay = 0.01,
     logging_dir = "./logs",
