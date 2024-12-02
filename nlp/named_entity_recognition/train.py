@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from functools import partial
 import numpy as np
 import torch
 import evaluate
@@ -18,16 +19,16 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
   flags.DEFINE_boolean('eval_only', default = False, help = 'only do evaluation')
 
-def compute_metrics(eval_pred):
+def compute_metrics(eval_pred, id_to_label):
   predictions, labels = eval_pred # predictions.shape = (batch, seq_len, class_num)
   predictions = np.argmax(predictions, axis = 2)
   # filter ctrl token and padding token
   true_predictions = [
-    [label_list[p] for (p,l) in zip(prediction, label) if l != -100]
+    [id_to_label[p] for (p,l) in zip(prediction, label) if l != -100]
     for prediction, label in zip(predictions, labels)
   ]
   true_lables = [
-    [label_list[l] for (p,l) in zip(prediction, label) if l != -100]
+    [id_to_label[l] for (p,l) in zip(prediction, label) if l != -100]
     for prediction, label in zip(predictions, labels)
   ]
   metric = evaluate.load('seqeval')
@@ -42,7 +43,10 @@ def compute_metrics(eval_pred):
 def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
   train, valid = load_conll2003(tokenizer)
-  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = len(train.features['ner_tags'].feature.names))
+  ner_labels = train.features['ner_tags'].feature.names
+  label_to_id = {label: idx for idx, label in enumerate(ner_labels)}
+  id_to_label = {idx: label for labe, idx in label_to_id.items()}
+  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = len(ner_labels), id2label = id_to_label, label2id = label_to_id)
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
     num_train_epochs = FLAGS.epochs,
@@ -57,7 +61,7 @@ def main(unused_argv):
     args = training_args, 
     train_dataset = train,
     eval_dataset = valid,
-    compute_metrics = compute_metrics)
+    compute_metrics = partial(compute_metrics, id_to_label = id_to_label))
   if not FLAGS.eval_only:
     trainer.train()
     trainer.save_model('best_model')
