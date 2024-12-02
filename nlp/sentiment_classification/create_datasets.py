@@ -3,7 +3,7 @@
 from functools import partial
 from datasets import load_dataset
 
-def tokenize_function(tokenizer, examples):
+def tokenize_function(examples, tokenizer):
   return tokenizer(examples['text'], padding = 'max_length', truncation = True, max_length = 512)
 
 def load_imdb(tokenizer):
