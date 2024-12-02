@@ -23,8 +23,8 @@ def tokenize_function(examples, tokenizer):
   return datasets
 
 def load_conll2003(tokenizer):
-  train = load_dataset('conll2003', split = 'train')
-  valid = load_dataset('conll2003', split = 'validation')
+  train = load_dataset('conll2003', split = 'train', trust_remote_code = True)
+  valid = load_dataset('conll2003', split = 'validation', trust_remote_code = True)
   train = train.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
   valid = valid.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
 
