@@ -36,6 +36,7 @@ def extract_triplets_template(tokenizer,
                               node_labels: Optional[List[str]] = None,
                               rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None,
                               relationship_type: Optional[str] = None):
+  import langchain_experimental
   assert langchain_experimental.__version__ >= '0.3.3'
   chat_prompt = create_unstructured_prompt(node_labels, rel_types, relationship_type)
   chat_prompt = HFChatPromptTemplate(chat_prompt.messages, tokenizer = tokenizer)
