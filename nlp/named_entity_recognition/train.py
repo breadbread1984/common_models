@@ -45,7 +45,7 @@ def main(unused_argv):
   train, valid = load_conll2003(tokenizer)
   ner_labels = train.features['ner_tags'].feature.names
   label_to_id = {label: idx for idx, label in enumerate(ner_labels)}
-  id_to_label = {idx: label for labe, idx in label_to_id.items()}
+  id_to_label = {idx: label for label, idx in label_to_id.items()}
   model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = len(ner_labels), id2label = id_to_label, label2id = label_to_id)
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
