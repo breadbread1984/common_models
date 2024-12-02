@@ -16,55 +16,55 @@ class StructuredLLM(LLM):
   def parse_response(self, message) -> str:
     """Extract `function_call` from `AIMessage`."""
     if isinstance(message, AIMessage):
-        kwargs = message.additional_kwargs
-        tool_calls = message.tool_calls
-        if len(tool_calls) > 0:
-            tool_call = tool_calls[-1]
-            args = tool_call.get("args")
-            return json.dumps(args)
-        elif "function_call" in kwargs:
-            if "arguments" in kwargs["function_call"]:
-                return kwargs["function_call"]["arguments"]
-            raise ValueError(
-                f"`arguments` missing from `function_call` within AIMessage: {message}"
-            )
-        else:
-            raise ValueError("`tool_calls` missing from AIMessage: {message}")
+      kwargs = message.additional_kwargs
+      tool_calls = message.tool_calls
+      if len(tool_calls) > 0:
+        tool_call = tool_calls[-1]
+        args = tool_call.get("args")
+        return json.dumps(args)
+      elif "function_call" in kwargs:
+        if "arguments" in kwargs["function_call"]:
+          return kwargs["function_call"]["arguments"]
+        raise ValueError(
+          f"`arguments` missing from `function_call` within AIMessage: {message}"
+        )
+      else:
+        raise ValueError("`tool_calls` missing from AIMessage: {message}")
     raise ValueError(f"`message` is not an instance of `AIMessage`: {message}")
 
   def _is_pydantic_class(self, obj) -> bool:
-        return isinstance(obj, type) and (
-            is_basemodel_subclass(obj) or BaseModel in obj.__bases__
-        )
+    return isinstance(obj, type) and (
+      is_basemodel_subclass(obj) or BaseModel in obj.__bases__
+    )
   def with_structured_output(self, schema, *, include_raw = False, **kwargs):
-        if kwargs:
-            raise ValueError(f"Received unsupported arguments {kwargs}")
-        is_pydantic_schema = self._is_pydantic_class(schema)
-        if schema is None:
-            raise ValueError(
-                "schema must be specified when method is 'function_calling'. "
-                "Received None."
-            )
-        llm = self.bind(tools=[schema], format="json") # give tools argument to llm.invoke. returned llm type is RunnableBindingBase.
-        if is_pydantic_schema:
-            output_parser: OutputParserLike = PydanticOutputParser(  # type: ignore[type-var]
-                pydantic_object=schema  # type: ignore[arg-type]
-            )
-        else:
-            output_parser = JsonOutputParser()
+    if kwargs:
+      raise ValueError(f"Received unsupported arguments {kwargs}")
+    is_pydantic_schema = self._is_pydantic_class(schema)
+    if schema is None:
+      raise ValueError(
+        "schema must be specified when method is 'function_calling'. "
+        "Received None."
+      )
+    llm = self.bind(tools=[schema], format="json") # give tools argument to llm.invoke. returned llm type is RunnableBindingBase.
+    if is_pydantic_schema:
+      output_parser: OutputParserLike = PydanticOutputParser(  # type: ignore[type-var]
+        pydantic_object=schema  # type: ignore[arg-type]
+      )
+    else:
+      output_parser = JsonOutputParser()
 
-        parser_chain = RunnableLambda(self.parse_response) | output_parser
-        if include_raw:
-            parser_assign = RunnablePassthrough.assign(
-                parsed=itemgetter("raw") | parser_chain, parsing_error=lambda _: None
-            )
-            parser_none = RunnablePassthrough.assign(parsed=lambda _: None)
-            parser_with_fallback = parser_assign.with_fallbacks(
-                [parser_none], exception_key="parsing_error"
-            )
-            return RunnableMap(raw=llm) | parser_with_fallback
-        else:
-            return llm | parser_chain
+    parser_chain = RunnableLambda(self.parse_response) | output_parser
+    if include_raw:
+      parser_assign = RunnablePassthrough.assign(
+        parsed=itemgetter("raw") | parser_chain, parsing_error=lambda _: None
+      )
+      parser_none = RunnablePassthrough.assign(parsed=lambda _: None)
+      parser_with_fallback = parser_assign.with_fallbacks(
+        [parser_none], exception_key="parsing_error"
+      )
+      return RunnableMap(raw=llm) | parser_with_fallback
+    else:
+      return llm | parser_chain
 
 class TGI(StructuredLLM):
   url: str = None
