@@ -10,8 +10,10 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
+  flags.DEFINE_string('pth', default = None, help = 'checkpoint file to resume')
   flags.DEFINE_float('lr', default = 2e-4, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
+  flags.DEFINE_boolean('eval_only', default = False, help = 'only do evaluation')
 
 def compute_metrics(eval_pred):
   logits, labels = eval_pred
@@ -45,8 +47,11 @@ def main(unused_argv):
     eval_dataset = valid,
     tokenizer = tokenizer,
     compute_metrics = compute_metrics)
-  trainer.train()
-  trainer.save_model('best_moidel')
+  if not FLAGS.eval_only:
+    trainer.train(resume_from_checkpoint = FLAGS.pth)
+    trainer.save_model('best_model')
+  else:
+    trainer.evaluate(resume_from_checkpoint = FLAGS.pth)
 
 if __name__ == "__main__":
   add_options()
