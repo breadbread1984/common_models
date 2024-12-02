@@ -42,7 +42,7 @@ def compute_metrics(eval_pred):
 def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
   train, valid = load_conll2003(tokenizer)
-  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-cased', num_labels = 1 + len(train.features['ner_tags'].feature.names))
+  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-cased', num_labels = len(train.features['ner_tags'].feature.names))
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
     num_train_epochs = FLAGS.epochs,
