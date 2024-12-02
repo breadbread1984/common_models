@@ -7,9 +7,12 @@ def tokenize_function(examples, tokenizer):
   datasets = tokenizer(examples['tokens'], truncation = True, is_split_into_words = True, padding = 'max_length', max_length = 512)
   labels = list()
   for i, label in enumerate(examples['ner_tags']):
+    # label is unpadded and untruncated tag sequence
     word_ids = datasets.word_ids(batch_index = i)
+    # word_ids is padded and truncated index sequence, index available for label range, None for padding
     previous_word_idx = None
     label_ids = list()
+    # label_ids is padded and truncated tag sequence
     for word_idx in word_ids:
       if word_idx is None:
         label_ids.append(-100)
@@ -27,6 +30,7 @@ def load_conll2003(tokenizer):
   valid = load_dataset('conll2003', split = 'validation', trust_remote_code = True)
   train = train.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
   valid = valid.map(partial(tokenize_function, tokenizer = tokenizer), batched = True)
+  return train, valid
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer

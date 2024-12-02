@@ -9,8 +9,8 @@ from create_datasets import load_imdb
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('save_ckpt', default = 'ckpt', help = 'path to checkpoint')
-  flags.DEFINE_string('load_ckpt', default = None, help = 'checkpoint file to resume')
+  flags.DEFINE_string('save_ckpt', default = 'ckpt', help = 'path to save checkpoint')
+  flags.DEFINE_string('load_ckpt', default = None, help = 'path to resume checkpoint')
   flags.DEFINE_integer('batch', default = 128, help = 'batch size')
   flags.DEFINE_float('lr', default = 2e-4, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
