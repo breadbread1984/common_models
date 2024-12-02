@@ -46,7 +46,7 @@ def main(unused_argv):
   ner_labels = train.features['ner_tags'].feature.names
   label_to_id = {label: idx for idx, label in enumerate(ner_labels)}
   id_to_label = {idx: label for label, idx in label_to_id.items()}
-  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = len(ner_labels), id2label = id_to_label, label2id = label_to_id)
+  model = BertForTokenClassification.from_pretrained('google-bert/bert-base-uncased' if not FLAGS.eval_only else FLAGS.load_ckpt, num_labels = len(ner_labels), id2label = id_to_label, label2id = label_to_id)
   training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
@@ -69,7 +69,7 @@ def main(unused_argv):
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     trainer.save_model('best_model')
   else:
-    eval_res = trainer.evaluate(resume_from_checkpoint = FLAGS.load_ckpt)
+    eval_res = trainer.evaluate(valid)
     print(eval_res)
 
 if __name__ == "__main__":
