@@ -36,8 +36,7 @@ def main(unused_argv):
     num_train_epochs = FLAGS.epochs,
     weight_decay = 0.01,
     logging_dir = "./logs",
-    logging_steps = 10,
-    resume_from_checkpoint = FLAGS.load_ckpt)
+    logging_steps = 10)
   train, valid = load_imdb(tokenizer)
   trainer = Trainer(
     model = model,
@@ -47,10 +46,10 @@ def main(unused_argv):
     tokenizer = tokenizer,
     compute_metrics = compute_metrics)
   if not FLAGS.eval_only:
-    trainer.train()
+    trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     trainer.save_model('best_model')
   else:
-    eval_res = trainer.evaluate()
+    eval_res = trainer.evaluate(resume_from_checkpoint = FLAGS.load_ckpt)
     print(eval_res)
 
 if __name__ == "__main__":

@@ -58,8 +58,7 @@ def main(unused_argv):
     warmup_steps = 500,
     weight_decay = 0.01,
     logging_dir = "./logs",
-    logging_steps = 10,
-    resume_from_checkpoint = FLAGS.load_ckpt)
+    logging_steps = 10)
   trainer = Trainer(
     model = model,
     args = training_args, 
@@ -67,10 +66,10 @@ def main(unused_argv):
     eval_dataset = valid,
     compute_metrics = partial(compute_metrics, id_to_label = id_to_label))
   if not FLAGS.eval_only:
-    trainer.train()
+    trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     trainer.save_model('best_model')
   else:
-    eval_res = trainer.evaluate()
+    eval_res = trainer.evaluate(resume_from_checkpoint = FLAGS.load_ckpt)
     print(eval_res)
 
 if __name__ == "__main__":
