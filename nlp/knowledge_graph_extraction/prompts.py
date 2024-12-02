@@ -37,15 +37,17 @@ def extract_triplets_template(tokenizer,
                               rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None,
                               relationship_type: Optional[str] = None):
   chat_prompt = create_unstructured_prompt(node_labels, rel_types, relationship_type)
-  messages = []
+  chat_prompt = HFChatPromptTemplate(chat_prompt.messages, tokenizer = tokenizer)
+  return chat_prompt
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
-  extract_triplets_template(tokenizer,
-                            node_labels = ['electrolyte', 'conductivity', 'precursor'],
-                            rel_types = [
-                              ('electrolyte', 'has_conductivity', 'conductivity'),
-                              ('electrolyte', 'has_precursor', 'precursor')
-                            ])
+  prompt = extract_triplets_template(tokenizer,
+                                     node_labels = ['electrolyte', 'conductivity', 'precursor'],
+                                     rel_types = [
+                                       ('electrolyte', 'has_conductivity', 'conductivity'),
+                                       ('electrolyte', 'has_precursor', 'precursor')
+                                     ])
+  print(prompt)
 
