@@ -53,7 +53,8 @@ def main(unused_argv):
     trainer.train()
     trainer.save_model('best_model')
   else:
-    trainer.evaluate()
+    eval_res = trainer.evaluate()
+    print(eval_res)
 
 if __name__ == "__main__":
   add_options()
