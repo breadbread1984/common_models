@@ -6,7 +6,7 @@ from datasets import load_dataset
 def tokenize_function(examples, tokenizer):
   datasets = tokenizer(examples['tokens'], truncation = True, is_split_into_words = True, padding = 'max_length', max_length = 512)
   labels = list()
-  for i, label in enumerate(examples['tags']):
+  for i, label in enumerate(examples['ner_tags']):
     word_ids = tokenized_inputs.word_ids(batch_index = i)
     previous_word_idx = None
     label_ids = list()
