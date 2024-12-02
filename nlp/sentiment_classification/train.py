@@ -11,7 +11,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
   flags.DEFINE_string('pth', default = None, help = 'checkpoint file to resume')
-  flags.DEFINE_integer('batch', default = 512, help = 'batch size')
+  flags.DEFINE_integer('batch', default = 128, help = 'batch size')
   flags.DEFINE_float('lr', default = 2e-4, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
   flags.DEFINE_boolean('eval_only', default = False, help = 'only do evaluation')
