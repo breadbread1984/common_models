@@ -69,7 +69,7 @@ def main(unused_argv):
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     trainer.save_model('best_model')
   else:
-    eval_res = trainer.evaluate(valid)
+    eval_res = trainer.evaluate()
     print(eval_res)
 
 if __name__ == "__main__":
