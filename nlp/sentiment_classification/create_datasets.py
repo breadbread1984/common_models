@@ -1,20 +1,21 @@
 #!/usr/bin/python3
 
-from absl import flags, app
-from torchtext.datasets import IMDB
-from datasets import Dataset
+from datasets import load_dataset
 
-FLAGS = flags.FLAGS
+def tokenize_function(examples):
+  return tokenizer(examples['text'], padding = 'max_length', truncation = True, max_length = 512)
 
-def add_options():
-  flags.DEFINE_string('output', default = 'imdb', help = 'path to output dataset')
-
-def main(unused_argv):
-  train, test = IMDB()
-  for label, text in train:
-    print(label, text)
-    break
+def load_imdb():
+  train = load_dataset('imdb', split = 'train')
+  valid = load_dataset('imdb', split = 'test')
+  train = train.map(tokenize_function, batched = True)
+  valid = valid.map(tokenize_function, batched = True)
+  train = train.rename_column("label", "labels")
+  valid = valid.rename_column("label", "labels")
+  train.set_format(type = "torch", columns = ["input_ids", "attention_mask", "labels"])
+  valid.set_format(type = "torch", columns = ["input_ids", "attention_mask", "labels"])
+  return train, valid
 
 if __name__ == "__main__":
-  add_options()
-  app.run(main)
+  train, valid = load_imdb()
+  print(train)
