@@ -4,7 +4,7 @@ from absl import flags, app
 import numpy as np
 import torch
 import evaluate
-from transformers import AutoTokenizer, BertForTokenClassification, trainer, TrainingArguments
+from transformers import AutoTokenizer, BertForTokenClassification, Trainer, TrainingArguments
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from create_datasets import load_conll2003
 
