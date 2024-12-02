@@ -27,7 +27,7 @@ def compute_metrics(eval_pred, id_to_label):
     [id_to_label[p] for (p,l) in zip(prediction, label) if l != -100]
     for prediction, label in zip(predictions, labels)
   ]
-  true_lables = [
+  true_labels = [
     [id_to_label[l] for (p,l) in zip(prediction, label) if l != -100]
     for prediction, label in zip(predictions, labels)
   ]
