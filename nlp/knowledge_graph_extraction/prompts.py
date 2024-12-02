@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from typing import Any, Union
+from typing import Any, Union, List, Tuple, Optional
 from transformers import AutoTokenizer
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
