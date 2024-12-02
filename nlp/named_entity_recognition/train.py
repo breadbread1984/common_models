@@ -52,6 +52,7 @@ def main(unused_argv):
     num_train_epochs = FLAGS.epochs,
     per_device_train_batch_size = FLAGS.batch,
     per_device_eval_batch_size = FLAGS.batch,
+    num_train_epochs = FLAGS.epochs,
     warmup_steps = 500,
     weight_decay = 0.01,
     logging_dir = "./logs",
