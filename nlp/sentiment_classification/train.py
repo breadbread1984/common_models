@@ -9,8 +9,8 @@ from create_datasets import load_imdb
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
-  flags.DEFINE_string('pth', default = None, help = 'checkpoint file to resume')
+  flags.DEFINE_string('save_ckpt', default = 'ckpt', help = 'path to checkpoint')
+  flags.DEFINE_string('load_ckpt', default = None, help = 'checkpoint file to resume')
   flags.DEFINE_integer('batch', default = 128, help = 'batch size')
   flags.DEFINE_float('lr', default = 2e-4, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'number of epochs')
@@ -27,7 +27,7 @@ def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
   model = BertForSequenceClassification.from_pretrained('google-bert/bert-base-uncased', num_labels = 2)
   training_args = TrainingArguments(
-    output_dir = FLAGS.ckpt,
+    output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
@@ -39,7 +39,8 @@ def main(unused_argv):
     logging_steps = 10,
     load_best_model_at_end = True,
     metric_for_best_model = "accuracy",
-    save_total_limit = 2)
+    save_total_limit = 2,
+    resume_from_checkpoint = FLAGS.load_ckpt)
   train, valid = load_imdb(tokenizer)
   trainer = Trainer(
     model = model,
@@ -49,10 +50,10 @@ def main(unused_argv):
     tokenizer = tokenizer,
     compute_metrics = compute_metrics)
   if not FLAGS.eval_only:
-    trainer.train(resume_from_checkpoint = FLAGS.pth)
+    trainer.train()
     trainer.save_model('best_model')
   else:
-    trainer.evaluate(resume_from_checkpoint = FLAGS.pth)
+    trainer.evaluate()
 
 if __name__ == "__main__":
   add_options()
