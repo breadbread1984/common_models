@@ -3,7 +3,7 @@
 from absl import flags, app
 import numpy as np
 import torch
-from datasets import load_metric
+import evaluate
 from transformers import AutoTokenizer, BertForTokenClassification, trainer, TrainingArguments
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from create_datasets import load_conll2003
@@ -30,7 +30,7 @@ def compute_metrics(eval_pred):
     [label_list[l] for (p,l) in zip(prediction, label) if l != -100]
     for prediction, label in zip(predictions, labels)
   ]
-  metric = load_metric('seqeval')
+  metric = evaluate.load('seqeval')
   results = metric.compute(predictions=true_predictions, references=true_labels)
   return {
     "precision": results["overall_precision"],
