@@ -49,6 +49,7 @@ if __name__ == "__main__":
                                      rel_types = [
                                        ('electrolyte', 'has_conductivity', 'conductivity'),
                                        ('electrolyte', 'has_precursor', 'precursor')
-                                     ])
+                                     ],
+                                     relationship_type = 'tuple')
   print(prompt)
 
