@@ -40,3 +40,9 @@ docker run --gpus 0,1,2,3 --shm-size 1g -p 8080:80 -v /home/xieyi/raid/huggingfa
 python3 load_text.py --input_dir <input/directory> --tgi_host <tgi/host> --neo4j_host <neo4j/host> --neo4j_user <neo4j/user> --neo4j_password <neo4j/password> --neo4j_db <neo4j/db>
 ```
 
+## Start RAG server
+
+```shell
+python3 main.py --tgi_host <tgi/host> --neo4j_host <neo4j/host> --neo4j_user <neo4j/user> --neo4j_password <neo4j/password> --neo4j_db <neo4j/db> --host <server/host> --port <server/port>
+```
+
