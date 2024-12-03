@@ -38,7 +38,7 @@ def map_rerank_prompt(tokenizer):
   messages = [
     HumanMessagePromptTemplate(prompt = MAP_RERANK_PROMPT)
   ]
-  prompt = HFChatPromptValue(messages = messages, tokenizer = tokenizer)
+  prompt = HFChatPromptTemplate(messages = messages, tokenizer = tokenizer)
   return prompt
 
 if __name__ == "__main__":
