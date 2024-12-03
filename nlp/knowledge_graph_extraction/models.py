@@ -75,7 +75,7 @@ class TGI(StructuredLLM):
     self.url = host
     self.headers = {'Authorization': "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"}
   def _call(self, prompt, stop = None, run_manager = None, **kwargs):
-    data = {"inputs": prompt, "parameters": {"temperature": 0.6, "top_p": 0.9}}
+    data = {"inputs": prompt, "parameters": {"temperature": 0.6, "top_p": 0.9, "max_new_tokens": 52207}}
     for i in range(10):
       response = requests.post(self.url, headers = self.headers, json = data)
       if response.status_code == 200:
