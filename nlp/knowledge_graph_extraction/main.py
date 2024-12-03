@@ -31,7 +31,7 @@ def main(unused_argv):
     llm = llm,
     prompt = prompt,
     allowed_nodes = config.node_types,
-    allowed_relationship = config.rel_types,
+    allowed_relationships = config.rel_types,
   )
   neo4j = Neo4jGraph(url = FLAGS.neo4j_host, username = FLAGS.neo4j_user, password = FLAGS.neo4j_password, database = FLAGS.neo4j_db)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
