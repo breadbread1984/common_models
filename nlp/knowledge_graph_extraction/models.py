@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import requests
 from pydantic import BaseModel
 from operator import itemgetter
 from langchain.llms.base import LLM
