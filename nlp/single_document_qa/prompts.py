@@ -97,7 +97,7 @@ def load_refine_prompt(tokenizer):
       HumanMessagePromptTemplate(prompt = refine_prompts.EXAMPLE_PROMPT)
     ]
   )
-  return question_prompt, refine_prompt. document_prompt
+  return question_prompt, refine_prompt, document_prompt
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer
