@@ -68,10 +68,12 @@ def qa_system_prompt(tokenizer):
     ],
     tokenize = tokenizer
   )
-  return qa_system_prompt
+  return qa_prompt
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
-  prompt = condense_question_prompt(tokenizer)
+  prompt = contextualize_q_prompt(tokenizer)
+  print(prompt)
+  prompt = qa_system_prompt(tokenizer)
   print(prompt)
