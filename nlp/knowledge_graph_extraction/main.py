@@ -25,7 +25,7 @@ def add_options():
 
 def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct') 
-  prompt = extract_triplets_template(tokenizer, config.node_labels, config.rel_types)
+  prompt = extract_triplets_template(tokenizer, allowed_nodes = config.node_types, allowed_relationships = config.rel_types)
   llm = TGI(host)
   graph_transformer = LLMGraphTransformer(
     llm = llm,
