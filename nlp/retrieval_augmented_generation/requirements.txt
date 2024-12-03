@@ -5,6 +5,7 @@ torch-geometric
 langchain
 langchain-core
 langchain-community
+langchain-huggingface
 langchain-openai
 langchain-cli
 langchain-neo4j

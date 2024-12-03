@@ -2,7 +2,7 @@
 
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_neo4j import Neo4jVector
 from langchain.schema.runnable import ConfigurableField
 from prompts import contextualize_q_prompt, qa_system_prompt

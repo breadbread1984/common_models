@@ -7,7 +7,7 @@ from absl import flags, app
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from models import TGI
 
 FLAGS = flags.FLAGS
