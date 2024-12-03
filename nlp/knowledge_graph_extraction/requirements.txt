@@ -7,6 +7,7 @@ langchain-core
 langchain-community
 langchain-openai
 langchain-cli
+langchain-neo4j
 langchainhub
 transformers
 numexpr
