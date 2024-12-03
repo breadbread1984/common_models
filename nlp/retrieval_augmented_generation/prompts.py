@@ -66,7 +66,7 @@ def qa_system_prompt(tokenizer):
       MessagesPlaceholder('chat_history'),
       ('human', "{input}")
     ],
-    tokenize = tokenizer
+    tokenizer = tokenizer
   )
   return qa_prompt
 
