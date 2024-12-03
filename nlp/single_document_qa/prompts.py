@@ -108,5 +108,5 @@ if __name__ == "__main__":
   print(prompt, document_prompt)
   question_prompt, combine_prompt, document_prompt = load_map_reduce_prompt(tokenizer)
   print(question_prompt, combine_prompt, document_prompt)
-  question_prompt, refine_prompt. document_prompt = load_refine_prompt(tokenizer)
+  question_prompt, refine_prompt, document_prompt = load_refine_prompt(tokenizer)
   print(question_prompt, refine_prompt, document_prompt)
