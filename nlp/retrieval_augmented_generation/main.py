@@ -18,9 +18,7 @@ def add_options():
   flags.DEFINE_string('host', default = '0.0.0.0', help = 'service host')
   flags.DEFINE_integer('port', default = 8081, help = 'service port')
 
-def create_interface():
-  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
-  llm = TGI(FLAGS.tgi_host)
+def create_interface(tokenizer, llm):
   chain = rag_chain(tokenizer, llm, FLAGS.neo4j_host, FLAGS.neo4j_user, FLAGS.neo4j_password, FLAGS.neo4j_db)
   def chatbot_response(user_input, history):
     chat_history = list()
@@ -49,7 +47,9 @@ def create_interface():
   return demo
 
 def main(unused_argv):
-  demo = create_interface()
+  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
+  llm = TGI(FLAGS.tgi_host)
+  demo = create_interface(tokenizer, llm)
   demo.launch(server_name = FLAGS.host,
               server_port = FLAGS.port)
 
