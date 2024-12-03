@@ -30,7 +30,7 @@ def main(unused_argv):
   graph_transformer = LLMGraphTransformer(
     llm = llm,
     prompt = prompt,
-    allowed_nodes = config.node_labels,
+    allowed_nodes = config.node_types,
     allowed_relationship = config.rel_types,
   )
   neo4j = Neo4jGraph(url = FLAGS.neo4j_host, username = FLAGS.neo4j_user, password = FLAGS.neo4j_password, database = FLAGS.neo4j_db)
