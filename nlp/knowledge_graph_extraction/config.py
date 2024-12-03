@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 
-allowed_nodes = ['electrolyte', 'conductivity', 'precursor']
+allowed_nodes = ['person', 'place', 'organization', 'occupation', 'meeting']
 rel_types = [
-  ('electrolyte', 'has_conductivity', 'conductivity'),
-  ('electrolyte', 'has_precursor', 'precursor')
+  ('person', 'work_for', 'organization'),
+  ('person', 'lives_at', 'place'),
+  ('person', 'job_is', 'occupation'),
+  ('person', 'is_friend_of', 'person'),
+  ('meeting', 'is_at', 'place')
 ]
