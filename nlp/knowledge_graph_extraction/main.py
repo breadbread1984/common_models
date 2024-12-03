@@ -46,7 +46,7 @@ def main(unused_argv):
       else:
         raise Exception('unknown format!')
       docs = loader.load()
-      graph = graph_transformers.convert_to_graph_documents(docs)
+      graph = graph_transformer.convert_to_graph_documents(docs)
       neo4j.add_graph_documents(graph)
 
 if __name__ == "__main__":
