@@ -35,11 +35,69 @@ class HFChatPromptTemplate(ChatPromptTemplate):
     return HFChatPromptValue(messages = messages, tokenizer = self.tokenizer)
 
 def map_rerank_prompt(tokenizer):
-  messages = [
-    HumanMessagePromptTemplate(prompt = MAP_RERANK_PROMPT)
-  ]
-  prompt = HFChatPromptTemplate(messages = messages, tokenizer = tokenizer)
+  prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = MAP_RERANK_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
   return prompt
+
+def stuff_prompt(tokenizer):
+  prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = stuff_prompt.PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  document_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = stuff_prompt.EXAMPLE_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  return prompt, document_prompt
+
+def map_reduce_prompt(tokenizer):
+  question_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = map_reduce_prompt.QUESTION_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  combine_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = map_reduce_prompt.COMBINE_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  document_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = map_reduce_prompt.EXAMPLE_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  return question_prompt, combine_prompt, document_prompt
+
+def refine_prompt(tokenizer):
+  question_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = refine_prompts.DEFAULT_TEXT_QA_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  refine_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = refine_prompts.DEFAULT_REFINE_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  document_prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = refine_prompts.EXAMPLE_PROMPT)
+    ]
+  )
+  return question_prompt, refine_prompt. document_prompt
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer
