@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from os import walk
-from os.path import join, exists
+from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
