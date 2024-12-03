@@ -9,7 +9,7 @@ from prompts import condense_question_prompt
 def condense_chain(tokenizer, llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db):
   embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
-  parent_vectordb = Neo4jVector(embedding = embedding, url = host, username = username, password = password, database = database,
+  parent_vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db,
     retrieval_query = """
     MATCH (node)<-[:HAS_CHILD]-(parent)
     WITH parent, max(score) AS score // deduplicate parents
@@ -17,7 +17,7 @@ def condense_chain(tokenizer, llm, neo4j_host, neo4j_user, neo4j_password, neo4j
     """,
     index_name = "parent_document"
   )
-  hypothetic_question_vectordb = Neo4jVector(embedding = embedding, url = host, username = username, password = password, database = database,
+  hypothetic_question_vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db,
     retrieval_query = """
     MATCH (node)<-[:HAS_QUESTION]-(parent)
     WITH parent, max(score) AS score // deduplicate parents
@@ -25,7 +25,7 @@ def condense_chain(tokenizer, llm, neo4j_host, neo4j_user, neo4j_password, neo4j
     """,
     index_name = "hypothetic_question_query"
   )
-  summary_vectordb = Neo4jVector(embedding = embedding, url = host, username = username, password = password, database = database,
+  summary_vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db,
     retrieval_query = """
     MATCH (node)<-[:HAS_SUMMARY]-(parent)
     WITH parent, max(score) AS score // deduplicate parents
