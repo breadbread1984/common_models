@@ -19,7 +19,7 @@ def map_reduce_chain(tokenizer, llm, **kwargs):
   return chain
 
 def refine_chain(tokenizer, llm, **kwargs):
-  question_prompt, refine_prompt. document_prompt = load_refine_prompt(tokenizer)
+  question_prompt, refine_prompt, document_prompt = load_refine_prompt(tokenizer)
   chain = load_qa_with_sources_chain(llm, chain_type = 'refine', question_prompt = question_prompt, refine_prompt = refine_prompt, document_prompt = document_prompt)
   return chain
 
