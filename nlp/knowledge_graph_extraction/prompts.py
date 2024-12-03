@@ -45,7 +45,7 @@ if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
   prompt = extract_triplets_template(tokenizer,
-                                     node_labels = ['electrolyte', 'conductivity', 'precursor'],
+                                     node_types = ['electrolyte', 'conductivity', 'precursor'],
                                      rel_types = [
                                        ('electrolyte', 'has_conductivity', 'conductivity'),
                                        ('electrolyte', 'has_precursor', 'precursor')
