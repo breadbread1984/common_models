@@ -7,7 +7,7 @@ from tqdm import tqdm
 import json
 from transformers import AutoTokenizer
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
-from langchain.graphs import Neo4jGraph
+from langchain_neo4j import Neo4jGraph
 from langchain_experimental.graph_transformers.llm import LLMGraphTransformer
 from models import TGI
 from prompts import extract_triplets_template
