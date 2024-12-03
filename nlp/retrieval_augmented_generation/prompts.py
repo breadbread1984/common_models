@@ -43,7 +43,7 @@ def contextualize_q_prompt(tokenizer):
   chat_prompt = HFChatPromptTemplate(
     messages = [
       ('system', system_message),
-      MessagePlaceholder("chat_history"),
+      MessagesPlaceholder("chat_history"),
       ('human', "{input}")
     ],
     tokenizer = tokenizer
