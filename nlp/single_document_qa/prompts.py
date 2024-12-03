@@ -34,7 +34,7 @@ class HFChatPromptTemplate(ChatPromptTemplate):
     messages = await self.format_messages(**kwargs)
     return HFChatPromptValue(messages = messages, tokenizer = self.tokenizer)
 
-def map_rerank_prompt(tokenizer):
+def load_map_rerank_prompt(tokenizer):
   prompt = HFChatPromptTemplate(
     messages = [
       HumanMessagePromptTemplate(prompt = MAP_RERANK_PROMPT)
@@ -43,7 +43,7 @@ def map_rerank_prompt(tokenizer):
   )
   return prompt
 
-def stuff_prompt(tokenizer):
+def load_stuff_prompt(tokenizer):
   prompt = HFChatPromptTemplate(
     messages = [
       HumanMessagePromptTemplate(prompt = stuff_prompt.PROMPT)
@@ -58,7 +58,7 @@ def stuff_prompt(tokenizer):
   )
   return prompt, document_prompt
 
-def map_reduce_prompt(tokenizer):
+def load_map_reduce_prompt(tokenizer):
   question_prompt = HFChatPromptTemplate(
     messages = [
       HumanMessagePromptTemplate(prompt = map_reduce_prompt.QUESTION_PROMPT)
@@ -79,7 +79,7 @@ def map_reduce_prompt(tokenizer):
   )
   return question_prompt, combine_prompt, document_prompt
 
-def refine_prompt(tokenizer):
+def load_refine_prompt(tokenizer):
   question_prompt = HFChatPromptTemplate(
     messages = [
       HumanMessagePromptTemplate(prompt = refine_prompts.DEFAULT_TEXT_QA_PROMPT)
@@ -102,11 +102,11 @@ def refine_prompt(tokenizer):
 if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
-  prompt = map_rerank_prompt(tokenizer)
+  prompt = load_map_rerank_prompt(tokenizer)
   print(prompt)
-  prompt, document_prompt = stuff_prompt(tokenizer)
+  prompt, document_prompt = load_stuff_prompt(tokenizer)
   print(prompt, document_prompt)
-  question_prompt, combine_prompt, document_prompt = map_reduce_prompt(tokenizer)
+  question_prompt, combine_prompt, document_prompt = load_map_reduce_prompt(tokenizer)
   print(question_prompt, combine_prompt, document_prompt)
-  question_prompt, refine_prompt. document_prompt = refine_prompt(tokenizer)
+  question_prompt, refine_prompt. document_prompt = load_refine_prompt(tokenizer)
   print(question_prompt, refine_prompt, document_prompt)
