@@ -10,6 +10,22 @@ this project demos how to extract knowledge graph from text file
 python3 -m pip install requirements.txt
 ```
 
+## Launch Neo4j
+
+```shell
+docker pull neo4j:enterprise-bullseye
+docker run -d --publish=7474:7474 --publish=7687:7687 \
+           --volume=$HOME/neo4j/data:/data \
+           --name neo4j-apoc \
+           -e NEO4J_apoc_export_file_enabled=true \
+           -e NEO4J_apoc_import_file_enabled=true \
+           -e NEO4J_apoc_import_file_use__neo4j__config=true \
+           -e NEO4JLABS_PLUGINS=\[\"apoc\"\] \
+           --privileged --shm-size 12G -e NEO4J_ACCEPT_LICENSE_AGREEMENT=yes --cpus=32 --memory=128G neo4j
+```
+
+create a database for receiving knowledge graph
+
 ## Launch text-generate-inference server
 
 ```shell
