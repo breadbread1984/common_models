@@ -11,7 +11,9 @@ def condense_chain(tokenizer, llm, neo4j_host, neo4j_user, neo4j_password, neo4j
   embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever()
+  # chain to summarize retrieval content and chat history into a standalone question
   history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt(tokenizer))
+  # chain to answer the question based on context
   question_answer_chain = create_stuff_documents_chain(llm, qa_system_prompt(tokenizer))
   chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
   return chain
