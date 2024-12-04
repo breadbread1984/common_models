@@ -8,6 +8,8 @@ from langchain_core.prompts.chat import HumanMessagePromptTemplate
 from langchain_core.prompt_values import ChatPromptValue, PromptValue
 from langchain_experimental.graph_transformers.llm import create_unstructured_prompt
 from langchain_neo4j.chains.graph_qa.prompts import CYPHER_QA_PROMPT, CYPHER_GENERATION_PROMPT
+from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+import config
 
 class HFChatPromptValue(ChatPromptValue):
   tokenizer: Any = None
@@ -46,7 +48,7 @@ def extract_triplets_template(tokenizer,
 def qa_prompt(tokenizer):
   prompt = HFChatPromptTemplate(
     messages = [
-      MessagesPlaceholder('chat_history')
+      MessagesPlaceholder('chat_history'),
       HumanMessagePromptTemplate(prompt = CYPHER_QA_PROMPT)
     ],
     tokenizer = tokenizer
@@ -59,6 +61,19 @@ def cypher_prompt(tokenizer):
       HumanMessagePromptTemplate(prompt = CYPHER_GENERATION_PROMPT)
     ],
     tokenizer = tokenizer
+  )
+  return prompt
+
+def fewshot_cypher_prompt(tokenizer):
+  example_prompt = PromptTemplate.from_template(
+    "User input: {question}\nCypher query: {query}"
+  )
+  prompt = FewShotPromptTemplate(
+    examples = config.examples[:5],
+    example_prompt = example_prompt,
+    prefix = "You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.\n\nHere is the schema information\n{schema}.\n\nBelow are a number of examples of questions and their corresponding Cypher queries.",
+    suffix="User input: {question}\nCypher query: ",
+    input_variables=["question", "schema"],
   )
   return prompt
 
@@ -75,5 +90,7 @@ if __name__ == "__main__":
   prompt = qa_prompt(tokenizer)
   print(prompt)
   prompt = cypher_prompt(tokenizer)
+  print(prompt)
+  prompt = fewshot_cypher_prompt(tokenizer)
   print(prompt)
 
