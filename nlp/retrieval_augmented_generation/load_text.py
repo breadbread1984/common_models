@@ -32,7 +32,7 @@ def main(unused_argv):
     search_type = "hybrid",
     pre_delete_collection = True
   )
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 50, chunk_overlap = 0)
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
   # load
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
