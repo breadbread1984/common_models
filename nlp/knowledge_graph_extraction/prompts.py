@@ -46,6 +46,7 @@ def extract_triplets_template(tokenizer,
 def qa_prompt(tokenizer):
   prompt = HFChatPromptTemplate(
     messages = [
+      MessagesPlaceholder('chat_history')
       HumanMessagePromptTemplate(prompt = CYPHER_QA_PROMPT)
     ],
     tokenizer = tokenizer
