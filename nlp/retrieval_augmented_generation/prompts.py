@@ -6,6 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.prompts.chat import HumanMessagePromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.prompt_values import ChatPromptValue, PromptValue
+from langchain import hub
 
 class HFChatPromptValue(ChatPromptValue):
   tokenizer: Any = None
@@ -32,40 +33,20 @@ class HFChatPromptTemplate(ChatPromptTemplate):
     messages = await self.format_messages(**kwargs)
     return HFChatPromptValue(messages = messages, tokenizer = self.tokenizer)
 
-def contextualize_q_prompt(tokenizer):
-  system_message = (
-    "Given a chat history and the latest user question "
-    "which might reference context in the chat history, "
-    "formulate a standalone question which can be understood "
-    "without the chat history. Do NOT answer the question, just "
-    "reformulate it if needed and otherwise return it as is."
-  )
+def rephrase_prompt(tokenizer):
+  rephrase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
   chat_prompt = HFChatPromptTemplate(
     messages = [
-      ('system', system_message),
-      MessagesPlaceholder("chat_history"),
-      ('human', "{input}")
+      HumanMessagePromptTemplate(prompt = rephrase_prompt)
     ],
     tokenizer = tokenizer
   )
   return chat_prompt
 
-def qa_system_prompt(tokenizer):
-  system_message = (
-    "You are an assistant for question-answering tasks. Use "
-    "the following pieces of retrieved context to answer the "
-    "question. If you don't know the answer, just say that you "
-    "don't know. Use three sentences maximum and keep the answer "
-    "concise."
-    "\n\n"
-    "{context}"
-  )
+def retrieval_qa_prompt(tokenizer):
+  retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
   qa_prompt = HFChatPromptTemplate(
-    messages = [
-      ('system', system_message),
-      MessagesPlaceholder('chat_history'),
-      ('human', "{input}")
-    ],
+    messages = retrieval_qa_chat_prompt.messages,
     tokenizer = tokenizer
   )
   return qa_prompt
@@ -73,7 +54,7 @@ def qa_system_prompt(tokenizer):
 if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
-  prompt = contextualize_q_prompt(tokenizer)
+  prompt = rephrase_prompt(tokenizer)
   print(prompt)
-  prompt = qa_system_prompt(tokenizer)
+  prompt = retrieval_qa_prompt(tokenizer)
   print(prompt)
