@@ -18,8 +18,7 @@ def main(unused_argv):
     dataset = json.loads(f.read())
   for sample in dataset['data']:
     for paragraph in sample['paragraphs']:
-      for qas in paragraph:
-        for qa in qas['qas']:
+      for qa in paragraph['qas']:
           question = qa['question']
           answer = qa['answers']
           sentence = chain.invoke({'question': question, 'answer': answer})
