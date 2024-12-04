@@ -71,6 +71,7 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt:/
     "User input: {question}\nCypher query: {query}"
   )
   if with_selector:
+    # only add similar examples selected by retriever
     example_selector = SemanticSimilarityExampleSelector.from_examples(
       config.examples,
       embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
@@ -91,6 +92,7 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt:/
       input_variables=["question", "schema"],
     )
   else:
+    # add leading examples
     prompt = FewShotPromptTemplate(
       examples = config.examples[:5],
       example_prompt = example_prompt,
