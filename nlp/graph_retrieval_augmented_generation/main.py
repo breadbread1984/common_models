@@ -13,6 +13,7 @@ def add_options():
   flags.DEFINE_string('neo4j_db', default = 'neo4j', help = 'database')
   flags.DEFINE_string('host', default = '0.0.0.0', help = 'service host')
   flags.DEFINE_integer('port', default = 8081, help = 'service port')
+  flags.DEFINE_boolean('use_fewshot', default = False, help = 'whether to use few shot')
   flags.DEFINE_boolean('use_selector', default = False, help = 'whether to use example selector')
 
 def create_interface(chain):
@@ -43,7 +44,7 @@ def create_interface(chain):
   return demo
 
 def main(unused_argv):
-  chain = load_graph_qa_chain(FLAGS.tgi_host, FLAGS.neo4j_host, FLAGS.neo4j_user, FLAGS.neo4j_password, FLAGS.neo4j_db, use_selector = FLAGS.use_selector)
+  chain = load_graph_qa_chain(FLAGS.tgi_host, FLAGS.neo4j_host, FLAGS.neo4j_user, FLAGS.neo4j_password, FLAGS.neo4j_db, use_fewshot = FLAGS.use_fewshot, use_selector = FLAGS.use_selector)
   demo = create_interface(chain)
   demo.launch(server_name = FLAGS.host, server_port = FLAGS.port)
 
