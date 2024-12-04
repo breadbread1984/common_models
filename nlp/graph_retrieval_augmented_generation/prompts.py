@@ -99,6 +99,12 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt:/
       suffix="User input: {question}\nCypher query: ",
       input_variables=["question", "schema"],
     )
+  prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = prompt)
+    ],
+    tokenizer = tokenizer
+  )
   return prompt
 
 if __name__ == "__main__":
