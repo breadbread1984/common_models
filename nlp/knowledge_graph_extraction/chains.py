@@ -14,6 +14,8 @@ def load_graph_qa_chain(tgi_host, neo4j_host, neo4j_user, neo4j_password, neo4j_
   chain = GraphCypherQAChain.from_llm(
     graph = graph,
     llm = llm,
+    qa_prompt = qa_prompt(tokenizer),
+    cypher_prompt = cypher_prompt(tokenizer),
     verbose = True,
     allow_dangerous_requests = True
   )
