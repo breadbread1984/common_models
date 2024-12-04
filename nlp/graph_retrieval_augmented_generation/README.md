@@ -36,11 +36,15 @@ docker run --gpus 0,1,2,3 --shm-size 1g -p 8080:80 -v /home/xieyi/raid/huggingfa
 
 ## Extract knowledge graph
 
+You can set up **node_types** and **rel_types** extracted by LLM in **config.py**. Otherwise, you can set these variables as **None** to make LLM derivated node types and relation types freely.
+
 ```shell
 python3 load_text.py --input_dir <input/directory> --tgi_host <tgi/host> --neo4j_host <neo4j/host> --neo4j_user <neo4j/user> --neo4j_password <neo4j/password> --neo4j_db <neo4j/db> [--split]
 ```
 
 ## Start Graph RAG server
+
+You can use few shot prompt, in which case you need to give examples in **config.py**. the examples specify how to translate questions into cypher commands.
 
 ```shell
 python3 main.py --tgi_host <tgi/host> --neo4j_host <neo4j/host> --neo4j_user <neo4j/user> --neo4j_password <neo4j/password> --neo4j_db <neo4j/db> --host <server/host> --port <server/port> [--use_fewshot [--use_selector]]
