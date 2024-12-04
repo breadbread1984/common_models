@@ -66,17 +66,22 @@ def cypher_prompt(tokenizer):
   )
   return prompt
 
-def fewshot_cypher_prompt(tokenizer, with_selector = False):
+def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt://localhost:7687', neo4j_user = 'neo4j', neo4j_password = 'neo4j', neo4j_db = 'neo4j'):
   example_prompt = PromptTemplate.from_template(
     "User input: {question}\nCypher query: {query}"
   )
   if with_selector:
     example_selector = SemanticSimilarityExampleSelector.from_examples(
       config.examples,
-      HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
+      embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
       Neo4jVector,
       k = 5,
       input_keys = ["question"],
+      url = neo4j_host,
+      username = neo4j_user,
+      password = neo4j_password,
+      database = neo4j_db,
+      index_name = "cypher_example_rag",
     )
     prompt = FewShotPromptTemplate(
       example_selector = example_selector,
@@ -111,5 +116,5 @@ if __name__ == "__main__":
   print(prompt)
   prompt = fewshot_cypher_prompt(tokenizer)
   print(prompt)
-  prompt = fewshot_cypher_prompt(tokenizer, True)
+  prompt = fewshot_cypher_prompt(tokenizer, True, neo4j_host = 'bolt://103.6.49.76:7687', neo4j_password = '19841124', neo4j_db = 'test3')
   print(prompt)
