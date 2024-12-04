@@ -6,7 +6,7 @@ from langchain_neo4j import GraphCypherQAChain
 from models import TGI
 from prompts import qa_prompt, cypher_prompt, fewshot_cypher_prompt, rephrase_question_answer
 
-def load_graph_qa_chain(tgi_host = 'http://localhost:8080', neo4j_host = 'bolt://localhost:7687', neo4j_user = 'neo4j', neo4j_password = 'neo4j', neo4j_db = 'neo4j', use_fewshot = False, use_selector = False):
+def load_graph_qa_chain(tgi_host = 'http://localhost:8080/generate', neo4j_host = 'bolt://localhost:7687', neo4j_user = 'neo4j', neo4j_password = 'neo4j', neo4j_db = 'neo4j', use_fewshot = False, use_selector = False):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
   llm = TGI(tgi_host)
   graph = Neo4jGraph(url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db)
@@ -23,7 +23,7 @@ def load_graph_qa_chain(tgi_host = 'http://localhost:8080', neo4j_host = 'bolt:/
   )
   return chain
 
-def rephrase_chain(tgi_host = "http://localhost:8080"):
+def rephrase_chain(tgi_host = "http://localhost:8080/generate"):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
   llm = TGI(tgi_host)
   prompt = rephrase_question_answer(tokenizer)
