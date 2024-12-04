@@ -21,7 +21,18 @@ def add_options():
   flags.DEFINE_string('neo4j_db', default = 'neo4j', help = 'database')
 
 def main(unused_argv):
-  docs = list()
+  embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+  vectordb = Neo4jVector(
+    embedding = embedding,
+    url = FLAGS.neo4j_host,
+    username = FLAGS.neo4j_user,
+    password = FLAGS.neo4j_password,
+    database = FLAGS.neo4j_db,
+    index_name = "typical_rag",
+    search_type = "hybrid",
+    pre_delete_collection = True
+  )
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 50, chunk_overlap = 0)
   # load
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
@@ -34,22 +45,9 @@ def main(unused_argv):
         loader = UnstructuredPDFLoader(join(root, f), mode = 'single')
       else:
         raise Exception('unknown format!')
-      docs.extend(loader.load())
-  # split
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 150)
-  split_docs = text_splitter.split_documents(docs)
-  embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-  vectordb = Neo4jVector.from_documents(
-    documents = split_docs,
-    embedding = embedding,
-    url = FLAGS.neo4j_host,
-    username = FLAGS.neo4j_user,
-    password = FLAGS.neo4j_password,
-    database = FLAGS.neo4j_db,
-    index_name = "typical_rag",
-    search_type = "hybrid",
-    pre_delete_collection = True
-  )
+      docs = loader.load()
+      split_docs = text_splitter.split_documents(docs)
+      vectordb.add_documents(split_docs)
 
 if __name__ == "__main__":
   add_options()
