@@ -20,7 +20,7 @@ def main(unused_argv):
     for paragraph in sample['paragraphs']:
       for qa in paragraph['qas']:
           question = qa['question']
-          answer = qa['answers']
+          answer = qa['answers']['text']
           sentence = chain.invoke({'question': question, 'answer': answer})
           print(question, answer, sentence)
           exit()
