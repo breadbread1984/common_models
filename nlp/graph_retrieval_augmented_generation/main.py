@@ -25,7 +25,7 @@ def create_interface(chain):
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
     response = chain.invoke({'query': user_input, 'chat_history': chat_history})
-    history.append((user_input, response['answer']))
+    history.append((user_input, response))
     return history, history, ""
   with gr.Blocks() as demo:
     state = gr.State([])
