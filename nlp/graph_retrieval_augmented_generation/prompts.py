@@ -123,5 +123,5 @@ if __name__ == "__main__":
   print(prompt)
   prompt = fewshot_cypher_prompt(tokenizer)
   print(prompt)
-  prompt = fewshot_cypher_prompt(tokenizer, True, neo4j_host = 'bolt://103.6.49.76:7687', neo4j_password = '19841124', neo4j_db = 'test3')
+  prompt = fewshot_cypher_prompt(tokenizer, True, neo4j_host = 'bolt://103.6.49.76:7687', neo4j_db = 'test3')
   print(prompt)
