@@ -74,7 +74,7 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt:/
     example_selector = SemanticSimilarityExampleSelector.from_examples(
       config.examples,
       embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
-      Neo4jVector,
+      vectorstore_cls = Neo4jVector,
       k = 5,
       input_keys = ["question"],
       url = neo4j_host,
