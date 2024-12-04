@@ -7,6 +7,7 @@ from tqdm import tqdm
 import json
 from transformers import AutoTokenizer
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jGraph
 from langchain_experimental.graph_transformers.llm import LLMGraphTransformer
 from models import TGI
@@ -22,6 +23,7 @@ def add_options():
   flags.DEFINE_string('neo4j_user', default = 'neo4j', help = 'user name')
   flags.DEFINE_string('neo4j_password', default = 'neo4j', help = 'password')
   flags.DEFINE_string('neo4j_db', default = 'neo4j', help = 'database')
+  flags.DEFINE_boolean('split', default = False, help = 'whether to split document')
 
 def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct') 
@@ -34,6 +36,8 @@ def main(unused_argv):
     allowed_relationships = config.rel_types,
   )
   neo4j = Neo4jGraph(url = FLAGS.neo4j_host, username = FLAGS.neo4j_user, password = FLAGS.neo4j_password, database = FLAGS.neo4j_db)
+  if FLAGS.split:
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
       stem, ext = splitext(f)
@@ -46,6 +50,8 @@ def main(unused_argv):
       else:
         raise Exception('unknown format!')
       docs = loader.load()
+      if FLAGS.split:
+        docs = text_splitter.split_documents(docs)
       graph = graph_transformer.convert_to_graph_documents(docs)
       neo4j.add_graph_documents(graph)
 
