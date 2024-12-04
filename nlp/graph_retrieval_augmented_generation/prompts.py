@@ -2,13 +2,15 @@
 
 from typing import Any, Union, List, Tuple, Optional
 from transformers import AutoTokenizer
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, FewShotPromptTemplate, PromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.prompts.chat import HumanMessagePromptTemplate
 from langchain_core.prompt_values import ChatPromptValue, PromptValue
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_experimental.graph_transformers.llm import create_unstructured_prompt
 from langchain_neo4j.chains.graph_qa.prompts import CYPHER_QA_PROMPT, CYPHER_GENERATION_PROMPT
-from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+from langchain_neo4j import Neo4jVector
+from langchain_huggingface import HuggingFaceEmbeddings
 import config
 
 class HFChatPromptValue(ChatPromptValue):
@@ -64,17 +66,33 @@ def cypher_prompt(tokenizer):
   )
   return prompt
 
-def fewshot_cypher_prompt(tokenizer):
+def fewshot_cypher_prompt(tokenizer, with_selector = False):
   example_prompt = PromptTemplate.from_template(
     "User input: {question}\nCypher query: {query}"
   )
-  prompt = FewShotPromptTemplate(
-    examples = config.examples[:5],
-    example_prompt = example_prompt,
-    prefix = "You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.\n\nHere is the schema information\n{schema}.\n\nBelow are a number of examples of questions and their corresponding Cypher queries.",
-    suffix="User input: {question}\nCypher query: ",
-    input_variables=["question", "schema"],
-  )
+  if with_selector:
+    example_selector = SemanticSimilarityExampleSelector.from_examples(
+      examples,
+      HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
+      Neo4jVector,
+      k=5,
+      input_keys=["question"],
+    )
+    prompt = FewShotPromptTemplate(
+      example_selector = example_selector,
+      example_prompt = example_prompt,
+      prefix = "You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.\n\nHere is the schema information\n{schema}.\n\nBelow are a number of examples of questions and their corresponding Cypher queries.",
+      suffix="User input: {question}\nCypher query: ",
+      input_variables=["question", "schema"],
+    )
+  else:
+    prompt = FewShotPromptTemplate(
+      examples = config.examples[:5],
+      example_prompt = example_prompt,
+      prefix = "You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.\n\nHere is the schema information\n{schema}.\n\nBelow are a number of examples of questions and their corresponding Cypher queries.",
+      suffix="User input: {question}\nCypher query: ",
+      input_variables=["question", "schema"],
+    )
   return prompt
 
 if __name__ == "__main__":
@@ -93,4 +111,5 @@ if __name__ == "__main__":
   print(prompt)
   prompt = fewshot_cypher_prompt(tokenizer)
   print(prompt)
-
+  prompt = fewshot_cypher_prompt(tokenizer, True)
+  print(prompt)
