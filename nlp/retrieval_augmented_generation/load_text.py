@@ -32,6 +32,9 @@ def main(unused_argv):
     search_type = "hybrid",
     pre_delete_collection = True
   )
+  embedding_dimension, index_type = vectordb.retrieve_existing_index()
+  if not index_type:
+    vectordb.create_new_index()
   text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
   # load
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
