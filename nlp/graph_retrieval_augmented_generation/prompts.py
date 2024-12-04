@@ -72,11 +72,11 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False):
   )
   if with_selector:
     example_selector = SemanticSimilarityExampleSelector.from_examples(
-      examples,
+      config.examples,
       HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
       Neo4jVector,
-      k=5,
-      input_keys=["question"],
+      k = 5,
+      input_keys = ["question"],
     )
     prompt = FewShotPromptTemplate(
       example_selector = example_selector,
