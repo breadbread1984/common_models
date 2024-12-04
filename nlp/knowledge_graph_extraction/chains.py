@@ -3,6 +3,7 @@
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j import GraphCypherQAChain
 from models import TGI
+from prompts import qa_prompt, cypher_prompt
 
 def load_graph_qa_chain(tgi_host, neo4j_host, neo4j_user, neo4j_password, neo4j_db):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')

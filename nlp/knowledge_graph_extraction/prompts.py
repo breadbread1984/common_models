@@ -4,8 +4,10 @@ from typing import Any, Union, List, Tuple, Optional
 from transformers import AutoTokenizer
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts.chat import HumanMessagePromptTemplate
 from langchain_core.prompt_values import ChatPromptValue, PromptValue
 from langchain_experimental.graph_transformers.llm import create_unstructured_prompt
+from langchain_neo4j.chains.graph_qa.prompts import CYPHER_QA_PROMPT, CYPHER_GENERATION_PROMPT
 
 class HFChatPromptValue(ChatPromptValue):
   tokenizer: Any = None
@@ -40,6 +42,24 @@ def extract_triplets_template(tokenizer,
   chat_prompt = create_unstructured_prompt(node_types, rel_types, relationship_type = 'tuple')
   chat_prompt = HFChatPromptTemplate(chat_prompt.messages, tokenizer = tokenizer)
   return chat_prompt
+
+def qa_prompt(tokenizer):
+  prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = CYPHER_QA_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  return prompt
+
+def cypher_prompt(tokenizer):
+  prompt = HFChatPromptTemplate(
+    messages = [
+      HumanMessagePromptTemplate(prompt = CYPHER_GENERATION_PROMPT)
+    ],
+    tokenizer = tokenizer
+  )
+  return prompt
 
 if __name__ == "__main__":
   from transformers import AutoTokenizer
