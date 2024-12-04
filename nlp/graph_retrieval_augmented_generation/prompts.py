@@ -107,6 +107,15 @@ def fewshot_cypher_prompt(tokenizer, with_selector = False, neo4j_host = 'bolt:/
   )
   return prompt
 
+def rephrase_question_answer(tokenizer):
+  prompt = HFChatPromptTemplate(
+    messages = [
+      ('human', '请将如下问题和答案rephrase成为一个陈述句。\n\nQuestion:\n\n{question}\n\nAnswer:\n\n{answer}')
+    ],
+    tokenizer = tokenizer
+  )
+  return prompt
+
 if __name__ == "__main__":
   from transformers import AutoTokenizer
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
@@ -124,4 +133,6 @@ if __name__ == "__main__":
   prompt = fewshot_cypher_prompt(tokenizer)
   print(prompt)
   prompt = fewshot_cypher_prompt(tokenizer, True, neo4j_host = 'bolt://103.6.49.76:7687', neo4j_password = '19841124', neo4j_db = 'test3')
+  print(prompt)
+  prompt = rephrase_question_answer(tokenizer)
   print(prompt)
