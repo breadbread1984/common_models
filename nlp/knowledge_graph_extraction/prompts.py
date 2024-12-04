@@ -71,4 +71,8 @@ if __name__ == "__main__":
                                        ('electrolyte', 'has_precursor', 'precursor')
                                      ])
   print(prompt)
+  prompt = qa_prompt(tokenizer)
+  print(prompt)
+  prompt = cypher_prompt(tokenizer)
+  print(prompt)
 
