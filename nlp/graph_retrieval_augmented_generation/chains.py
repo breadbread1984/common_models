@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from transformers import AutoTokenizer
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j import GraphCypherQAChain
 from models import TGI
