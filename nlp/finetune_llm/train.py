@@ -4,7 +4,7 @@ from absl import flags, app
 from trl import SFTTrainer
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
-from deepspeed import DeepSpeedEngine
+import deepspeed
 from create_datasets import load_hotpotqa
 
 FLAGS = flags.FLAGS
@@ -80,7 +80,7 @@ def main(unused_argv):
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
-    deepspeed = ds_config,
+    deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
     model = model,
