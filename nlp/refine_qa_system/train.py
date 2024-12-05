@@ -16,6 +16,7 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 3, help = 'epochs')
   flags.DEFINE_integer('max_seq_length', default = 32768, help = 'max sequence length')
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
+  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
 
 def main(unused_argv):
   configs = {
@@ -82,9 +83,13 @@ def main(unused_argv):
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
     logging_steps = 100,
-    resume_from_checkpoint = FLAGS.load_ckpt
   )
-  trainer.train()
+  if not FLAGS.eval_only:
+    trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
+    trainer.save_model('best_model')
+  else:
+    eval_res = trainer.evaluate()
+    print(eval_res)
 
 if __name__ == "__main__":
   add_options()
