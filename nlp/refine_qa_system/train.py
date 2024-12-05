@@ -67,6 +67,9 @@ def main(unused_argv):
   ds_config = DeepSpeedConfig(configs)
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   trainer = SFTTrainer(
+    output_dir = FLAGS.save_ckpt,
+    evaluation_strategy = "epoch",
+    save_strateg = "epoch"
     model = model,
     train_dataset = train,
     eval_dataset = valid,
@@ -79,6 +82,7 @@ def main(unused_argv):
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
     logging_steps = 100,
+    resume_from_checkpoint = FLAGS.load_ckpt
   )
   trainer.train()
 
