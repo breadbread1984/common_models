@@ -1,2 +1,4 @@
 gymnasium
+gymnasium[mujoco]
 mujoco
+
