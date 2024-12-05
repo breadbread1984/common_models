@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
 import deepspeed
@@ -69,7 +69,7 @@ def main(unused_argv):
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
-  training_args = TrainingArguments(
+  training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
@@ -80,6 +80,7 @@ def main(unused_argv):
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
+    dataset_text_field = 'messages',
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
