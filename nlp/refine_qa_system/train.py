@@ -74,7 +74,11 @@ def main(unused_argv):
     tokenizer = tokenizer,
     per_device_train_batch_size = FLAGS.batch,
     per_device_eval_batch_size = FLAGS.batch,
+    gradient_accumulation_steps = 4,
     deepspeed = ds_config,
+    num_train_epochs = FLAGS.epochs,
+    logging_dir = "./logs",
+    logging_steps = 100,
   )
   trainer.train()
 
