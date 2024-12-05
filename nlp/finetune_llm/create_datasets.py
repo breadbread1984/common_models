@@ -16,6 +16,7 @@ def format_example(example):
   assistant_message = f"答案:{example['answer']}\n\n关键句子:"
   assistant_message += ','.join([f"文档{example['context']['title'].index(title)}句子{sent_id}" for sent_id, title in zip(example['supporting_facts']['sent_id'], example['supporting_facts']['title'])])
   messages.append({'role': 'assistant', 'content': assistant_message})
+  # NOTE: field name refs to https://huggingface.co/docs/trl/main/en/dataset_formats
   example['messages'] = messages
   return example
 
