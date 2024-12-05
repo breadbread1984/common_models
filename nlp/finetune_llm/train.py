@@ -3,7 +3,7 @@
 from absl import flags, app
 from trl import SFTTrainer
 from peft import LoraConfig
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
 from deepspeed import DeepSpeedEngine, DeepSpeedConfig
 from create_datasets import load_hotpotqa
 
@@ -70,22 +70,26 @@ def main(unused_argv):
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
   ds_config = DeepSpeedConfig(configs)
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
-  trainer = SFTTrainer(
+  training_args = TrainingArguments(
     output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
+    learning_rate = FLAGS.lr,
+    per_device_train_batch_size = FLAGS.batch,
+    per_device_eval_batch_size = FLAGS.batch,
+    num_train_epochs = FLAGS.epochs,
+    logging_dir = "./logs",
+    logging_steps = 100,
+  )
+  trainer = SFTTrainer(
     model = model,
+    args = training_args,
     train_dataset = train,
     eval_dataset = valid,
     max_seq_length = FLAGS.max_seq_length,
     tokenizer = tokenizer,
-    per_device_train_batch_size = FLAGS.batch,
-    per_device_eval_batch_size = FLAGS.batch,
     gradient_accumulation_steps = 4,
     deepspeed = ds_config,
-    num_train_epochs = FLAGS.epochs,
-    logging_dir = "./logs",
-    logging_steps = 100,
   )
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
