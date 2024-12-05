@@ -10,6 +10,12 @@ this project demos how the LLM is supervisedly pretrained.
 python3 -m pip install -r requirements.txt
 ```
 
+## Download dataset
+
+```shell
+python3 create_datasets.py
+```
+
 ## Training
 
 ```shell
