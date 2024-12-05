@@ -1,8 +1,14 @@
 #!/usr/bin/python3
 
-node_types = ['Person', 'Location', 'Organization', 'Product']
+node_types = ['Person', 'Location', 'Organization', 'Product', 'Time', 'Event']
 rel_types = [
   ('Person', 'CEO_of', 'Organization'),
+  ('Person', 'Birth_In', 'Location'),
+  ('Person', 'Work_For', 'Organization'),
+  ('Person', 'Work_Time', 'Time'),
+  ('Person', 'Participate_In', 'Event'),
+  ('Person', 'Member_Of', 'Organization'),
+  ('Event', 'Happened_Before', 'Event'),
   ('Organization', 'Based_In', 'Location'),
   ('Product', 'Launches_From', 'Location'),
   ('Organization', 'Develops', 'Product'),
