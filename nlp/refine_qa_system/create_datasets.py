@@ -29,3 +29,4 @@ def load_hotpotqa():
 
 if __name__ == "__main__":
   train, valid = load_hotpotqa()
+  print(train[0]['messages'])
