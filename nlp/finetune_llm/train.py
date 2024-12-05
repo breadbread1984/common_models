@@ -73,7 +73,7 @@ def main(unused_argv):
   trainer = SFTTrainer(
     output_dir = FLAGS.save_ckpt,
     evaluation_strategy = "epoch",
-    save_strateg = "epoch",
+    save_strategy = "epoch",
     model = model,
     train_dataset = train,
     eval_dataset = valid,
