@@ -87,7 +87,8 @@ def main(unused_argv):
   )
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
-    trainer.save_model('best_model')
+    if FLAGS.local_rank == 0:
+      trainer.save_model('best_model')
   else:
     eval_res = trainer.evaluate()
     print(eval_res)
