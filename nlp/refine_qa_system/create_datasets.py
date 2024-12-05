@@ -17,7 +17,7 @@ def format_example(example):
   assistant_message += ','.join([f"文档{example['context']['title'].index(title)}句子{sent_id}" for sent_id, title in zip(example['supporting_facts']['sent_id'], example['supporting_facts']['title'])])
   messages.append({'role': 'assistant', 'content': assistant_message})
   example['messages'] = messages
-  return examples
+  return example
 
 def load_hotpotqa():
   train = load_dataset('hotpotqa/hotpot_qa', 'distractor', split = 'train', trust_remote_code = True)
@@ -28,4 +28,4 @@ def load_hotpotqa():
 
 if __name__ == "__main__":
   train, valid = load_hotpotqa()
-  print(train[0]['messages'])
+
