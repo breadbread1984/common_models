@@ -17,6 +17,7 @@ def add_options():
   flags.DEFINE_integer('max_seq_length', default = 32768, help = 'max sequence length')
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
+  flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
 
 def main(unused_argv):
   configs = {
