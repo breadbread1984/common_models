@@ -80,6 +80,7 @@ def main(unused_argv):
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
+    max_seq_length = FLAGS.max_seq_length,
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
@@ -87,7 +88,6 @@ def main(unused_argv):
     args = training_args,
     train_dataset = train,
     eval_dataset = valid,
-    max_seq_length = FLAGS.max_seq_length,
     tokenizer = tokenizer,
   )
   if not FLAGS.eval_only:
