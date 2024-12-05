@@ -22,7 +22,7 @@ def add_options():
 def main(unused_argv):
   configs = {
     "fp16": {
-      "enabled": true,
+      "enabled": True,
       "loss_scale": 0,
       "loss_scale_window": 1000,
       "hysteresis": 2,
@@ -49,19 +49,19 @@ def main(unused_argv):
       "stage": 2,
       "offload_optimizer": {
         "device": "cpu",
-        "pin_memory": true
+        "pin_memory": True
       },
-      "allgather_partitions": true,
+      "allgather_partitions": True,
       "allgather_bucket_size": 2e8,
-      "reduce_scatter": true,
+      "reduce_scatter": True,
       "reduce_bucket_size": 2e8,
-      "overlap_comm": true,
-      "load_from_fp32_weights": true,
-      "elastic_checkpoint": true
+      "overlap_comm": True,
+      "load_from_fp32_weights": True,
+      "elastic_checkpoint": True
     },
     "gradient_clipping": 1.0,
     "steps_per_print": 2000,
-    "wall_clock_breakdown": false
+    "wall_clock_breakdown": False
   }
   train, valid = load_hotpotqa()
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
