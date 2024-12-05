@@ -23,9 +23,10 @@ def main(unused_argv):
       for paragraph in sample['paragraphs']:
         for qa in paragraph['qas']:
           question = qa['question']
-          answer = qa['answers'][0]['text']
-          sentence = chain.invoke({'question': question, 'answer': answer})
-          f.write(sentence + '\n')
+          for answer in qa['answers']:
+            answer = answer['text']
+            sentence = chain.invoke({'question': question, 'answer': answer})
+            f.write(sentence + '\n')
 
 if __name__ == "__main__":
   add_options()
