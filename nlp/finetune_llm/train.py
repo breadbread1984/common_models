@@ -59,6 +59,8 @@ def main(unused_argv):
       "load_from_fp32_weights": True,
       "elastic_checkpoint": True
     },
+    "train_batch_size": FLAGS.batch,
+    "eval_batch_size": FLAGS.batch,
     "gradient_clipping": 1.0,
     "steps_per_print": 2000,
     "wall_clock_breakdown": False
