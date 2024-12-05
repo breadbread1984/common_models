@@ -1,4 +1,4 @@
 gymnasium
-gymnasium[mujoco]
+gymnasium-robotics
 mujoco
 
