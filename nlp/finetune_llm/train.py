@@ -17,6 +17,7 @@ def add_options():
   flags.DEFINE_integer('max_seq_length', default = 4900, help = 'max sequence length')
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
+  flags.DEFINE_integer('workers', default = 4, help = 'number of workers')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
   flags.DEFINE_integer('dp', default = 1, help = 'data parallel number')
   flags.DEFINE_integer('tp', default = 1, help = 'tensor parallel number')
@@ -31,11 +32,6 @@ def main(unused_argv):
       "loss_scale_window": 1000,
       "hysteresis": 2,
       "min_loss_scale": 1
-    },
-    "optimizer": {
-      "type": "AdamW",
-      "params": {
-      }
     },
     "scheduler": {
       "type": "WarmupLR",
@@ -77,17 +73,25 @@ def main(unused_argv):
     output_dir = FLAGS.save_ckpt,
     per_device_train_batch_size = FLAGS.batch,
     evaluation_strategy = "epoch",
-    save_strategy = "epoch",
-    weight_decay = 0.01,
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
-    fp16 = True,
-    learning_rate = FLAGS.lr,
     warmup_steps = 500,
     max_seq_length = FLAGS.max_seq_length,
     deepspeed = ds_configs,
+  )
+  training_args.set_dataloader(
+    num_workers = FLAGS.workers,
+    pin_memory = True,
+  )
+  training_args.set_optimizer(
+    name = "AdamW",
+    learning_rate = FLAGS.lr,
+    weight_decay = 0.01,
+  )
+  training_args.set_save(
+    strategy = "epoch",
   )
   trainer = SFTTrainer(
     model = model,
