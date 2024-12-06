@@ -80,7 +80,6 @@ def main(unused_argv):
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
-    dataset_text_field = 'messages',
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
