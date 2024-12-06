@@ -21,3 +21,9 @@ python3 create_datasets.py
 ```shell
 deepspeed --num_gpus=<tensor parallelism number> train.py [other args]
 ```
+
+or
+
+```shell
+CUDA_VISIBLE_DEVICES=5,6 deepspeed train.py [other args]
+```
