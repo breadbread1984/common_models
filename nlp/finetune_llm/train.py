@@ -33,11 +33,6 @@ def main(unused_argv):
       "hysteresis": 2,
       "min_loss_scale": 1
     },
-    "scheduler": {
-      "type": "WarmupLR",
-      "params": {
-      }
-    },
     "zero_optimization": {
       "stage": 3,
       "offload_optimizer": {
@@ -75,28 +70,41 @@ def main(unused_argv):
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
-    per_device_train_batch_size = FLAGS.batch,
-    evaluation_strategy = "epoch",
-    num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
-    logging_steps = 100,
-    gradient_accumulation_steps = 4,
-    warmup_steps = 500,
     max_seq_length = FLAGS.max_seq_length,
     deepspeed = ds_configs,
     fp16 = True,
   )
-  training_args.set_dataloader(
-    num_workers = FLAGS.workers,
-    pin_memory = True,
-  )
-  training_args.set_optimizer(
-    name = "adamw_hf",
+  training_args.set_training(
     learning_rate = FLAGS.lr,
+    batch_size = FLAGS.batch,
     weight_decay = 0.01,
+    num_epochs = FLAGS.epochs,
+    gradient_accumulation_steps = 4
+  )
+  training_args.set_evaluate(
+    strategy = 'epoch',
   )
   training_args.set_save(
     strategy = "epoch",
+  )
+  training_args.set_logging(
+    steps = 100,
+  )
+  training_args.set_optimizer(
+    name = "adamw_torch",
+    learning_rate = FLAGS.lr,
+    weight_decay = 0.01
+  )
+  training_args.set_lr_scheduler(
+    name = 'warmup_stable_decay',
+    warmup_steps = 500
+  )
+  training_args.set_dataloader(
+    train_batch_size = FLAGS.batch,
+    eval_batch_size = FLAGS.batch,
+    num_workers = FLAGS.workers,
+    pin_memory = True,
   )
   trainer = SFTTrainer(
     model = model,
