@@ -15,7 +15,7 @@ def add_options():
   flags.DEFINE_string('load_ckpt', default = None, help = 'path to load checkpoint')
   flags.DEFINE_float('lr', default = 5e-5, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'epochs')
-  flags.DEFINE_integer('max_seq_length', default = 32768, help = 'max sequence length')
+  flags.DEFINE_integer('max_seq_length', default = 4900, help = 'max sequence length')
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
