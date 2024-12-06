@@ -33,15 +33,11 @@ def main(unused_argv):
     "optimizer": {
       "type": "AdamW",
       "params": {
-        "lr": FLAGS.lr
       }
     },
     "scheduler": {
       "type": "WarmupLR",
       "params": {
-        "warmup_min_lr": 0,
-        "warmup_max_lr": 5e-5,
-        "warmup_num_steps": 500
       }
     },
     "zero_optimization": {
@@ -78,6 +74,8 @@ def main(unused_argv):
     logging_steps = 100,
     gradient_accumulation_steps = 4,
     fp16 = True,
+    learning_rate = FLAGS.lr,
+    warmup_num_steps = 500,
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
