@@ -81,6 +81,7 @@ def main(unused_argv):
     logging_steps = 100,
     gradient_accumulation_steps = 4,
     deepspeed = ds_configs,
+    data_text_field = "messages",
   )
   trainer = SFTTrainer(
     model = model,
