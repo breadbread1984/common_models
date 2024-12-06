@@ -75,7 +75,7 @@ def main(unused_argv):
     gradient_accumulation_steps = 4,
     fp16 = True,
     learning_rate = FLAGS.lr,
-    warmup_dyrpd = 500,
+    warmup_steps = 500,
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
