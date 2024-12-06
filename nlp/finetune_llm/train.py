@@ -21,7 +21,7 @@ def add_options():
 
 def main(unused_argv):
   ds_configs = {
-    "train_batch_size": FLAGS.batch,
+    "train_micro_batch_size_per_gpu": FLAGS.batch,
     "fp16": {
       "enabled": True,
       "loss_scale": 0,
@@ -59,7 +59,7 @@ def main(unused_argv):
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
-    train_batch_size = FLAGS.batch,
+    per_device_train_batch_size = FLAGS.batch,
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
