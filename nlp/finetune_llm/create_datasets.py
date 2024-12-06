@@ -32,5 +32,9 @@ if __name__ == "__main__":
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
   max_length = 0
   for sample in train:
-    encoding = tokenizer.apply_chat_template(sample['messages'], tokenize = True, add_generation_prompt = True)
-    import pdb; pdb.set_trace()
+    tokens = tokenizer.apply_chat_template(sample['messages'], tokenize = True, add_generation_prompt = True)
+    max_length = len(tokens) if len(tokens) > max_length else max_length
+  for sample in valid:
+    tokens = tokenizer.apply_chat_template(sample['messages'], tokenize = True, add_generation_prompt = True)
+    max_length = len(tokens) if len(tokens) > max_length else max_length
+  print(max_length)
