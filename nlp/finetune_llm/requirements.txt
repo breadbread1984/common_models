@@ -1,4 +1,4 @@
 transformers
 trl
 peft
-deepspeed
+deepspeed==0.15.4 # 0.16.0 cause no_sync context manager is incompatible with gradient partitioning logic of ZeRO stage 2
