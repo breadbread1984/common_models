@@ -21,6 +21,7 @@ def add_options():
 
 def main(unused_argv):
   ds_configs = {
+    "train_batch_size": FLAGS.batch,
     "fp16": {
       "enabled": True,
       "loss_scale": 0,
@@ -62,8 +63,6 @@ def main(unused_argv):
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
     weight_decay = 0.01,
-    per_device_train_batch_size = FLAGS.batch,
-    per_device_eval_batch_size = FLAGS.batch,
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
     logging_steps = 100,
