@@ -18,6 +18,7 @@ def add_options():
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
+  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
 
 def main(unused_argv):
   ds_configs = {
@@ -80,6 +81,7 @@ def main(unused_argv):
     tokenizer = tokenizer,
     max_seq_length = FLAGS.max_seq_length,
   )
+  model.to(FLAGS.device)
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     if FLAGS.local_rank == 0:
