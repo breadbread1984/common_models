@@ -29,21 +29,10 @@ def main(unused_argv):
       "min_loss_scale": 1
     },
     "optimizer": {
-      "type": "AdamW",
-      "params": {
-        "lr": FLAGS.lr,
-        "betas": [0.9, 0.999],
-        "eps": 1e-8,
-        "weight_decay": 0.01
-      }
+      "type": "AdamW"
     },
     "scheduler": {
-      "type": "WarmupLR",
-      "params": {
-        "warmup_min_lr": 0,
-        "warmup_max_lr": 5e-5,
-        "warmup_num_steps": 500
-      }
+      "type": "WarmupLR"
     },
     "zero_optimization": {
       "stage": 2,
@@ -74,12 +63,15 @@ def main(unused_argv):
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
+    weight_decay = 0.01
     per_device_train_batch_size = FLAGS.batch,
     per_device_eval_batch_size = FLAGS.batch,
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
     logging_steps = 100,
     gradient_accumulation_steps = 4,
+    fp16 = True,
+    warmup_steps = 500,
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
