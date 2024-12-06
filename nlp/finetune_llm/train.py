@@ -90,6 +90,7 @@ def main(unused_argv):
   )
   training_args.set_logging(
     steps = 100,
+    report_to = "tensorboard",
   )
   training_args.set_optimizer(
     name = "adamw_torch",
