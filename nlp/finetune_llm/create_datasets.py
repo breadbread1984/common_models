@@ -22,8 +22,8 @@ def format_example(example):
 def load_hotpotqa():
   train = load_dataset('hotpotqa/hotpot_qa', 'distractor', split = 'train', trust_remote_code = True)
   valid = load_dataset('hotpotqa/hotpot_qa', 'distractor', split = 'validation', trust_remote_code = True)
-  train.map(format_example)
-  valid.map(format_example)
+  train = train.map(format_example)
+  valid = valid.map(format_example)
   return train, valid
 
 if __name__ == "__main__":
