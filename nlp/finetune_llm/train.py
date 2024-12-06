@@ -73,6 +73,7 @@ def main(unused_argv):
   )
   trainer = SFTTrainer(
     model = model,
+    per_device_train_batch_size = FLAGS.batch,
     args = training_args,
     train_dataset = train,
     eval_dataset = valid,
