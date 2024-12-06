@@ -31,13 +31,13 @@ def main(unused_argv):
       "min_loss_scale": 1
     },
     "optimizer": {
-      "type": "AdamW"
+      "type": "AdamW",
       "params": {
         "lr": FLAGS.lr
       }
     },
     "scheduler": {
-      "type": "WarmupLR"
+      "type": "WarmupLR",
       "params": {
         "warmup_min_lr": 0,
         "warmup_max_lr": 5e-5,
