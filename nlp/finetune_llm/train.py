@@ -95,6 +95,9 @@ def main(unused_argv):
     tokenizer = tokenizer,
     max_seq_length = FLAGS.max_seq_length,
   )
+  print(f'data parallelism: {deepspeed.utils.get_data_parallel_world_size()}')
+  print(f'tensor parallelism: {deepspeed.utils.get_tensor_parallel_world_size()}')
+  print(f'pipeline parallelism: {deepspeed.utils.get_pipeline_parallel_world_size()}')
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     if FLAGS.local_rank == 0:
