@@ -88,6 +88,7 @@ def main(unused_argv):
     fp16 = True,
     learning_rate = FLAGS.lr,
     warmup_steps = 500,
+    max_seq_length = FLAGS.max_seq_length,
     deepspeed = ds_configs,
   )
   trainer = SFTTrainer(
@@ -96,7 +97,6 @@ def main(unused_argv):
     train_dataset = train,
     eval_dataset = valid,
     tokenizer = tokenizer,
-    max_seq_length = FLAGS.max_seq_length,
   )
   model.to(device(FLAGS.device, FLAGS.local_rank))
   if not FLAGS.eval_only:
