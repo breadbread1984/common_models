@@ -39,8 +39,12 @@ def main(unused_argv):
       }
     },
     "zero_optimization": {
-      "stage": 2,
+      "stage": 3,
       "offload_optimizer": {
+        "device": "cpu",
+        "pin_memory": True
+      },
+      "offload_param": {
         "device": "cpu",
         "pin_memory": True
       },
@@ -80,6 +84,7 @@ def main(unused_argv):
     warmup_steps = 500,
     max_seq_length = FLAGS.max_seq_length,
     deepspeed = ds_configs,
+    fp16 = True,
   )
   training_args.set_dataloader(
     num_workers = FLAGS.workers,
