@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from torch import device
 from trl import SFTTrainer, SFTConfig
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
@@ -19,6 +20,9 @@ def add_options():
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
+  flags.DEFINE_integer('dp', default = 1, help = 'data parallel number')
+  flags.DEFINE_integer('tp', default = 1, help = 'tensor parallel number')
+  flags.DEFINE_integer('pp', default = 1, help = 'pipeline parallel number')
 
 def main(unused_argv):
   ds_configs = {
@@ -58,19 +62,19 @@ def main(unused_argv):
     "steps_per_print": 2000,
     "wall_clock_breakdown": False,
     "tensor_parallel": {
-      "tp_size": deepspeed.utils.get_world_size()
+      "tp_size": FLAGS.tp
     },
     "pipeline_parallel": {
-      "pp_size": 1
+      "pp_size": FLAGS.pp
     },
     "data_parallel": {
-      "dp_size": 1
+      "dp_size": FLAGS.dp
     }
   }
   train, valid = load_hotpotqa()
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
-  model.to(FLAGS.device)
+  model.to(device(FLAGS.device, FLAGS.local_rank))
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
