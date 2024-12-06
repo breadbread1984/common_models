@@ -86,7 +86,7 @@ def main(unused_argv):
     pin_memory = True,
   )
   training_args.set_optimizer(
-    name = "AdamW",
+    name = "adamw_hf",
     learning_rate = FLAGS.lr,
     weight_decay = 0.01,
   )
