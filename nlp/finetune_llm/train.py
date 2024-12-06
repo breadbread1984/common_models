@@ -98,7 +98,7 @@ def main(unused_argv):
     weight_decay = 0.01
   )
   training_args.set_lr_scheduler(
-    name = 'warmup_stable_decay',
+    name = 'linear',
     warmup_steps = 500
   )
   training_args.set_dataloader(
