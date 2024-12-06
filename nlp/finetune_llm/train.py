@@ -74,7 +74,6 @@ def main(unused_argv):
   train, valid = load_hotpotqa()
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
-  model.to(device(FLAGS.device, FLAGS.local_rank))
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
@@ -102,6 +101,7 @@ def main(unused_argv):
   print(f'data parallelism: {deepspeed.utils.get_data_parallel_world_size()}')
   print(f'tensor parallelism: {deepspeed.utils.get_tensor_parallel_world_size()}')
   print(f'pipeline parallelism: {deepspeed.utils.get_pipeline_parallel_world_size()}')
+  model.to(device(FLAGS.device, FLAGS.local_rank))
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     if FLAGS.local_rank == 0:
