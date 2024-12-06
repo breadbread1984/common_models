@@ -59,6 +59,7 @@ def main(unused_argv):
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
+    per_device_train_batch_size = FLAGS.batch,
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
@@ -73,7 +74,6 @@ def main(unused_argv):
   )
   trainer = SFTTrainer(
     model = model,
-    per_device_train_batch_size = FLAGS.batch,
     args = training_args,
     train_dataset = train,
     eval_dataset = valid,
