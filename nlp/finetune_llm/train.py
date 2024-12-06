@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from torch import device
 from trl import SFTTrainer, SFTConfig
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
@@ -19,7 +18,6 @@ def add_options():
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
-  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cpu', 'cuda'}, help = 'device to use')
   flags.DEFINE_integer('dp', default = 1, help = 'data parallel number')
   flags.DEFINE_integer('tp', default = 1, help = 'tensor parallel number')
   flags.DEFINE_integer('pp', default = 1, help = 'pipeline parallel number')
@@ -98,7 +96,6 @@ def main(unused_argv):
     eval_dataset = valid,
     tokenizer = tokenizer,
   )
-  model.to(device(FLAGS.device, FLAGS.local_rank))
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
     if FLAGS.local_rank == 0:
