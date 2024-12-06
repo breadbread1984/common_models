@@ -56,7 +56,16 @@ def main(unused_argv):
     },
     "gradient_clipping": 1.0,
     "steps_per_print": 2000,
-    "wall_clock_breakdown": False
+    "wall_clock_breakdown": False,
+    "tensor_parallel": {
+      "tp_size": deepspeed.utils.get_world_size()
+    },
+    "pipeline_parallel": {
+      "pp_size": 1
+    },
+    "data_parallel": {
+      "dp_size": 1
+    }
   }
   train, valid = load_hotpotqa()
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
