@@ -4,7 +4,7 @@ from absl import flags, app
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torchrl.components import SAC
+from torchrl.algo import SAC
 from torchrl.envs import GymEnvWrapper
 from torchrl.envs.wrappers import VecNormalize
 from torchrl.agents import ActorCriticAgent
