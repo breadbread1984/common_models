@@ -9,11 +9,14 @@ def load_fetchpickplace_env():
   return env
 
 if __name__ == "__main__":
+  import cv2
   env = load_fetchpickplace_env()
   observation, info = env.reset(seed = 42)
   image = env.render()[:,:,::-1]
-  import cv2
   cv2.imshow("", image)
+  #image = env.render('image_obs')[:,:,::-1]
+  #cv2.imshow("image_obs", image)
+  #image = env.render('raw_obs')[:,:,::-1]
   cv2.waitKey()
   # NOTE: https://robotics.farama.org/envs/fetch/pick_and_place/
   # observation['observation'].shape = (25,)
