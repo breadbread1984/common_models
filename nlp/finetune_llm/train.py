@@ -75,6 +75,7 @@ def main(unused_argv):
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
+    per_device_train_batch_size = FLAGS.batch,
     evaluation_strategy = "epoch",
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
@@ -86,7 +87,6 @@ def main(unused_argv):
     fp16 = True,
   )
   training_args.set_dataloader(
-    per_device_train_batch_size = FLAGS.batch,
     num_workers = FLAGS.workers,
     pin_memory = True,
   )
