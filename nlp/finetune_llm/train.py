@@ -67,7 +67,7 @@ def main(unused_argv):
   train, valid = load_hotpotqa()
   tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct', trust_remote_code = True)
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
-  ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
+  lora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
     logging_dir = "./logs",
@@ -113,6 +113,7 @@ def main(unused_argv):
     train_dataset = train,
     eval_dataset = valid,
     tokenizer = tokenizer,
+    peft_config = lora_peft_config
   )
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
