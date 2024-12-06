@@ -19,5 +19,5 @@ python3 create_datasets.py
 ## Training
 
 ```shell
-deepspeed --include localhost:5,6 train.py [other args]
+deepspeed --include localhost:5,6 train.py --tp <tp num> --pp <pp num> --dp <dp num>
 ```
