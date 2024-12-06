@@ -28,4 +28,9 @@ def load_hotpotqa():
 
 if __name__ == "__main__":
   train, valid = load_hotpotqa()
-  print(valid[0]['messages'])
+  from transformers import AutoTokenizer
+  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
+  int max_length = 0
+  for sample in train:
+    encoding = tokenizer.apply_chat_template(sample[messages], tokenize = True, add_generation_prompt = True)
+    import pdb; pdb.set_trace()
