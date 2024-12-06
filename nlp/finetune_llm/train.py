@@ -48,8 +48,6 @@ def main(unused_argv):
       "load_from_fp32_weights": True,
       "elastic_checkpoint": True
     },
-    "train_batch_size": FLAGS.batch,
-    "eval_batch_size": FLAGS.batch,
     "gradient_clipping": 1.0,
     "steps_per_print": 2000,
     "wall_clock_breakdown": False
@@ -63,7 +61,7 @@ def main(unused_argv):
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     learning_rate = FLAGS.lr,
-    weight_decay = 0.01
+    weight_decay = 0.01,
     per_device_train_batch_size = FLAGS.batch,
     per_device_eval_batch_size = FLAGS.batch,
     num_train_epochs = FLAGS.epochs,
