@@ -3,7 +3,8 @@
 from absl import flags, app
 from trl import SFTTrainer, SFTConfig
 from peft import LoraConfig
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+import deepspeed
 from create_datasets import load_hotpotqa
 
 FLAGS = flags.FLAGS
@@ -13,6 +14,7 @@ def add_options():
   flags.DEFINE_string('load_ckpt', default = None, help = 'path to load checkpoint')
   flags.DEFINE_float('lr', default = 5e-5, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'epochs')
+  flags.DEFINE_integer('max_seq_length', default = 32768, help = 'max sequence length')
   flags.DEFINE_integer('batch', default = 8, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
@@ -87,6 +89,7 @@ def main(unused_argv):
     train_dataset = train,
     eval_dataset = valid,
     tokenizer = tokenizer,
+    max_seq_length = FLAGS.max_seq_length,
   )
   if not FLAGS.eval_only:
     trainer.train(resume_from_checkpoint = FLAGS.load_ckpt)
