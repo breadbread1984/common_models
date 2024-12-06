@@ -74,8 +74,6 @@ def main(unused_argv):
   model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
-    output_dir = FLAGS.save_ckpt,
-    per_device_train_batch_size = FLAGS.batch,
     evaluation_strategy = "epoch",
     num_train_epochs = FLAGS.epochs,
     logging_dir = "./logs",
@@ -87,6 +85,7 @@ def main(unused_argv):
     fp16 = True,
   )
   training_args.set_dataloader(
+    per_device_train_batch_size = FLAGS.batch,
     num_workers = FLAGS.workers,
     pin_memory = True,
   )
@@ -96,6 +95,7 @@ def main(unused_argv):
     weight_decay = 0.01,
   )
   training_args.set_save(
+    output_dir = FLAGS.save_ckpt,
     strategy = "epoch",
   )
   trainer = SFTTrainer(
