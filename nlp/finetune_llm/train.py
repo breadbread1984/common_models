@@ -15,7 +15,7 @@ def add_options():
   flags.DEFINE_float('lr', default = 5e-5, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 3, help = 'epochs')
   flags.DEFINE_integer('max_seq_length', default = 4900, help = 'max sequence length')
-  flags.DEFINE_integer('batch', default = 8, help = 'batch size')
+  flags.DEFINE_integer('batch', default = 2, help = 'batch size')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do evaluation only')
   flags.DEFINE_integer('workers', default = 4, help = 'number of workers')
   flags.DEFINE_integer('local_rank', default = None, help = 'local_rank')
@@ -25,7 +25,7 @@ def add_options():
 
 def main(unused_argv):
   ds_configs = {
-    "train_micro_batch_size_per_gpu": FLAGS.batch,
+    "train_batch_size": 'auto',
     "fp16": {
       "enabled": True,
       "loss_scale": 0,
@@ -65,8 +65,8 @@ def main(unused_argv):
     }
   }
   train, valid = load_hotpotqa()
-  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct', trust_remote_code = True)
-  model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-7B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
+  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct', trust_remote_code = True)
+  model = AutoModelForCausalLM.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct' if not FLAGS.eval_only else FLAGS.load_ckpt, trust_remote_code = True)
   ora_peft_config = LoraConfig(task_type = "CAUSAL_LM", r = 16, lora_alpha = 32, lora_dropout = 0.05)
   training_args = SFTConfig(
     output_dir = FLAGS.save_ckpt,
