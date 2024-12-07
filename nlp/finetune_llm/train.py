@@ -4,7 +4,6 @@ from absl import flags, app
 from trl import SFTTrainer, SFTConfig
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
-import deepspeed
 from create_datasets import load_hotpotqa
 
 FLAGS = flags.FLAGS
