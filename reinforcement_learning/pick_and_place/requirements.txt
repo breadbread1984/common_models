@@ -1,3 +1,4 @@
 gymnasium
 gymnasium-robotics
 stable-baselines3[extra]
+opencv-python

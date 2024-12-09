@@ -15,3 +15,9 @@ python3 -m pip install -r requirements.txt
 ```shell
 python3 train.py
 ```
+
+## Evaluating
+
+```shell
+python3 eval.py
+```
