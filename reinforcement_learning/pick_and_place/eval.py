@@ -11,7 +11,7 @@ def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to load checkpoint')
 
 def main(unused_argv):
-  env = load_fetchpickplace_env()
+  env = load_fetchpickplace_env(1)
   model = PPO('MultiInputPolicy', env, verbose = 1)
   model.load(FLAGS.ckpt)
 
