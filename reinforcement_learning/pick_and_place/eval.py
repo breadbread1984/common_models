@@ -16,7 +16,7 @@ def main(unused_argv):
   model.load(FLAGS.ckpt)
 
   for i in range(10):
-    obs, info = env.reset()
+    obs = env.reset()
     while True:
       action, states = model.predict(obs, deterministic = True)
       obs, reward, done, trunc, info = env.step(action)
