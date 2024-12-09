@@ -16,10 +16,8 @@ def add_options():
   flags.DEFINE_integer('train_steps', default = 500000, help = 'total training steps')
 
 def main(unused_argv):
-  env = load_fetchpickplace_env()
   makedirs(FLAGS.logdir, exist_ok = True)
-  env = Monitor(env, FLAGS.logdir)
-  vec_env = make_vec_env(env_id, n_envs=4, monitor_dir=log_dir)
+  vec_env = load_fetchpickplace_env(4, logdir = FLAGS.logdir)
   model = PPO(
     "MultiInputPolicy",  # 使用多层感知机（MLP）策略
     vec_env,      # 向量化环境
@@ -33,7 +31,7 @@ def main(unused_argv):
     verbose = 1,               # 输出训练信息
     tensorboard_log = FLAGS.logdir  # TensorBoard 日志目录
   )
-  checkpoint_callback = CheckpointCallback(save_freq=10000, save_path=FLAGS.logdir, name_prefix="ppo_fetch")
+  checkpoint_callback = CheckpointCallback(save_freq = 10000, save_path = FLAGS.logdir, name_prefix = "ppo_fetch")
   eval_callback = EvalCallback(
     vec_env,
     best_model_save_path = "./best_model/",
