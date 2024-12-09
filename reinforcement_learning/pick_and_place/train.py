@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from stable_baseline3 import SAC
+from stable_baselines3 import SAC
 from create_datasets import load_fetchpickplace_env
 
 FLAGS = flags.FLAGS
