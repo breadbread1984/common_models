@@ -19,11 +19,11 @@ def main(unused_argv):
     obs = env.reset()
     while True:
       action, states = model.predict(obs, deterministic = True)
-      obs, reward, done, trunc, info = env.step(action)
+      obs, reward, done, info = env.step(action)
       img = env.render()[:,:,::-1]
       cv2.imshow('pick and place', img)
       cv2.waitKey(20)
-      if done or trunc: break
+      if done: break
   env.close()
 
 if __name__ == "__main__":
