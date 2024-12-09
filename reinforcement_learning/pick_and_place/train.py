@@ -13,7 +13,7 @@ def add_options():
 
 def main(unused_argv):
   env = load_fetchpickplace_env()
-  model = SAC("MlpPolicy", env, verbose = 1)
+  model = SAC("MultiInputPolicy", env, verbose = 1)
   model.learn(total_timesteps = FLAGS.train_steps)
   model.save(FLAGS.ckpt)
 
