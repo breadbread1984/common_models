@@ -12,12 +12,12 @@ if __name__ == "__main__":
   import cv2
   env = load_fetchpickplace_env()
   observation, info = env.reset(seed = 42)
-  image = env.render()[:,:,::-1]
-  cv2.imshow("", image)
-  #image = env.render('image_obs')[:,:,::-1]
-  #cv2.imshow("image_obs", image)
-  #image = env.render('raw_obs')[:,:,::-1]
-  cv2.waitKey()
+  for _ in range(100):
+    action = env.action_space.sample()
+    obs, reward, done, trunc, info = env.step(action)
+    image = env.render()[:,:,::-1]
+    cv2.imshow("", image)
+    cv2.waitKey(20)
   # NOTE: https://robotics.farama.org/envs/fetch/pick_and_place/
   # observation['observation'].shape = (25,)
   # observation['achieved_goal'].shape = (3,)
