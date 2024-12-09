@@ -3,6 +3,7 @@
 from absl import flags, app
 from stable_baselines3 import SAC
 from create_datasets import load_fetchpickplace_env
+import cv2
 
 FLAGS = flags.FLAGS
 
@@ -22,7 +23,9 @@ def main(unused_argv):
   for i in range(FLAGS.eval_steps):
     action, states = model.predict(obs, deterministic = True)
     obs, reward, done, info = vec_env.step(action)
-    vec_env.render()
+    img = vec_env.render()[:,:,::-1]
+    cv2.imshow("pick and place", img)
+    cv2.waitKey(20)
   env.close()
 
 if __name__ == "__main__":
