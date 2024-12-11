@@ -25,6 +25,8 @@ def main(unused_argv):
     headers = {"Content-Type": "application/json"},
     json = data
   )
+  assert response.status_code == 200:
+  res = response.json()
   import pdb; pdb.set_trace()
 
 if __name__ == "__main__":
