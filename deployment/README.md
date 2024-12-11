@@ -8,15 +8,12 @@ this project demos how to deploy model with tritonserver
 
 ```shell
 python3 -m pip install -r requirements.txt
+docker pull nvcr.io/nvidia/tritonserver:24.11-py3
 ```
 
 ## Convert model
 
 ### Torch Model
-
-```shell
-docker pull nvcr.io/nvidia/tritonserver:24.11-pyt-python-py3
-```
 
 use detection model trained in [object_detection](../object_detection)
 
@@ -25,10 +22,6 @@ python3 convert2torchscript.py --ckpt <path/to/checkpoint> --output <path/to/out
 ```
 
 ### Tensorflow Model
-
-```shell
-docker pull nvcr.io/nvidia/tritonserver:24.11-tf2-python-py3
-```
 
 ```shell
 WRAPT_DISABLE_EXTENSIONS=true python3 convert2savedmodel.py --model (convnext|densenet|efficientnet|inception|mobilenet) --output <path/to/output>
