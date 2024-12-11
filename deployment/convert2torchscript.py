@@ -36,6 +36,7 @@ def main(unused_argv):
   if FLAGS.type == 'trace':
     example_input = torch.randn(3,600,800).to(torch.float32).to(FLAGS.device)
     trace_model = torch.jit.trace(model, example_input)
+    # NOTE: any problem related to unmatched device, please change https://github.com/pytorch/vision/blob/a9a726a5bde11fc2f1dc2067399e36755b809cb3/torchvision/models/detection/anchor_utils.py#L63 to cuda
     trace_model.save(FLAGS.output)
   elif FLAGS.type == 'script':
     script_model = torch.jit.script(model)
