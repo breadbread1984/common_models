@@ -24,7 +24,7 @@ def main(unused_argv):
   inputs = np.transpose(inputs, (2,0,1))
   inputs = np.expand_dims(inputs, axis = 0)
   if FLAGS.method == 'network':
-    client = httpclient.InferenceServerClient(f"http://{FLAGS.host}:{FLAGS.port}")
+    client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
     inputs = [httpclient.InferInput("input", inputs.shape, "FP32")]
     inputs[0].set_data_from_numpy(inputs)
     outputs = [httpclient.InferRequestedOutput("boxes"),

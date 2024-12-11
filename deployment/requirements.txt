@@ -5,3 +5,4 @@ tensorflow
 tritonserver
 tritonclient
 gevent
+geventhttpclient
