@@ -34,7 +34,7 @@ def main(unused_argv):
     assert response.status_code == 200
     res = response.json()
   elif FLAGS.method == 'local':
-    model = torch.jit.load(FLAGS.model, map_location = FLAGS.device)
+    model = torch.jit.load(FLAGS.model).to(torch.device(FLAGS.device))
     output = model.forward(torch.from_numpy(inputs).to(torch.device(FLAGS.device)))
   else:
     raise Exception('error method')
