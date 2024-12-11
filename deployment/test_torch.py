@@ -5,7 +5,7 @@ import requests
 import numpy as np
 import cv2
 import torch
-import torchvision
+import torchvision # for nms op availability in torchscript
 
 FLAGS = flags.FLAGS
 
