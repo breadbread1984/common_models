@@ -32,7 +32,7 @@ def main(unused_argv):
     assert response.status_code == 200
     res = response.json()
   elif FLAGS.method == 'local':
-    model = torch.jit.load(FLAGS.model)
+    model = torch.jit.load(FLAGS.model, map_location = 'cuda')
     output = model.forward([torch.from_numpy(inputs)])
   else:
     raise Exception('error method')
