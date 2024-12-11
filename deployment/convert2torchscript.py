@@ -17,6 +17,7 @@ def main(unused_argv):
   model = torchvision.models.get_model(FLAGS.model, weights_backbone = FLAGS.weights_backbone, num_classes = FLAGS.classnum)
   ckpt = torch.load(FLAGS.ckpt, map_location = 'cpu')
   model.load_state_dict(ckpt['model'])
+  model.eval()
   example_input = torch.randn(3, 600, 800)
   scripted_model = torch.jit.trace(model, example_input)
   scripted_model.save(FLAGS.output)
