@@ -14,7 +14,7 @@ def add_options():
   flags.DEFINE_integer('port', default = 8081, help = 'port')
   flags.DEFINE_string('input', default = 'pics/000035.jpg', help = 'path to picture')
   flags.DEFINE_enum('method', default = 'local', enum_values = {'local', 'network'}, help = 'which method to use')
-  flags.DEFINE_string('model', default = 'converted.pt', help = 'path to model')
+  flags.DEFINE_string('model', default = 'models/torch_model/1/model.pt', help = 'path to model')
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def main(unused_argv):
