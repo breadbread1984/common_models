@@ -1,4 +1,4 @@
-name: "pytorch_model"
+name: "torch_model_repo"
 platform: "pytorch_libtorch"
 max_batch_size: 1
 
