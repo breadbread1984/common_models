@@ -15,6 +15,7 @@ def add_options():
   flags.DEFINE_string('input', default = 'pics/000035.jpg', help = 'path to picture')
   flags.DEFINE_enum('method', default = 'local', enum_values = {'local', 'network'}, help = 'which method to use')
   flags.DEFINE_string('model', default = 'converted.pt', help = 'path to model')
+  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device')
 
 def main(unused_argv):
   img = cv2.imread(FLAGS.input)
@@ -33,8 +34,8 @@ def main(unused_argv):
     assert response.status_code == 200
     res = response.json()
   elif FLAGS.method == 'local':
-    model = torch.jit.load(FLAGS.model, map_location = 'cuda')
-    output = model.forward([torch.from_numpy(inputs)])
+    model = torch.jit.load(FLAGS.model, map_location = FLAGS.device)
+    output = model.forward(torch.from_numpy(inputs).to(torch.device(FLAGS.device)))
   else:
     raise Exception('error method')
   import pdb; pdb.set_trace()
