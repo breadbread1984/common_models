@@ -15,12 +15,12 @@ output [
     name: "%6593"
     data_type: TYPE_FP32
     dims: [-1, 4]
-  }
+  },
   {
     name: "%6544"
     data_type: TYPE_FP32
     dims: [-1]
-  }
+  },
   {
     name: "%6546"
     data_type: TYPE_FP32
