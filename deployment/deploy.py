@@ -6,7 +6,7 @@ import subprocess
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_string('model', default = 'torch_model_repo', help = 'path to model')
+  flags.DEFINE_string('model', default = 'models', help = 'path to model')
   flags.DEFINE_string('host', default = '0.0.0.0', help = 'host')
   flags.DEFINE_integer('port', default = 8081, help = 'port')
 
