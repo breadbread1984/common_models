@@ -12,17 +12,17 @@ input [
 
 output [
   {
-    name: "%6593"
+    name: "%6589"
     data_type: TYPE_FP32
     dims: [-1, 4]
   },
   {
-    name: "%6544"
+    name: "%6540"
     data_type: TYPE_FP32
     dims: [-1]
   },
   {
-    name: "%6546"
+    name: "%6542"
     data_type: TYPE_FP32
     dims: [-1]
   }
