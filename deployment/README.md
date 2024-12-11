@@ -22,4 +22,10 @@ python3 convert2torchscript.py --ckpt <path/to/checkpoint> --output <path/to/out
 
 ### Tensorflow Model
 
+```shell
+python3 convert2savedmodel.py --model (convnext|densenet|efficientnet|inception|mobilenet) --output <path/to/output>
+```
+
+## Deployment
+
 
