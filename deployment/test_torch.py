@@ -30,7 +30,7 @@ def main(unused_argv):
     outputs = [httpclient.InferRequestedOutput("boxes"),
                httpclient.InferRequestedOutput("scores"),
                httpclient.InferRequestedOutput("labels")]
-    response = client.infer("torch_model_repo", inputs = feeds, outputs = outputs, model_version = "1")
+    response = client.infer("torch_model", inputs = feeds, outputs = outputs, model_version = "1")
     boxes, scores, labels = response
   elif FLAGS.method == 'local':
     model = torch.jit.load(FLAGS.model, map_location = 'cpu')
