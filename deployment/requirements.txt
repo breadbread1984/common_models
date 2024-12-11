@@ -4,3 +4,4 @@ torch
 tensorflow
 tritonserver
 tritonclient
+gevent
