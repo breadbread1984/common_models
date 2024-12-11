@@ -9,7 +9,7 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('ckpt', default = 'checkpoint.pth', help = 'path to checkpoint')
-  flags.DEFINE_string('output', default = 'torch_model_repo/1/converted.pt', help = 'path to output torchscript model')
+  flags.DEFINE_string('output', default = 'models/torch_model/1/converted.pt', help = 'path to output torchscript model')
   flags.DEFINE_enum('model', default = 'retinanet_resnet50_fpn', enum_values = {'fasterrcnn_resnet50_fpn', 'fasterrcnn_mobilenet_v3_large_fpn', 'fasterrcnn_mobilenet_v3_large_320_fpn', 'fcos_resnet50_fpn', 'retinanet_resnet50_fpn', 'ssd300_vgg16', 'ssdlite320_mobilenet_v3_large', 'maskrcnn_resnet50_fpn', 'keypointrcnn_resnet50_fpn'}, help = 'detection model')
   flags.DEFINE_enum('weights_backbone', default = 'ResNet50_Weights.IMAGENET1K_V1', enum_values = {'ResNet50_Weights.IMAGENET1K_V1', 'VGG16_Weights.IMAGENET1K_FEATURES', 'MobileNet_V3_Large_Weights.IMAGENET1K_V1'}, help = 'backbone weights')
   flags.DEFINE_integer('classnum', default = 4, help = 'class number')
