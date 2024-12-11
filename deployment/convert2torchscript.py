@@ -2,6 +2,7 @@
 
 from absl import flags, app
 import torch
+from torch import nn
 import torchvision
 
 FLAGS = flags.FLAGS
