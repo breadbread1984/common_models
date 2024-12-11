@@ -25,7 +25,7 @@ class Wrapper(nn.Module):
     self.model = torchvision.models.get_model(model, weights_backbone = backbone, num_classes = num_classes).to(FLAGS.device)
     self.model.load_state_dict(ckpt['model'])
   def forward(self, inputs):
-    detections = self.model(inputs)
+    detections = self.model([inputs])
     detection = detections[0]
     return detection['boxes'], detection['scores'], detection['labels']
 
