@@ -35,6 +35,7 @@ def main(unused_argv):
   elif FLAGS.method == 'local':
     model = torch.jit.load(FLAGS.model, map_location = 'cpu')
     boxes, scores, labels = model.forward(torch.from_numpy(inputs))
+    boxes, scores, labels = boxes.numpy(), scores.numpy(), labels.numpy()
   else:
     raise Exception('error method')
   # visualize
