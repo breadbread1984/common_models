@@ -1,6 +1,6 @@
 name: "torch_model"
 platform: "pytorch_libtorch"
-max_batch_size: 1
+max_batch_size: 3
 
 input [
   {
