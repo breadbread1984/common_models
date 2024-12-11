@@ -22,7 +22,6 @@ def main(unused_argv):
   inputs = np.ascontiguousarray(inputs)
   inputs = (inputs / 255).astype(np.float32)
   inputs = np.transpose(inputs, (2,0,1))
-  inputs = np.expand_dims(inputs, axis = 0)
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
     feeds = [httpclient.InferInput("%inputs", inputs.shape, "FP32")]
