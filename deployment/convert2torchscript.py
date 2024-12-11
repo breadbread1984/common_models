@@ -13,10 +13,19 @@ def add_options():
   flags.DEFINE_enum('weights_backbone', default = 'ResNet50_Weights.IMAGENET1K_V1', enum_values = {'ResNet50_Weights.IMAGENET1K_V1', 'VGG16_Weights.IMAGENET1K_FEATURES', 'MobileNet_V3_Large_Weights.IMAGENET1K_V1'}, help = 'backbone weights')
   flags.DEFINE_integer('classnum', default = 4, help = 'class number')
 
+class Wrapper(nn.Module):
+  def __init__(self, model, backbone, num_classes, ckpt):
+    self.model = torchvision.models.get_model(model, weights_backbone = backbone, num_classes = num_classes)
+    self.model.load_state_dict(ckpt)
+    super(Wrapper, self).__init__()
+  def forward(self, inputs):
+    detections = self.model(inputs)
+    detection = detections[0]
+    return detection['boxes'], detection['scores'], detection['labels']
+
 def main(unused_argv):
-  model = torchvision.models.get_model(FLAGS.model, weights_backbone = FLAGS.weights_backbone, num_classes = FLAGS.classnum)
   ckpt = torch.load(FLAGS.ckpt, map_location = 'cpu')
-  model.load_state_dict(ckpt['model'])
+  model = Wrapper(FLAGS.model, backbone = FLAGS.weights_backbone, num_classes = FLAGS.classnum, ckpt = ckpt['model'])
   model.eval()
   example_input = torch.randn(1,3,600,800).to(torch.float32)
   scripted_model = torch.jit.trace(model, example_input)
