@@ -5,6 +5,7 @@ import requests
 import numpy as np
 import cv2
 import torch
+import torchvision
 
 FLAGS = flags.FLAGS
 
