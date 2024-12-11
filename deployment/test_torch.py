@@ -11,7 +11,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('host', default = "localhost", help = 'host')
   flags.DEFINE_integer('port', default = 8081, help = 'port')
-  flags.DEFINE_string('input', default = 'pics/000035.jpy', help = 'path to picture')
+  flags.DEFINE_string('input', default = 'pics/000035.jpg', help = 'path to picture')
   flags.DEFINE_enum('method', default = 'local', enum_values = {'local', 'network'}, help = 'which method to use')
   flags.DEFINE_string('model', default = 'converted.pt', help = 'path to model')
 
