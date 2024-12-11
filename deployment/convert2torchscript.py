@@ -16,9 +16,9 @@ def add_options():
 
 class Wrapper(nn.Module):
   def __init__(self, model, backbone, num_classes, ckpt):
+    super(Wrapper, self).__init__()
     self.model = torchvision.models.get_model(model, weights_backbone = backbone, num_classes = num_classes)
     self.model.load_state_dict(ckpt)
-    super(Wrapper, self).__init__()
   def forward(self, inputs):
     detections = self.model(inputs)
     detection = detections[0]
