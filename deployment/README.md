@@ -1,0 +1,25 @@
+# Introduction
+
+this project demos how to deploy model with tritonserver
+
+# Usage
+
+## Install prerequisite
+
+```shell
+python3 -m pip install -r requirements.txt
+```
+
+## Convert model
+
+### Torch Model
+
+use detection model trained in [object_detection](../object_detection)
+
+```shell
+python3 convert2torchscript.py --ckpt <path/to/checkpoint> --output <path/to/output> --model (fasterrcnn_resnet50_fpn|fasterrcnn_mobilenet_v3_large_fpn|fasterrcnn_mobilenet_v3_large_320_fpn|fcos_resnet50_fpn|retinanet_resnet50_fpn|ssd300_vgg16|ssdlite320_mobilenet_v3_large|maskrcnn_resnet50_fpn|keypointrcnn_resnet50_fpn) --weights_backbone (ResNet50_Weights.IMAGENET1K_V1|VGG16_Weights.IMAGENET1K_FEATURES|MobileNet_V3_Large_Weights.IMAGENET1K_V1) --classnum <class/number> --type (trace|script)
+```
+
+### Tensorflow Model
+
+
