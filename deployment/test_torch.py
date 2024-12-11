@@ -25,12 +25,12 @@ def main(unused_argv):
   inputs = np.expand_dims(inputs, axis = 0)
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
-    inputs = [httpclient.InferInput("input", inputs.shape, "FP32")]
-    inputs[0].set_data_from_numpy(inputs)
+    feeds = [httpclient.InferInput("input", inputs.shape, "FP32")]
+    feeds[0].set_data_from_numpy(inputs)
     outputs = [httpclient.InferRequestedOutput("boxes"),
                httpclient.InferRequestedOutput("scores"),
                httpclient.InferRequestedOutput("labels")]
-    response = client.infer("pytorch_model", inputs, outputs)
+    response = client.infer("pytorch_model", feeds, outputs)
     boxes, scores, labels = response
   elif FLAGS.method == 'local':
     model = torch.jit.load(FLAGS.model, map_location = 'cpu')
