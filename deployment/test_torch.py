@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-import requests
+import tritonclient.http as httpclient
 import numpy as np
 import cv2
 import torch
@@ -24,14 +24,14 @@ def main(unused_argv):
   inputs = np.transpose(inputs, (2,0,1))
   inputs = np.expand_dims(inputs, axis = 0)
   if FLAGS.method == 'network':
-    data = {"inputs": {'%inputs': inputs.tolist()}}
-    response = requests.post(
-      f"http://{FLAGS.host}:{FLAGS.port}",
-      headers = {"Content-Type": "application/json"},
-      json = data
-    )
-    assert response.status_code == 200
-    res = response.json()
+    client = httpclient.InferenceServerClient(f"http://{FLAGS.host}:{FLAGS.port}")
+    inputs = [httpclient.InferInput("input", inputs.shape, "FP32")]
+    inputs[0].set_data_from_numpy(inputs)
+    outputs = [httpclient.InferRequestedOutput("boxes"),
+               httpclient.InferRequestedOutput("scores"),
+               httpclient.InferRequestedOutput("labels")]
+    response = client.infer("pytorch_model", inputs, outputs)
+    boxes, scores, labels = response
   elif FLAGS.method == 'local':
     model = torch.jit.load(FLAGS.model, map_location = 'cpu')
     boxes, scores, labels = model.forward(torch.from_numpy(inputs))
