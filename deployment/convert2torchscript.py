@@ -33,7 +33,7 @@ def main(unused_argv):
   model.to(FLAGS.device)
   model.eval()
   if FLAGS.type == 'trace':
-    example_input = torch.randn(1,3,600,800).to(torch.float32).to(next(model.parameters()).device)
+    example_input = torch.randn(1,3,600,800).to(torch.float32).to(FLAGS.device)
     trace_model = torch.jit.trace(model, example_input)
     trace_model.save(FLAGS.output)
   elif FLAGS.type == 'script':
