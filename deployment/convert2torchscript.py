@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from os import makedirs
+from os.path import dirname, exists
 from absl import flags, app
 import torch
 from torch import nn
@@ -28,6 +30,7 @@ class Wrapper(nn.Module):
     return detection['boxes'], detection['scores'], detection['labels']
 
 def main(unused_argv):
+  makedirs(dirname(FLAGS.output), exist_ok = True)
   model = Wrapper(FLAGS.model, backbone = FLAGS.weights_backbone, num_classes = FLAGS.classnum, ckpt = FLAGS.ckpt).to(FLAGS.device)
   model.eval()
   if FLAGS.type == 'trace':
