@@ -13,6 +13,8 @@ def add_options():
 def main(unused_argv):
   triton_server = tritonserver.InferenceServerREST(f'{FLAGS.host}:{FLAGS.port}')
   triton_server.load_model(FLAGS.model)
+  triton_server.start()
+  triton_server.wait_for_server_ready()
 
 if __name__ == "__main__":
   add_options()
