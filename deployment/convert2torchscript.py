@@ -18,7 +18,8 @@ def main(unused_argv):
   ckpt = torch.load(FLAGS.ckpt, map_location = 'cpu')
   model.load_state_dict(ckpt['model'])
   model.eval()
-  scripted_model = torch.jit.script(model)
+  example_input = torch.randn(1,3,600,800).to(torch.float32)
+  scripted_model = torch.jit.trace(model, example_input)
   scripted_model.save(FLAGS.output)
 
 if __name__ == "__main__":
