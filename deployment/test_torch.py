@@ -15,6 +15,7 @@ def add_options():
   flags.DEFINE_string('input', default = 'pics/000035.jpg', help = 'path to picture')
   flags.DEFINE_enum('method', default = 'local', enum_values = {'local', 'network'}, help = 'which method to use')
   flags.DEFINE_string('model', default = 'converted.pt', help = 'path to model')
+  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def main(unused_argv):
   img = cv2.imread(FLAGS.input)
@@ -32,8 +33,8 @@ def main(unused_argv):
     response = client.infer("torch_model", inputs = feeds, outputs = outputs, model_version = "1")
     boxes, scores, labels = response
   elif FLAGS.method == 'local':
-    model = torch.jit.load(FLAGS.model, map_location = 'cpu')
-    boxes, scores, labels = model.forward(torch.from_numpy(inputs))
+    model = torch.jit.load(FLAGS.model, map_location = FLAGS.device)
+    boxes, scores, labels = model.forward(torch.from_numpy(inputs).to(FLAGS.device))
     boxes, scores, labels = boxes.detach().cpu().numpy(), scores.detach().cpu().numpy(), labels.detach().cpu().numpy()
   else:
     raise Exception('error method')
