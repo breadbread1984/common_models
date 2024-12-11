@@ -25,11 +25,11 @@ def main(unused_argv):
   inputs = np.expand_dims(inputs, axis = 0)
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
-    feeds = [httpclient.InferInput("input", inputs.shape, "FP32")]
+    feeds = [httpclient.InferInput("%%inputs", inputs.shape, "FP32")]
     feeds[0].set_data_from_numpy(inputs)
-    outputs = [httpclient.InferRequestedOutput("%6593"),
-               httpclient.InferRequestedOutput("%6544"),
-               httpclient.InferRequestedOutput("%6546")]
+    outputs = [httpclient.InferRequestedOutput("%%6593"),
+               httpclient.InferRequestedOutput("%%6544"),
+               httpclient.InferRequestedOutput("%%6546")]
     response = client.infer("torch_model", inputs = feeds, outputs = outputs, model_version = "1")
     boxes, scores, labels = response
   elif FLAGS.method == 'local':
