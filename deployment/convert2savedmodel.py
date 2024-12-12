@@ -9,7 +9,7 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_enum('model', enum_values = {'convnext', 'densenet', 'efficientnet', 'inception', 'mobilenet'}, default = 'densenet', help = 'model')
-  flags.DEFINE_string('output', default = 'models/tensorflow_model/1', help = 'path to saved model')
+  flags.DEFINE_string('output', default = 'models/tensorflow_model/1/model.savedmodel', help = 'path to saved model')
 
 def main(unused_argv):
   model = {
