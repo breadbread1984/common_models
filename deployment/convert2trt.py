@@ -24,9 +24,9 @@ def main(unused_argv):
     process = subprocess.Popen([
       trtexec,
       f"--onnx={FLAGS.input}",
-      "--minShapes=input:3x224x224",
-      "--maxShapes=input:3x1000x1000",
-      "--optShapes=input:3x224x224",
+      "--minShapes=input:0:3x224x224",
+      "--maxShapes=input:0:3x1000x1000",
+      "--optShapes=input:0:3x224x224",
       f"--saveEngine={FLAGS.output}",
       "--fp16"
     ])
@@ -34,9 +34,9 @@ def main(unused_argv):
     process = subprocess.Popen([
       trtexec,
       f"--onnx={FLAGS.input}",
-      "--minShapes=keras_input:1x224x224x3",
-      "--maxShapes=keras_input:32x1000x1000x3",
-      "--optShapes=keras_input:1x224x224x3",
+      "--minShapes=keras_input:0:1x224x224x3",
+      "--maxShapes=keras_input:0:32x1000x1000x3",
+      "--optShapes=keras_input:0:1x224x224x3",
       f"--saveEngine={FLAGS.output}",
       "--fp16"
     ])
