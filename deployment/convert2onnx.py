@@ -37,7 +37,8 @@ def main(unused_argv):
                         'boxes': {0: 'target_num'},
                         'scores': {0: 'target_num'},
                         'labels': {0: 'target_num'}
-                      })
+                      },
+                      opset_version = 13)
   else:
     import tensorflow as tf
     '''
@@ -53,7 +54,8 @@ def main(unused_argv):
                                 "--saved-model",
                                 f"{model_path}",
                                 "--output",
-                                f"{FLAGS.output}"])
+                                f"{FLAGS.output}",
+                                "--opset 13"])
     try:
       process.wait()
     except KeyboardInterrupt:

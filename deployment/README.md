@@ -9,7 +9,7 @@ this project demos how to deploy model with tritonserver
 ```shell
 python3 -m pip install -r requirements.txt
 docker pull nvcr.io/nvidia/tritonserver:24.11-py3  # for deployment
-docker pull nvcr.io/nvidia/tritonserver:24.11-py3-sdk  # for development
+docker pull nvcr.io/nvidia/tensorrt:24.11-py3  # for tensorrt engine generation
 ```
 
 ## Convert model
@@ -38,6 +38,12 @@ Upon generating torch and tensorflow model successfully, their onnx model can be
 
 ```shell
 python3 convert2onnx.py --type (pt|tf) --output <onnx/path> --device (cpu|cuda)
+```
+
+convert onnx into TensorRT engine
+
+```shell
+python3 convert2trt.py --type (pt|tf) --input <onnx/path> --output <engine/path>
 ```
 
 ## Deployment with Triton Server
