@@ -57,7 +57,7 @@ python3 test_torch.py --host <host> --port <port> --method network
 test can be also performed locally
 
 ```shell
-python3 test_torch.py --model models/torch_model/1/model.pt --device (cuda|cpu)
+python3 test_torch.py --model models/torch_model/1/model.pt --device (cuda|cpu) --method local
 ```
 
 **NOTE: you can only inference the torchscript with the device which you use for generating torchscript!**
@@ -71,5 +71,5 @@ python3 test_tensorflow.py --host <host> --port <port> --method network
 test can be also performed locally
 
 ```shell
-python3 test_tensorflow.py --model models/tensorflow_model/1/model.savedmodel
+python3 test_tensorflow.py --model models/tensorflow_model/1/model.savedmodel --method local
 ```
