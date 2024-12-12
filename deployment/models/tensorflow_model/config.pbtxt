@@ -4,7 +4,7 @@ max_batch_size: 16
 
 input [
   {
-    nane: "input_tensor"
+    name: "input_tensor"
     data_type: TYPE_FP32
     dims: [-1, 224, 224, 3]
   }
