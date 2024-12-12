@@ -3,6 +3,4 @@ requests
 torch
 tensorflow
 tritonserver
-tritonclient
-gevent
-geventhttpclient
+tritonclient[all]
