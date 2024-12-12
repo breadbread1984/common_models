@@ -19,6 +19,7 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
+  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
@@ -36,9 +37,13 @@ def main(unused_argv):
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
-  trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
-  trainer.validate(model, Loader(valid, batch_size = FLAGS.batch))
-  torch.save(model.state_dict(), 'dlrm_best_model.pth')
+  if not FLAGS.eval_only:
+    trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
+  else:
+    example_inputs = {k:v.to(next(model.parameters()).device) for k,v in next(Loader(train, batch_size = 1))[0].items()}
+    model.forward(example_inputs)
+    model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
+    trainer.validate(model, Loader(valid, batch_size = FLAGS.batch))
 
 if __name__ == "__main__":
   add_options()
