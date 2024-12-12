@@ -4,7 +4,7 @@ max_batch_size: 16
 
 input [
   {
-    name: "input_tensor"
+    name: "inputs"
     data_type: TYPE_FP32
     dims: [-1, 224, 224, 3]
   }
@@ -12,7 +12,7 @@ input [
 
 output [
   {
-    name: "feature"
+    name: "outputs"
     data_type: TYPE_FP32
     dims: [-1, 1024]
   }
