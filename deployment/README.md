@@ -45,10 +45,22 @@ python3 deploy.py --model models --host <host> --port <port>
 python3 test_torch.py --host <host> --port <port> --method network
 ```
 
-test can also performed locally
+test can be also performed locally
 
 ```shell
 python3 test_torch.py --model models/torch_model/1/model.pt --device (cuda|cpu)
 ```
 
 **you can only inference the torchscript with the device which you use for generate torchscript!**
+
+### Test Tensorflow Model
+
+```shell
+python3 test_tensorflow.py --host <host> --port <port> --method network
+```
+
+test can be also performed locally
+
+```shell
+python3 test_tensorflow.py --model models/tensorflow_model/1/model.savedmodel
+```
