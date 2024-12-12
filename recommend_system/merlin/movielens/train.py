@@ -39,7 +39,7 @@ def main(unused_argv):
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
   else:
-    example_inputs = {k:v.to(next(model.parameters()).device) for k,v in next(Loader(train, batch_size = 1))[0].items()}
+    example_inputs = {k:v.to(next(model.parameters()).device) for k,v in next(Loader(train_transformed, batch_size = 1))[0].items()}
     model.forward(example_inputs)
     model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
     trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
