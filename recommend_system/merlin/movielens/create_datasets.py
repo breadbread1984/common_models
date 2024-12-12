@@ -36,7 +36,7 @@ def load_datasets(root_path, n_part = 2, use_cluster = False):
   train_ds.shuffle_by_keys('userId')
   valid_ds.shuffle_by_keys('userId')
   # 1) create preprocess workflow
-  if use_cluter:
+  if use_cluster:
     cluster = load_cluster()
     client = Client(cluster)
   # id may not be in integer format, change id to category
