@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+import onnx
 
 FLAGS = flags.FLAGS
 
@@ -40,6 +41,8 @@ def main(unused_argv):
         opset = 13,
         output_path = FLAGS.output
       )
+  onnx_model = onnx.load(FLAGS.output)
+  onnx.checker.check_model(onnx_model)
 
 if __name__ == "__main__":
   add_options()
