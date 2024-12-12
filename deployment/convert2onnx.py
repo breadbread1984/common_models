@@ -37,10 +37,12 @@ def main(unused_argv):
                       })
   else:
     import tensorflow as tf
+    '''
     saved_model = tf.saved_model.load(model_path)
     signature = saved_model.signatures['serving_default']
     input_names = list(signature.structured_input_signature[1].keys())
     output_names = list(signature.structured_outputs.keys())
+    '''
     python = search_command_path('python3')
     process = subprocess.Popen([python,
                                 "-m",
@@ -48,11 +50,7 @@ def main(unused_argv):
                                 "--saved-model",
                                 f"{model_path}",
                                 "--output",
-                                f"{FLAGS.output}",
-                                "--inputs",
-                                f"{','.join(input_names)}",
-                                "--outputs",
-                                f"{','.join(output_names)}"])
+                                f"{FLAGS.output}"])
     try:
       process.wait()
     except KeyboardInterrupt:
