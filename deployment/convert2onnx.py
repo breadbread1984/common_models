@@ -55,7 +55,8 @@ def main(unused_argv):
                                 f"{model_path}",
                                 "--output",
                                 f"{FLAGS.output}",
-                                "--opset 13"])
+                                "--opset",
+                                "13"])
     try:
       process.wait()
     except KeyboardInterrupt:
