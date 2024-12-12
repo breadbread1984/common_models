@@ -31,7 +31,7 @@ def main(unused_argv):
                httpclient.InferRequestedOutput("%6540"),
                httpclient.InferRequestedOutput("%6542")]
     response = client.infer("torch_model", inputs = feeds, outputs = outputs, model_version = "1")
-    boxes, scores, labels = response
+    boxes, scores, labels = response.get_output("%6589"), response.get_output("%6540"), response.get_output("%6542")
   elif FLAGS.method == 'local':
     model = torch.jit.load(FLAGS.model, map_location = FLAGS.device)
     boxes, scores, labels = model.forward(torch.from_numpy(inputs).to(FLAGS.device))
