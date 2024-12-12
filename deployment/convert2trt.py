@@ -27,7 +27,6 @@ def main(unused_argv):
       "--minShapes=input:3x224x224",
       "--maxShapes=input:3x1000x1000",
       "--optShapes=input:3x224x224",
-      "--workspace=1024",
       f"--saveEngine={FLAGS.output}",
       "--fp16"
     ])
@@ -38,7 +37,6 @@ def main(unused_argv):
       "--minShapes=keras_input:1x224x224x3",
       "--maxShapes=keras_input:32x1000x1000x3",
       "--optShapes=keras_input:1x224x224x3",
-      "--workspace=1024",
       f"--saveEngine={FLAGS.output}",
       "--fp16"
     ])
