@@ -59,7 +59,7 @@ test can be also performed locally
 python3 test_torch.py --model models/torch_model/1/model.pt --device (cuda|cpu)
 ```
 
-**NOTE: you can only inference the torchscript with the device which you use for generate torchscript!**
+**NOTE: you can only inference the torchscript with the device which you use for generating torchscript!**
 
 ### Test Tensorflow Model
 
