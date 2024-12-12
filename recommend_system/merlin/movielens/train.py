@@ -16,6 +16,7 @@ def add_options():
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
+  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
 
 def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
@@ -35,8 +36,13 @@ def main(unused_argv):
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs)
   trainer.lr = FLAGS.lr
-  trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
-  trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
+  if not FLAGS.eval_only:
+    trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
+  else:
+    example_inputs = {k:v.to(next(model.parameters()).device) for k,v in next(Loader(train, batch_size = 1))[0].items()}
+    model.forward(example_inputs)
+    model.load_state_dict(torch.load(FLAGS.ckpt)['state_dict'])
+    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
 
 if __name__ == "__main__":
   add_options()
