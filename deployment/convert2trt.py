@@ -8,13 +8,14 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('input', default = None, help = 'path to onnx')
   flags.DEFINE_string('output', default = 'output.engine', help = 'path to tensorrt engine')
+  flags.DEFINE_integer('max_batch_size', default = 1, help = 'max batch size, set 0 if model has no batch dimension,')
 
 def build_engine(onnx_file_path, engine_file_path, fp16_mode=True):
   TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
   runtime = trt.Runtime(TRT_LOGGER)
   with trt.Builder(TRT_LOGGER) as builder, builder.create_network() as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
     builder.max_workspace_size = 1 << 30  # 1GB
-    builder.max_batch_size = 32
+    builder.max_batch_size = FLAGS.max_batch_size
 
     if fp16_mode:
       builder.fp16_mode = True
