@@ -38,6 +38,7 @@ def main(unused_argv):
   trainer.lr = FLAGS.lr
   trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
   trainer.validate(model, Loader(valid, batch_size = FLAGS.batch))
+  torch.save(model.state_dict(), 'dlrm_best_model.pth')
 
 if __name__ == "__main__":
   add_options()
