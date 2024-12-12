@@ -25,11 +25,11 @@ def main(unused_argv):
   inputs = np.transpose(inputs, (2,0,1))
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
-    feeds = [httpclient.InferInput("%inputs", inputs.shape, "FP32")]
+    feeds = [httpclient.InferInput("inputs", inputs.shape, "FP32")]
     feeds[0].set_data_from_numpy(inputs)
-    outputs = [httpclient.InferRequestedOutput("%6589"),
-               httpclient.InferRequestedOutput("%6540"),
-               httpclient.InferRequestedOutput("%6542")]
+    outputs = [httpclient.InferRequestedOutput("boxes"),
+               httpclient.InferRequestedOutput("scores"),
+               httpclient.InferRequestedOutput("labels")]
     response = client.infer("torch_model", inputs = feeds, outputs = outputs, model_version = "1")
     boxes, scores, labels = response.get_output("%6589"), response.get_output("%6540"), response.get_output("%6542")
   elif FLAGS.method == 'local':
