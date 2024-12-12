@@ -27,7 +27,7 @@ def main(unused_argv):
     import torch
     import torchvision
     scripted_model = torch.jit.load(model_path, map_location = FLAGS.device)
-    example_input = torch.randn(3,600,800)
+    example_input = torch.randn(3,600,800).to(FLAGS.device)
     torch.onnx.export(scripted_model, example_input, FLAGS.output,
                       input_names = ['input'],
                       output_names = ['boxes', 'scores', 'labels'],
