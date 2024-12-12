@@ -9,6 +9,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('output', default = 'output.onnx', help = 'path to output onnx model')
   flags.DEFINE_enum('type', default = 'pt', enum_values = {'pt', 'tf'}, help = 'type of input checkpoint type')
+  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device')
 
 def search_command_path(command):
   try:
@@ -25,7 +26,7 @@ def main(unused_argv):
   if FLAGS.type == 'pt':
     import torch
     import torchvision
-    scripted_model = torch.jit.load(model_path, map_location = 'cpu')
+    scripted_model = torch.jit.load(model_path, map_location = FLAGS.device)
     example_input = torch.randn(3,600,800)
     torch.onnx.export(scripted_model, example_input, FLAGS.output,
                       input_names = ['input'],
