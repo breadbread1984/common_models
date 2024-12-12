@@ -2,12 +2,20 @@
 
 from absl import flags, app
 import onnx
+import subprocess
 
 FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('output', default = 'output.onnx', help = 'path to output onnx model')
   flags.DEFINE_enum('type', default = 'pt', enum_values = {'pt', 'tf'}, help = 'type of input checkpoint type')
+
+def search_command_path(command):
+  try:
+    result = subprocess.check_output(['which', command]).decode('utf-8').strip()
+    return result
+  except subprocess.CalledProcessError:
+    return None
 
 def main(unused_argv):
   model_path = {
@@ -29,18 +37,27 @@ def main(unused_argv):
                       })
   else:
     import tensorflow as tf
-    import tf2onnx
     saved_model = tf.saved_model.load(model_path)
     signature = saved_model.signatures['serving_default']
     input_names = list(signature.structured_input_signature[1].keys())
     output_names = list(signature.structured_outputs.keys())
-    with tf.device('/cpu:0'):
-      onnx_model, _ = tf2onnx.convert.from_keras(
-        saved_model,
-        input_signature = [tf.TensorSpec((None, None, None, 3), tf.float32, name = input_names[0])],
-        opset = 13,
-        output_path = FLAGS.output
-      )
+    python = search_command_path('python3')
+    process = subprocess.Popen([python,
+                                "-m",
+                                "tf2onnx.convert",
+                                "--saved-model",
+                                f"{model_path}",
+                                "--output",
+                                f"{FLAGS.output}",
+                                "--inputs",
+                                f"{','.join(input_names)}",
+                                "--outputs",
+                                f"{','.join(output_names)}"])
+    try:
+      process.wait()
+    except KeyboardInterrupt:
+      print("Stopping tf2onnx...")
+      process.kill()
   onnx_model = onnx.load(FLAGS.output)
   onnx.checker.check_model(onnx_model)
 
