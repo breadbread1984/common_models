@@ -29,7 +29,7 @@ def main(unused_argv):
     features = response.as_numpy("output_0")
   elif FLAGS.method == 'local':
     model = tf.saved_model.load(FLAGS.model)
-    features = model.signatures[model.signatures.keys()[0]](inputs)
+    features = model.signatures['serving_default'](inputs)
   else:
     raise Exception('error method')
   # visualize
