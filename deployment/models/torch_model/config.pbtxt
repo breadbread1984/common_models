@@ -4,7 +4,7 @@ max_batch_size: 0
 
 input [
   {
-    name: "%inputs"
+    name: "inputs"
     data_type: TYPE_FP32
     format: FORMAT_NCHW
     dims: [3, -1, -1]
@@ -13,17 +13,17 @@ input [
 
 output [
   {
-    name: "%6589"
+    name: "boxes"
     data_type: TYPE_FP32
     dims: [-1, 4]
   },
   {
-    name: "%6540"
+    name: "scores"
     data_type: TYPE_FP32
     dims: [-1]
   },
   {
-    name: "%6542"
+    name: "labels"
     data_type: TYPE_INT64
     dims: [-1]
   }
