@@ -1,5 +1,6 @@
 name: "tensorflow_model"
 platform: "tensorflow_savedmodel"
+signature_name: "serving_default"
 max_batch_size: 16
 
 # model = tf.saved_model.load('model.savedmodel')
