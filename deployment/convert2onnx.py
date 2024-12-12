@@ -24,6 +24,7 @@ def main(unused_argv):
   }[FLAGS.type]
   if FLAGS.type == 'pt':
     import torch
+    import torchvision
     scripted_model = torch.jit.load(model_path, map_location = 'cpu')
     example_input = torch.randn(3,600,800)
     torch.onnx.export(scripted_model, example_input, FLAGS.output,
