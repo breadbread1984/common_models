@@ -24,7 +24,7 @@ output [
   },
   {
     name: "%6542"
-    data_type: TYPE_FP32
+    data_type: TYPE_INT64
     dims: [-1]
   }
 ]
