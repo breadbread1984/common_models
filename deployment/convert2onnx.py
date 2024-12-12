@@ -28,6 +28,7 @@ def main(unused_argv):
     import torchvision
     scripted_model = torch.jit.load(model_path, map_location = FLAGS.device)
     example_input = torch.randn(3,600,800).to(FLAGS.device)
+    # NOTE: any problem related to unmatched device, please change https://github.com/pytorch/vision/blob/a9a726a5bde11fc2f1dc2067399e36755b809cb3/torchvision/models/detection/anchor_utils.py#L63 to cuda
     torch.onnx.export(scripted_model, example_input, FLAGS.output,
                       input_names = ['input'],
                       output_names = ['boxes', 'scores', 'labels'],
