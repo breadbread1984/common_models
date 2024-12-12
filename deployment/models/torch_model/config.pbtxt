@@ -1,5 +1,6 @@
 name: "torch_model"
 platform: "pytorch_libtorch"
+signature_name: "serving_default"
 max_batch_size: 0  # if model has no batch dimension, just set like this
 
 input [
