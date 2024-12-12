@@ -8,7 +8,8 @@ this project demos how to deploy model with tritonserver
 
 ```shell
 python3 -m pip install -r requirements.txt
-docker pull nvcr.io/nvidia/tritonserver:24.11-py3
+docker pull nvcr.io/nvidia/tritonserver:24.11-py3  # for deployment
+docker pull nvcr.io/nvidia/tritonserver:24.11-py3-sdk  # for development
 ```
 
 ## Convert model
