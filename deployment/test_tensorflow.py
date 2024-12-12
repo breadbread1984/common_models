@@ -18,8 +18,9 @@ def add_options():
 def main(unused_argv):
   img = cv2.imread(FLAGS.input)
   inputs = img[:,:,::-1]
-  inputs = np.ascontiguousarray(inputs)
   inputs = (inputs / 255).astype(np.float32)
+  inputs = np.expand_dims(inputs, axis = 0)
+  inputs = np.ascontiguousarray(inputs)
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
     feeds = [httpclient.InferInput("inputs", inputs.shape, "FP32")]
