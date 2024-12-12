@@ -3,6 +3,7 @@
 from absl import flags, app
 import tritonclient.http as httpclient
 import numpy as np
+import cv2
 import tensorflow as tf
 
 FLAGS = flags.FLAGS
