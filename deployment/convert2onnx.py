@@ -36,7 +36,7 @@ def main(unused_argv):
     output_names = list(signature.structured_outputs.keys())
     with tf.device('/cpu:0'):
       onnx_model, _ = tf2onnx.convert.from_keras(
-        model,
+        saved_model,
         input_signature = [tf.TensorSpac((None, None, None, 3), tf.float32, name = input_names[0])],
         opset = 13,
         output_path = FLAGS.output
