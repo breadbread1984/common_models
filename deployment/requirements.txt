@@ -4,3 +4,4 @@ torch
 tensorflow==2.15 # https://github.com/triton-inference-server/server/issues/7456
 tritonserver
 tritonclient[all]
+tf2onnx
