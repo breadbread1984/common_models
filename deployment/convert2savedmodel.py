@@ -19,7 +19,8 @@ def main(unused_argv):
     'inception': tf.keras.applications.InceptionV3,
     'mobilenet': tf.keras.applications.MobileNetV3Large
   }[FLAGS.model](weights = 'imagenet', include_top = False)
-  tf.saved_model.save(model, FLAGS.output)
+  model.export(FLAGS.output, format = "tf_saved_model", verbose = True)
+  #tf.saved_model.save(model, FLAGS.output)
 
 if __name__ == "__main__":
   add_options()

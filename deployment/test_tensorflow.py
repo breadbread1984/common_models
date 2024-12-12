@@ -23,11 +23,11 @@ def main(unused_argv):
   inputs = np.ascontiguousarray(inputs)
   if FLAGS.method == 'network':
     client = httpclient.InferenceServerClient(f"{FLAGS.host}:{FLAGS.port}")
-    feeds = [httpclient.InferInput("inputs", inputs.shape, "FP32")]
+    feeds = [httpclient.InferInput("keras_tensor", inputs.shape, "FP32")]
     feeds[0].set_data_from_numpy(inputs)
-    outputs = [httpclient.InferRequestedOutput('output_0')]
+    outputs = [httpclient.InferRequestedOutput('Identity:0')]
     response = client.infer("tensorflow_model", inputs = feeds, outputs = outputs, model_version = "1")
-    features = response.as_numpy("output_0")
+    features = response.as_numpy("Identity:0")
   elif FLAGS.method == 'local':
     model = tf.saved_model.load(FLAGS.model)
     features = model.signatures['serving_default'](inputs)
