@@ -1,6 +1,6 @@
 absl-py
 requests
 torch
-tensorflow
+tensorflow==2.15
 tritonserver
 tritonclient[all]
