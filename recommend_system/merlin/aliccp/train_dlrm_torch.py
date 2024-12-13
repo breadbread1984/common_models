@@ -23,7 +23,7 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
-  flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to exported pipeline')
+  flags.DEFINE_string('pipeline', default = 'pipeline_pt', help = 'path to exported pipeline')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
