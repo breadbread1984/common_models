@@ -29,8 +29,8 @@ def main(unused_argv):
         httpclient.InferInput("userId", userId.shape, "INT64"),
         httpclient.InferInput("movieId", movieId.shape, "INT64")
       ]
-      feeds[0].set_data_from_numpy(np.array(userId, dtype = np.int64))
-      feeds[1].set_data_from_numpy(np.array(movieId, dtype = np.int64))
+      feeds[0].set_data_from_numpy(np.array([userId], dtype = np.int64))
+      feeds[1].set_data_from_numpy(np.array([movieId], dtype = np.int64))
       outputs = [httpclient.InferRequestedOutput("binary_rating/binary_output")]
       response = client.infer("executor_model", inputs = feeds, outputs = outputs, model_version = "1")
       pred = response.as_numpy("binary_rating/binary_output")
