@@ -22,15 +22,15 @@ def main(unused_argv):
   correct = 0
   for df in valid.to_iter():
     for i in tqdm(range(len(df))):
-      userId = df['userId'][i]
-      movieId = df['movieId'][i]
+      userId = np.array([df['userId'][i]], dtype = np.int64)
+      movieId = np.array([df['movieId'][i]], dtype = np.int64)
       binary_rating = df['binary_rating'][i]
       feeds = [
         httpclient.InferInput("userId", userId.shape, "INT64"),
         httpclient.InferInput("movieId", movieId.shape, "INT64")
       ]
-      feeds[0].set_data_from_numpy(np.array([userId], dtype = np.int64))
-      feeds[1].set_data_from_numpy(np.array([movieId], dtype = np.int64))
+      feeds[0].set_data_from_numpy(userId)
+      feeds[1].set_data_from_numpy(movieId)
       outputs = [httpclient.InferRequestedOutput("binary_rating/binary_output")]
       response = client.infer("executor_model", inputs = feeds, outputs = outputs, model_version = "1")
       pred = response.as_numpy("binary_rating/binary_output")
