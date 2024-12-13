@@ -32,10 +32,20 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]),
     output_block = mm.BinaryOutput(ColumnSchema(FLAGS.target)),
   )
+  checkpoint_callback = pl.callbacks.ModelCheckpoint(
+    monitor = 'val_loss',
+    mode = 'min',
+    save_top_k = 2,
+    save_last = True
+  )
   trainer = pl.Trainer(
     enable_checkpointing = True,
     default_root_dir = FLAGS.ckpt,
-    max_epochs = FLAGS.epochs)
+    max_epochs = FLAGS.epochs,
+    callbacks = [checkpoint_callback],
+    log_every_n_steps = 1,
+    logger = True
+  )
   trainer.lr = FLAGS.lr
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))

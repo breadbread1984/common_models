@@ -41,7 +41,7 @@ def main(unused_argv):
     enable_checkpointing = True,
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs,
-    callback = [checkpoint_callback],
+    callbacks = [checkpoint_callback],
     log_every_n_steps = 1,
     logger = True
   )
