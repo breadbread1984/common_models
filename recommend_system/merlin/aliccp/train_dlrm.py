@@ -9,6 +9,7 @@ from merlin.schema.tags import Tags
 from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.workflow import TransformWorkflow
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
+import nvtabular as nvt
 import tensorflow as tf
 
 FLAGS = flags.FLAGS
