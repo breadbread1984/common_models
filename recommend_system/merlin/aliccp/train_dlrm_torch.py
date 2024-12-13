@@ -39,7 +39,7 @@ def main(unused_argv):
     save_last = True
   )
   trainer = pl.Trainer(
-    enable_checkpointing = True,
+    enable_checkpointing = True if not FLAGS.eval_only else False,
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs,
     callbacks = [checkpoint_callback],
