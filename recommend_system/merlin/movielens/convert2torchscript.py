@@ -4,6 +4,7 @@ from absl import flags, app
 import torch
 import pytorch_lightning as pl
 import merlin.models.torch as mm
+from merlin.schema import ColumnSchema
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
