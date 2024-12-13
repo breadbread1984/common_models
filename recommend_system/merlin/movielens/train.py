@@ -32,8 +32,8 @@ def main(unused_argv):
     output_block = mm.BinaryOutput(ColumnSchema('binary_rating'))
   )
   checkpoint_callback = pl.callbacks.ModelCheckpoint(
-    monitor = 'val_loss',
-    mode = 'min',
+    monitor = 'val_binary_accuracy',
+    mode = 'max',
     save_top_k = 2,
     save_last = True
   )
