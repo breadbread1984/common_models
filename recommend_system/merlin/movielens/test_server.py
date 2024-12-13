@@ -2,6 +2,7 @@
 
 from absl import flags, app
 from tqdm import tqdm
+import numpy as np
 import tritonclient.http as httpclient
 from create_datasets import load_datasets
 
