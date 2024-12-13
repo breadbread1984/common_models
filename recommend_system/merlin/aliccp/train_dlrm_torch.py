@@ -9,6 +9,10 @@ from merlin.schema.tags import Tags
 import torch
 import pytorch_lightning as pl
 from merlin.dataloader.torch import Loader
+from merlin.systems.dag import Ensemble
+from merlin.systems.dag.ops.workflow import TransformWorkflow
+from merlin.systems.dag.ops.pytorch import PredictPyTorch
+import nvtabular as nvt
 
 FLAGS = flags.FLAGS
 
@@ -20,6 +24,7 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
+  flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to exported pipeline')
 
 def main(unused_argv):
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
@@ -49,6 +54,12 @@ def main(unused_argv):
   trainer.lr = FLAGS.lr
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
+    # export to pipeline
+    workflow = nvt.Workflow.load('dlrm_torch.workflow')
+    workflow.remove_inputs(['click', 'conversion'])
+    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model)
+    ensemble = Ensemble(pipeline, workflow.input_schema)
+    ensemble.export(FLAGS.pipeline)
   else:
     trainer.validate(model, Loader(valid, batch_size = FLAGS.batch), ckpt_path = 'last')
 
