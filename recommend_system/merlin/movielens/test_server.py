@@ -22,8 +22,8 @@ def main(unused_argv):
   correct = 0
   for df in valid.to_iter():
     for i in tqdm(range(len(df))):
-      userId = np.array([df['userId'][i]], dtype = np.int64)
-      movieId = np.array([df['movieId'][i]], dtype = np.int64)
+      userId = np.array(df['userId'][i], dtype = np.int64)
+      movieId = np.array(df['movieId'][i], dtype = np.int64)
       binary_rating = df['binary_rating'][i]
       feeds = [
         httpclient.InferInput("userId", userId.shape, "INT64"),
