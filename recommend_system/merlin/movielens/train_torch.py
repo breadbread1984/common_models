@@ -20,7 +20,6 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to output pipeline')
-  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
 
 def main(unused_argv):
   train_transformed, valid_transformed, workflow = load_datasets(FLAGS.dataset, return_workflow = True)
@@ -42,23 +41,20 @@ def main(unused_argv):
     save_last = True
   )
   trainer = pl.Trainer(
-    enable_checkpointing = True if not FLAGS.eval_only else False,
+    enable_checkpointing = True,
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs,
-    callbacks = [checkpoint_callback] if not FLAGS.eval_only else [],
+    callbacks = [checkpoint_callback],
     log_every_n_steps = 1,
     logger = True
   )
   trainer.lr = FLAGS.lr
-  if not FLAGS.eval_only:
-    trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
-    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
-    workflow = workflow.remove_inputs(['binary_rating'])
-    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
-    ensemble = Ensemble(pipeline, workflow.input_schema)
-    ensemble.export(FLAGS.pipeline)
-  else:
-    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
+  trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
+  trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
+  workflow = workflow.remove_inputs(['binary_rating'])
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
+  ensemble = Ensemble(pipeline, workflow.input_schema)
+  ensemble.export(FLAGS.pipeline)
 
 if __name__ == "__main__":
   add_options()
