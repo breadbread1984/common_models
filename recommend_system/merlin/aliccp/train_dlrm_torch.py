@@ -57,7 +57,7 @@ def main(unused_argv):
     # export to pipeline
     workflow = nvt.Workflow.load('dlrm_torch.workflow')
     workflow.remove_inputs(['click', 'conversion'])
-    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model)
+    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
     ensemble = Ensemble(pipeline, workflow.input_schema)
     ensemble.export(FLAGS.pipeline)
   else:
