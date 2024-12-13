@@ -11,6 +11,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
   flags.DEFINE_string('dataset', default = 'dataset', help = 'path to dataset')
+  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def main(unused_argv):
   train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
@@ -26,6 +27,7 @@ def main(unused_argv):
     default_root_dir = FLAGS.ckpt,
   )
   trainer.validate(model, Loader(valid_transformed, batch_size = 1), ckpt_path = 'best')
+  model.to(FLAGS.device)
   script_model = torch.jit.script(model)
   torch.jit.save(script_model, 'model.pt')
 
