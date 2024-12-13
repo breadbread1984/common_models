@@ -36,7 +36,9 @@ def main(unused_argv):
   model.compile(optimizer = optimizer)
   callbacks = [
     tf.keras.callbacks.TensorBoard(log_dir = join(FLAGS.ckpt, 'logs')),
-    tf.keras.callbacks.ModelCheckpoint(filepath = FLAGS.ckpt, save_freq = 100)
+    # NOTE: https://github.com/NVIDIA-Merlin/models/blob/eb1e54196a64a70950b2a7e7744d2150e052d53e/merlin/models/tf/models/base.py#L1687
+    # merlin.models.tf.models.Model's save function doesn't support overwrite argument
+    #tf.keras.callbacks.ModelCheckpoint(filepath = FLAGS.ckpt, save_freq = 'epoch')
   ]
   model.fit(train_transformed, epochs = FLAGS.epochs, validation_data = valid_transformed, batch_size = FLAGS.batch, callbacks = callbacks)
   model.evaluate(valid_transformed, batch_size = FLAGS.batch)
