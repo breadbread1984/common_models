@@ -19,7 +19,7 @@ def add_options():
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
-  flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to output pipeline')
+  flags.DEFINE_string('pipeline', default = 'pipeline_pt', help = 'path to output pipeline')
 
 def main(unused_argv):
   train_transformed, valid_transformed, workflow = load_datasets(FLAGS.dataset, return_workflow = True)
