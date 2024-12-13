@@ -31,17 +31,26 @@ def main(unused_argv):
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
     output_block = mm.BinaryOutput(ColumnSchema('binary_rating'))
   )
+  checkpoint_callback = pl.callbacks.ModelCheckpoint(
+    monitor = 'val_loss',
+    mode = 'min',
+    save_top_k = 2,
+    save_last = True
+  )
   trainer = pl.Trainer(
     enable_checkpointing = True,
     default_root_dir = FLAGS.ckpt,
     max_epochs = FLAGS.epochs,
+    checkpoint_callback = checkpoint_callback,
+    log_every_n_steps = 1,
+    logger = True
   )
   trainer.lr = FLAGS.lr
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
     trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
   else:
-    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
+    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'best')
 
 if __name__ == "__main__":
   add_options()
