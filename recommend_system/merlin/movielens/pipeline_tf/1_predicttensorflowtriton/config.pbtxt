@@ -1,0 +1,43 @@
+name: "1_predicttensorflowtriton"
+platform: "tensorflow_savedmodel"
+input {
+  name: "genres__values"
+  data_type: TYPE_INT64
+  dims: -1
+}
+input {
+  name: "genres__offsets"
+  data_type: TYPE_INT32
+  dims: -1
+}
+input {
+  name: "movieId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+input {
+  name: "userId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "binary_rating/binary_output"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 1
+}
+instance_group {
+}
+parameters {
+  key: "TF_GRAPH_TAG"
+  value {
+    string_value: "serve"
+  }
+}
+parameters {
+  key: "TF_SIGNATURE_DEF"
+  value {
+    string_value: "serving_default"
+  }
+}
+backend: "tensorflow"

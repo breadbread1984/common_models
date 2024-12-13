@@ -1,0 +1,21 @@
+name: "executor_model"
+platform: "merlin_executor"
+input {
+  name: "userId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+input {
+  name: "movieId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "binary_rating/binary_output"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 1
+}
+instance_group {
+}
+backend: "python"

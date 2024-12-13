@@ -1,0 +1,50 @@
+name: "0_transformworkflowtriton"
+input {
+  name: "userId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+input {
+  name: "movieId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "userId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "movieId"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "genres__values"
+  data_type: TYPE_INT64
+  dims: -1
+}
+output {
+  name: "genres__offsets"
+  data_type: TYPE_INT32
+  dims: -1
+}
+instance_group {
+}
+parameters {
+  key: "cats"
+  value {
+  }
+}
+parameters {
+  key: "conts"
+  value {
+  }
+}
+parameters {
+  key: "python_module"
+  value {
+    string_value: "merlin.systems.triton.models.workflow_model"
+  }
+}
+backend: "python"

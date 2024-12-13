@@ -1,0 +1,1 @@
+{"feature": [{"name": "binary_rating/binary_output", "type": "FLOAT", "annotation": {"extraMetadata": [{"_dims": [], "is_list": false, "is_ragged": false, "dtype_item_size": 32.0}]}}]}
