@@ -36,7 +36,7 @@ def main(unused_argv):
   model.compile(optimizer = optimizer)
   callbacks = [
     tf.keras.callbacks.TensorBoard(log_dir = join(FLAGS.ckpt, 'logs')),
-    tf.keras.callbacks.ModelCheckpoint(filepath = FLAGSK.ckpt, save_freq = 100)
+    tf.keras.callbacks.ModelCheckpoint(filepath = FLAGS.ckpt, save_freq = 100)
   ]
   model.fit(train_transformed, epochs = FLAGS.epochs, validation_data = valid_transformed, batch_size = FLAGS.batch, callbacks = callbacks)
   model.evaluate(valid_transformed, batch_size = FLAGS.batch)
