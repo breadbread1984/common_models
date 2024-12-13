@@ -6,7 +6,6 @@ from absl import flags, app
 from merlin.datasets.entertainment import get_movielens
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
-from merlin.systems.dag.ensemble import Ensemble
 import nvtabular as nvt
 from dask.distributed import Client
 from create_cluster import load_cluster
@@ -20,7 +19,7 @@ def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   get_movielens(variant="ml-1m", path = FLAGS.output_dir)
 
-def load_datasets(root_path, n_part = 2, use_cluster = False, export = False):
+def load_datasets(root_path, n_part = 2, use_cluster = False, return_workflow = false):
   # 0) load original dataset
   '''
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
@@ -53,14 +52,11 @@ def load_datasets(root_path, n_part = 2, use_cluster = False, export = False):
   workflow.fit_transform(train_ds).to_parquet('train')
   # apply category map on valset and save to directory valid
   workflow.transform(valid_ds).to_parquet('valid')
-  if export:
-    ensemble = Ensemble(workflow.input_schema, workflow.output_schema)
-    ensemble.add_workflow(workflow)
-    ensemble.export('model_repo', name = "nvt_workflow")
   # 3) reload preprocessed dataset
   train_transformed = nvt.Dataset('train', engine = 'parquet')
   valid_transformed = nvt.Dataset('valid', engine = 'parquet')
-  return train_transformed, valid_transformed
+  return train_transformed, valid_transformed if not return_workflow else \
+         train_transformed, valid_transformed, workflow
 
 if __name__ == "__main__":
   add_options()

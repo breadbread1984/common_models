@@ -6,6 +6,8 @@ import pytorch_lightning as pl
 from merlin.dataloader.torch import Loader
 import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
+from merlin.systems.dag import Ensemble
+from merlin.systems.dag.ops import TransformWorkflow, PredictPytorch
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
@@ -14,10 +16,10 @@ def add_options():
   flags.DEFINE_string('ckpt', default = 'ckpt', help = 'path to checkpoint')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_string('dataset', default = 'dataset', help = 'path to dataset')
-  flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
+  flags.DEFINE_string('output', default = 'ensemble', help = 'output ensemble path')
 
 def main(unused_argv):
-  train_transformed, valid_transformed = load_datasets(FLAGS.dataset, export = True)
+  train_transformed, valid_transformed, workflow = load_datasets(FLAGS.dataset, return_workflow = True)
   model = mm.DLRMModel(
     train_transformed.schema, # .without('genres')
     dim = 64, # embedding dim for categorical inputs
@@ -30,9 +32,10 @@ def main(unused_argv):
     default_root_dir = FLAGS.ckpt,
   )
   trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
-  model.to(FLAGS.device)
-  script_model = torch.jit.script(model)
-  torch.jit.save(script_model, 'model.pt')
+  workflow = workflow.remove_inputs(['binary_rating'])
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPytorch(model)
+  ensemble = Ensemble(pipeline, workflow.input_schema)
+  ensemble.export(FLAGS.output)
 
 if __name__ == "__main__":
   add_options()
