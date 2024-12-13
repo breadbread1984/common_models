@@ -54,6 +54,8 @@ def main(unused_argv):
   workflow = workflow.remove_inputs(['binary_rating'])
   pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, train_transformed.schema.without(['binary_rating']), Schema([ColumnSchema('binary_rating')]))
   ensemble = Ensemble(pipeline, workflow.input_schema)
+  # FIXME: torch pipeline cannot be saved, due to absence of save member function of DLRMModel
+  # error message: AttributeError: 'DLRMModel' object has no attribute 'save'
   ensemble.export(FLAGS.pipeline)
 
 if __name__ == "__main__":
