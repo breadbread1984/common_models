@@ -29,7 +29,7 @@ def main(unused_argv):
     embedding_dim = 64, # embedding dim for categorical inputs
     bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
-    prediction_tasks = mm.OutputBlock(train_transformed.schema.without(['binary_rating']))
+    prediction_tasks = mm.OutputBlock(train_transformed.schema)
   )
   optimizer = tf.keras.optimizers.Adam(FLAGS.lr)
   model.compile(optimizer = optimizer)
