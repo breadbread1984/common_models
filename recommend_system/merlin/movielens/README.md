@@ -28,6 +28,14 @@ python3 train_torch.py
 
 ## Serving
 
+test service
+
 ```shell
-tritonserver --model-repository=pipeline_tf --http-port=8081 --grpc-port=8082 --metrics-port=8083
+tritonserver --model-repository=pipeline_tf --http-port=8081 --grpc-port=8082 --metrics-port=8083 --model-control-mode=explicit
+```
+
+launch service
+
+```shell
+tritonserver --model-repository=pipeline_tf --http-port=8081 --grpc-port=8082 --metrics-port=8083 --model-control-mode=poll
 ```
