@@ -16,7 +16,7 @@ def main(unused_argv):
   client = httpclient.InferenceServerClient(url = f"{FLAGS.host}:{FLAGS.port}")
   if not client.is_model_ready('executor_model'):
     raise Exception('Model is not ready!')
-  for sample in valid:
+  for index, row in valid.to_iter().iterrows():
     import pdb; pdb.set_trace()
 
 if __name__ == "__main__":
