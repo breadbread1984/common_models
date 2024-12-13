@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from tqdm import tqdm
 import tritonclient.http as httpclient
 from create_datasets import load_datasets
 
@@ -19,7 +20,7 @@ def main(unused_argv):
   total = 0
   correct = 0
   for df in valid.to_iter():
-    for i in range(len(df)):
+    for i in tqdm(range(len(df))):
       userId = df['userId'][i]
       movieId = df['movieId'][i]
       binary_rating = df['binary_rating'][i]
