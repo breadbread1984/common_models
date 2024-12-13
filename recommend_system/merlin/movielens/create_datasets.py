@@ -19,7 +19,7 @@ def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   get_movielens(variant="ml-1m", path = FLAGS.output_dir)
 
-def load_datasets(root_path, n_part = 2, use_cluster = False):
+def load_datasets(root_path, n_part = 2, use_cluster = False, export = False):
   # 0) load original dataset
   '''
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
@@ -52,6 +52,8 @@ def load_datasets(root_path, n_part = 2, use_cluster = False):
   workflow.fit_transform(train_ds).to_parquet('train')
   # apply category map on valset and save to directory valid
   workflow.transform(valid_ds).to_parquet('valid')
+  if export:
+    export_workflow(workflow, name = "nvt_workflow", output_path = "workflow", backend = "nvtabular")
   # 3) reload preprocessed dataset
   train_transformed = nvt.Dataset('train', engine = 'parquet')
   valid_transformed = nvt.Dataset('valid', engine = 'parquet')

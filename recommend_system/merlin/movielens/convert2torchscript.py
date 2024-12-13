@@ -17,7 +17,7 @@ def add_options():
   flags.DEFINE_enum('device', default = 'cuda', enum_values = {'cuda', 'cpu'}, help = 'device to use')
 
 def main(unused_argv):
-  train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
+  train_transformed, valid_transformed = load_datasets(FLAGS.dataset, export = True)
   model = mm.DLRMModel(
     train_transformed.schema, # .without('genres')
     dim = 64, # embedding dim for categorical inputs
