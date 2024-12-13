@@ -8,7 +8,7 @@ import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
 from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.workflow import TransformWorkflow
-from merlin.systems.dag.ops.pytorch import PredictPytorch
+from merlin.systems.dag.ops.pytorch import PredictPyTorch
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
@@ -34,7 +34,7 @@ def main(unused_argv):
   )
   trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
   workflow = workflow.remove_inputs(['binary_rating'])
-  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPytorch(model)
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model)
   ensemble = Ensemble(pipeline, workflow.input_schema)
   ensemble.export(FLAGS.output)
 
