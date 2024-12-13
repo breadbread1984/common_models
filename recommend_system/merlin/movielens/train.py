@@ -6,6 +6,9 @@ import pytorch_lightning as pl
 from merlin.dataloader.torch import Loader
 import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
+from merlin.systems.dag import Ensemble
+from merlin.systems.dag.ops.workflow import TransformWorkflow
+from merlin.systems.dag.ops.pytorch import PredictPyTorch
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
@@ -16,10 +19,11 @@ def add_options():
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
+  flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to output pipeline')
   flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
 
 def main(unused_argv):
-  train_transformed, valid_transformed = load_datasets(FLAGS.dataset)
+  train_transformed, valid_transformed, workflow = load_datasets(FLAGS.dataset, return_workflow = True)
   # 1)stack categorical input vectors with continuous input vectors to form a matrix F of n x dim(64)
   # 2)interaction is done by dot(F, transpose(F)) whose dimension is n x n
   # 3)all elements in the upper triangle are flatten in to a vector
@@ -49,6 +53,10 @@ def main(unused_argv):
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
     trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
+    workflow = workflow.remove_inputs(['binary_rating'])
+    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model)
+    ensemble = Ensemble(pipeline, workflow.input_schema)
+    ensemble.export(FLAGS.pipeline)
   else:
     trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
 

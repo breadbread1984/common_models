@@ -19,7 +19,7 @@ def main(unused_argv):
   if exists(FLAGS.output_dir): rmtree(FLAGS.output_dir)
   get_movielens(variant="ml-1m", path = FLAGS.output_dir)
 
-def load_datasets(root_path, n_part = 2, use_cluster = False, return_workflow = false):
+def load_datasets(root_path, n_part = 2, use_cluster = False, return_workflow = False):
   # 0) load original dataset
   '''
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
