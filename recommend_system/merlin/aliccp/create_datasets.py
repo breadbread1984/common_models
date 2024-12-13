@@ -47,6 +47,7 @@ def transform_datasets(root_path = 'dataset'):
                    Path(join(root_path, 'processed')),
                    nvt_workflow = workflow,
                    workflow_name = "workflow")
+  workflow.save('dlrm_torch.workflow')
 
 if __name__ == "__main__":
   add_options()
