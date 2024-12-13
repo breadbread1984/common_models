@@ -41,8 +41,7 @@ def main(unused_argv):
     trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
     trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
   else:
-    trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = 1), val_dataloaders = Loader(valid_transformed, batch_size = 1), ckpt_path = 'last')
-    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
+    trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch), ckpt_path = 'last')
 
 if __name__ == "__main__":
   add_options()
