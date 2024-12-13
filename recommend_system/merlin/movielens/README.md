@@ -15,3 +15,9 @@ python3 create_datasets.py [--output_dir dataset]
 ```shell
 python3 train.py
 ```
+
+## Serving
+
+```shell
+python3 convert2torchscript.py
+```
