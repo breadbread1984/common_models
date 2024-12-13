@@ -55,8 +55,8 @@ def load_datasets(root_path, n_part = 2, use_cluster = False, return_workflow = 
   # 3) reload preprocessed dataset
   train_transformed = nvt.Dataset('train', engine = 'parquet')
   valid_transformed = nvt.Dataset('valid', engine = 'parquet')
-  return train_transformed, valid_transformed if not return_workflow else \
-         train_transformed, valid_transformed, workflow
+  return (train_transformed, valid_transformed) if not return_workflow else \
+         (train_transformed, valid_transformed, workflow)
 
 if __name__ == "__main__":
   add_options()
