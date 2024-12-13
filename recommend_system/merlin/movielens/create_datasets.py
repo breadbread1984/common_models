@@ -7,7 +7,7 @@ from merlin.datasets.entertainment import get_movielens
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
 from merlin.systems.dag.ensemble import Ensemble
-from merlin.systems.triton.export import export
+from merlin.systems.triton.utils import export_model
 import nvtabular as nvt
 from dask.distributed import Client
 from create_cluster import load_cluster
@@ -57,7 +57,7 @@ def load_datasets(root_path, n_part = 2, use_cluster = False, export = False):
   if export:
     ensemble = Ensemble(workflow.input_schema, workflow.output_schema)
     ensemble.add_workflow(workflow)
-    export(ensemble, 'model_repo', name = "nvt_workflow")
+    export_model(ensemble, 'model_repo', name = "nvt_workflow")
   # 3) reload preprocessed dataset
   train_transformed = nvt.Dataset('train', engine = 'parquet')
   valid_transformed = nvt.Dataset('valid', engine = 'parquet')
