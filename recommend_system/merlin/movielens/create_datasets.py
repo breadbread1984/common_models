@@ -25,9 +25,8 @@ def load_datasets(root_path, n_part = 2, use_cluster = False, return_workflow = 
   train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
   valid = get_lib().read_parquet(join(root_path, 'ml-1m', 'valid.parquet'))
   '''
-  data = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet')).sample(frac=1)
-  train = data.iloc[:600_000]
-  valid = data.iloc[600_000:]
+  train = get_lib().read_parquet(join(root_path, 'ml-1m', 'train.parquet'))
+  valid = get_lib().read_parquet(join(root_path, 'ml-1m', 'valid.parquet'))
   movies = get_lib().read_parquet(join(root_path, 'ml-1m', 'movies_converted.parquet'))
   # train and valid are in DataFrame format
   # table head: userId  movieId     rating  timestamp
