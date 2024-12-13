@@ -23,7 +23,6 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024, help = 'batch size')
   flags.DEFINE_integer('epochs', default = 10, help = 'epochs')
   flags.DEFINE_enum('target', default = 'click', enum_values = {'click', 'conversion'}, help = 'which target to use')
-  flags.DEFINE_boolean('eval_only', default = False, help = 'whether to do just evaluation')
   flags.DEFINE_string('pipeline', default = 'pipeline', help = 'path to exported pipeline')
 
 def main(unused_argv):
@@ -31,7 +30,7 @@ def main(unused_argv):
   valid = Dataset(join(FLAGS.dataset, 'processed', 'valid', '*.parquet'), part_size = "500MB")
   # train.schema.select_by_tag(Tags.TARGET).column_names
   model = mm.DLRMModel(
-    train.schema,
+    train.schema.without(['click', 'conversion']),
     dim = 64,
     bottom_block = mm.MLPBlock([128, 64]),
     top_block = mm.MLPBlock([128, 64, 32]),
@@ -52,16 +51,14 @@ def main(unused_argv):
     logger = True
   )
   trainer.lr = FLAGS.lr
-  if not FLAGS.eval_only:
-    trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
-    # export to pipeline
-    workflow = nvt.Workflow.load('dlrm_torch.workflow')
-    workflow.remove_inputs(['click', 'conversion'])
-    pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
-    ensemble = Ensemble(pipeline, workflow.input_schema)
-    ensemble.export(FLAGS.pipeline)
-  else:
-    trainer.validate(model, Loader(valid, batch_size = FLAGS.batch), ckpt_path = 'last')
+  trainer.fit(model, train_dataloaders = Loader(train, batch_size = FLAGS.batch), val_dataloaders = Loader(valid, batch_size = FLAGS.batch))
+  trainer.validate(model, Loader(valid, batch_size = FLAGS.batch), ckpt_path = 'last')
+  # export to pipeline
+  workflow = nvt.Workflow.load('dlrm_torch.workflow')
+  workflow.remove_inputs(['click', 'conversion'])
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
+  ensemble = Ensemble(pipeline, workflow.input_schema)
+  ensemble.export(FLAGS.pipeline)
 
 if __name__ == "__main__":
   add_options()
