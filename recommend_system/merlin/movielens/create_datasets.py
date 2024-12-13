@@ -6,6 +6,7 @@ from absl import flags, app
 from merlin.datasets.entertainment import get_movielens
 from merlin.core.dispatch import get_lib
 from merlin.schema.tags import Tags
+from merlin.inference.triton import export_workflow
 import nvtabular as nvt
 from dask.distributed import Client
 from create_cluster import load_cluster
