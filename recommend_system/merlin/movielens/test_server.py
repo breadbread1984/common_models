@@ -16,9 +16,26 @@ def main(unused_argv):
   client = httpclient.InferenceServerClient(url = f"{FLAGS.host}:{FLAGS.port}")
   if not client.is_model_ready('executor_model'):
     raise Exception('Model is not ready!')
-  df = valid.to_ddf():
-  for index, row in df.iterrows():
-    import pdb; pdb.set_trace()
+  total = 0
+  correct = 0
+  for df in valid.to_iter():
+    for i in range(len(df)):
+      userId = df['userId'][i]
+      movieId = df['movieId'][i]
+      binary_rating = df['binary_rating'][i]
+      feeds = [
+        httpclient.InferInput("userId", userId.shape, "INT64"),
+        httpclient.InferInput("movieId", movieId.shape, "INT64")
+      ]
+      feeds[0].set_data_from_numpy(userId)
+      feeds[1].set_data_from_numpy(movieId)
+      outputs = [httpclient.InferRequestedOutput("binary_rating/binary_output")]
+      response = client.infer("executor_model", inputs = feeds, outputs = outputs, model_version = "1")
+      pred = response.as_numpy("binary_rating/binary_output")
+      if pred == binary_rating:
+        correct += 1
+      total += 1
+  print(f"accuracy: {correct/total}")
 
 if __name__ == "__main__":
   add_options()
