@@ -28,7 +28,7 @@ def main(unused_argv):
   # 3)all elements in the upper triangle are flatten in to a vector
   # 4)map feature through top_block to map the interaction to target vector
   model = mm.DLRMModel(
-    train_transformed.schema, # .without('genres')
+    train_transformed.schema.without(['binary_rating']), # .without('genres')
     dim = 64, # embedding dim for categorical inputs
     bottom_block = mm.MLPBlock([128, 64]), # mlp for continous inputs (no continous input for this case)
     top_block = mm.MLPBlock([128, 64, 32]), # mlp after interaction block
@@ -52,7 +52,7 @@ def main(unused_argv):
   trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
   trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
   workflow = workflow.remove_inputs(['binary_rating'])
-  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, train_transformed.schema, Schema([ColumnSchema('binary_rating')]))
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, train_transformed.schema.without(['binary_rating']), Schema([ColumnSchema('binary_rating')]))
   ensemble = Ensemble(pipeline, workflow.input_schema)
   ensemble.export(FLAGS.pipeline)
 
