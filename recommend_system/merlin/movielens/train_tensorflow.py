@@ -41,7 +41,8 @@ def main(unused_argv):
     #tf.keras.callbacks.ModelCheckpoint(filepath = FLAGS.ckpt, save_freq = 'epoch')
   ]
   model.fit(train_transformed, epochs = FLAGS.epochs, validation_data = valid_transformed, batch_size = FLAGS.batch, callbacks = callbacks)
-  model.evaluate(valid_transformed, batch_size = FLAGS.batch)
+  metrics = model.evaluate(valid_transformed, batch_size = FLAGS.batch, return_dict = True)
+  print(metrics)
   workflow = workflow.remove_inputs(['binary_rating'])
   pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictTensorflow(model)
   ensemble = Ensemble(pipeline, workflow.input_schema)
