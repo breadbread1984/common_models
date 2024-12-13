@@ -52,7 +52,7 @@ def main(unused_argv):
   trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
   trainer.validate(model, Loader(valid_transformed, batch_size = FLAGS.batch))
   workflow = workflow.remove_inputs(['binary_rating'])
-  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, model.input_schema, model.output_schema)
+  pipeline = workflow.input_schema.column_names >> TransformWorkflow(workflow) >> PredictPyTorch(model, train_transformed.schema, ColumnSchema('binary_rating'))
   ensemble = Ensemble(pipeline, workflow.input_schema)
   ensemble.export(FLAGS.pipeline)
 
