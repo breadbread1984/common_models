@@ -22,12 +22,12 @@ def main(unused_argv):
   correct = 0
   for df in valid.to_iter():
     for i in tqdm(range(len(df))):
-      userId = np.expand_dims(df['userId'], axis = 0)
-      movieId = np.expand_dims(df['movieId'], axis = 0)
+      userId = np.expand_dims(np.array(df['userId']), axis = 0)
+      movieId = np.expand_dims(np.array(df['movieId']), axis = 0)
       binary_rating = df['binary_rating'][i]
       feeds = [
-        httpclient.InferInput("userId", (,), "INT64"),
-        httpclient.InferInput("movieId", (,), "INT64")
+        httpclient.InferInput("userId", userId.shape, "INT64"),
+        httpclient.InferInput("movieId", movieId.shape, "INT64")
       ]
       feeds[0].set_data_from_numpy(userId)
       feeds[1].set_data_from_numpy(movieId)
