@@ -24,7 +24,7 @@ def main(unused_argv):
     output_block = mm.BinaryOutput(ColumnSchema('binary_rating'))
   )
   trainer = pl.Trainer(
-    enable_checkpoint = False,
+    enable_checkpointing = False,
     default_root_dir = FLAGS.ckpt,
   )
   trainer.validate(model, Loader(valid_transformed, batch_size = 1), ckpt_path = 'best')
