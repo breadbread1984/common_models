@@ -7,7 +7,8 @@ from merlin.dataloader.torch import Loader
 import merlin.models.torch as mm
 from merlin.schema import ColumnSchema
 from merlin.systems.dag import Ensemble
-from merlin.systems.dag.ops import TransformWorkflow, PredictPytorch
+from merlin.systems.dag.ops.workflow import TransformWorkflow
+from merlin.systems.dag.ops.pytorch import PredictPytorch
 from create_datasets import load_datasets
 
 FLAGS = flags.FLAGS
