@@ -34,8 +34,8 @@ def main(unused_argv):
   trainer = pl.Trainer(
     enable_checkpointing = True,
     default_root_dir = FLAGS.ckpt,
-    max_epochs = FLAGS.epochs if not FLAGS.eval_only else 1,
-    max_steps = -1 if not FLAGS.eval_only else 1)
+    max_epochs = FLAGS.epochs,
+  )
   trainer.lr = FLAGS.lr
   if not FLAGS.eval_only:
     trainer.fit(model, train_dataloaders = Loader(train_transformed, batch_size = FLAGS.batch), val_dataloaders = Loader(valid_transformed, batch_size = FLAGS.batch))
