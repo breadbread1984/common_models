@@ -10,14 +10,24 @@ this repo implements DLRM training
 python3 create_datasets.py [--output_dir dataset]
 ```
 
-## Train model
+## Train model and save pipeline
+
+### Tensorflow version
 
 ```shell
-python3 train.py
+python3 train_tensorflow.py
 ```
+
+### Pytorch version
+
+```shell
+python3 train_torch.py
+```
+
+***NOTE: due to imcompleted torch implement of DLRMModel, torch pipeline cannot be saved!***
 
 ## Serving
 
 ```shell
-python3 convert2torchscript.py
+tritonserver --model-repository=pipeline_tf --http-port=8081 --grpc-port=8082 --metrics-port=8083
 ```
