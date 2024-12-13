@@ -28,7 +28,7 @@ def main(unused_argv):
     enable_checkpointing = False,
     default_root_dir = FLAGS.ckpt,
   )
-  trainer.validate(model, Loader(valid_transformed, batch_size = 1), ckpt_path = 'best')
+  trainer.validate(model, Loader(valid_transformed, batch_size = 1), ckpt_path = 'last')
   model.to(FLAGS.device)
   script_model = torch.jit.script(model)
   torch.jit.save(script_model, 'model.pt')
