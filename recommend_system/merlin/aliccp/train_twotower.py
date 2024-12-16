@@ -20,8 +20,10 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024 * 8, help = 'batch size')
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 20, help = 'epochs')
+  flags.DEFINE_string('pipeline', default = 'tt_pipeline_tf', help = '')
 
 def main(unused_argv):
+  # 1) training two towar model
   train = Dataset(join(FLAGS.dataset, 'processed', 'train', '*.parquet'), part_size = "500MB")
   valid = Dataset(join(FLAGS.dataset, 'processed', 'valid', '*.parquet'), part_size = "500MB")
   model = mm.TwoTowerModel(
@@ -44,8 +46,15 @@ def main(unused_argv):
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = callbacks)
   metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
   print(metrics)
-  # generate pipeline
-  # item feature pipeline
+  # 2) generate pipeline
+  # NOTE: only user feature is calculated online when deployment
+  pipeline = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
+              "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
+             TransformWorkflow(workflow.get_subworkflow('user')) >> \
+             PredictTensorflow(model.retrieval_block.query_block())
+  ensemble = Ensemble(pipeline, workflow.get_subworkflow('user').input_schema)
+  ensemble.export(FLAGS.pipeline)
+  # 3) generate item feature and user feature
   workflow = nvt.Workflow.load('dlrm_torch.workflow')
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
           TransformWorkflow(workflow.get_subworkflow("item")) >> \
