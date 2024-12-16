@@ -12,7 +12,9 @@ from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
+from merlin.systems.dag.ops.faiss import QueryFaiss, setup_faiss
 import nvtabular as nvt
+import feast
 
 FLAGS = flags.FLAGS
 
@@ -22,7 +24,8 @@ def add_options():
   flags.DEFINE_integer('batch', default = 1024 * 8, help = 'batch size')
   flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 20, help = 'epochs')
-  flags.DEFINE_string('pipeline', default = 'tt_pipeline_tf', help = '')
+  flags.DEFINE_string('pipeline', default = 'tt_pipeline_tf', help = 'path to pipeline')
+  flags.DEFINE_integer('topk', default = 100, help = 'how many top matches are returned')
 
 def main(unused_argv):
   # 1) training two towar model
@@ -60,7 +63,7 @@ def main(unused_argv):
   pipeline = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
              TransformWorkflow(workflow.get_subworkflow("item")) >> \
              PredictTensorflow(model.retrieval_block.item_block())
-  ensemble = Ensemble(pipelinem, workflow.get_subworkflow('item').input_schema)
+  ensemble = Ensemble(pipeline, workflow.get_subworkflow('item').input_schema)
   ensemble.export(FLAGS.pipeline + 'item2users')
   # 3) generate item feature and user feature
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
@@ -70,6 +73,17 @@ def main(unused_argv):
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
+  # pipeline
+  setup_faiss(item_embeddings, join('faiss_index', 'item.faiss'), embedding_column = "output_1")
+  item_retrieval = ['item_id'] >> QueryFeast.from_feature_view(
+                                    store = feast.FeatureStore(join('feast_repo', 'feature_repo')),
+                                    view = "item_features",
+                                    column = "item_id",
+                                    include_id = True) >> \
+                   TransformWorkflow(item_workflow) >> \
+                   PredictTensorflow(model.retrieval_block.item_block()) >> \
+                   QueryFaiss(join('faiss_index', 'item.faiss'), topk = FLAGS.topk)
+
   user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
@@ -78,6 +92,16 @@ def main(unused_argv):
   user_workflow = nvt.Workflow(['user_id'] + user_feature)
   user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
   user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
+  # pipeline
+  setup_faiss(user_embeddings, join('faiss_index', 'user.faiss'), embedding_column = "output_1")
+  user_retrieval = ['user_id'] >> QueryFeast.from_feature_view(
+                                    store = feast.FeatureStore(join('feast_repo', 'feature_repo')),
+                                    view = "user_features",
+                                    column = "user_id",
+                                    include_id = True) >> \
+                   TransformWorkflow(user_workflow) >> \
+                   PredictTensorflow(model.retrieval_block.user_block()) >> \
+                   QueryFaiss(join('faiss_index', 'user.faiss'), topk = FLAGS.topk)
 
   '''
   query_tower = model.retrieval_block.query_block()
