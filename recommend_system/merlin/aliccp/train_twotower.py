@@ -59,7 +59,7 @@ def main(unused_argv):
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = callbacks)
   metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
   print(metrics)
-  # 2) generate item feature and user feature
+  # 2) extract item and user feature
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
@@ -78,7 +78,13 @@ def main(unused_argv):
   user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
   # 3) create feature store
   feast_path = search_command_path('feast')
-  process = subprocess.Popen([feast_path], shell = True, cwd = 'feast_repo')
+  process = subprocess.Popen([feast_path, "apply"], shell = True, cwd = 'feast_repo')
+  try:
+    process.wait()
+  except KeyboardInterrupt:
+    print("stopping feast...")
+    process.kill()
+  process = subprocess.Popen([feast_path, "materialize"], shell = True, cwd = 'feast_repo')
   try:
     process.wait()
   except KeyboardInterrupt:
