@@ -4,6 +4,7 @@ from absl import flags, app
 from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
+import subprocess
 import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
@@ -26,6 +27,13 @@ def add_options():
   flags.DEFINE_integer('epochs', default = 20, help = 'epochs')
   flags.DEFINE_string('pipeline', default = 'tt_pipeline_tf', help = 'path to pipeline')
   flags.DEFINE_integer('topk', default = 100, help = 'how many top matches are returned')
+
+def search_command_path(command):
+  try:
+    result = subprocess.check_output(['which', command]).decode('utf-8').strip()
+    return result
+  except subprocess.CalledProcessError:
+    return None
 
 def main(unused_argv):
   # 1) training two towar model
@@ -51,21 +59,7 @@ def main(unused_argv):
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = callbacks)
   metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
   print(metrics)
-  # 2) generate pipeline
-  # NOTE: only user feature is calculated online when deployment
-  workflow = nvt.Workflow.load('dlrm_torch.workflow')
-  pipeline = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
-              "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
-             TransformWorkflow(workflow.get_subworkflow('user')) >> \
-             PredictTensorflow(model.retrieval_block.query_block())
-  ensemble = Ensemble(pipeline, workflow.get_subworkflow('user').input_schema)
-  ensemble.export(FLAGS.pipeline + 'user2items')
-  pipeline = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
-             TransformWorkflow(workflow.get_subworkflow("item")) >> \
-             PredictTensorflow(model.retrieval_block.item_block())
-  ensemble = Ensemble(pipeline, workflow.get_subworkflow('item').input_schema)
-  ensemble.export(FLAGS.pipeline + 'item2users')
-  # 3) generate item feature and user feature
+  # 2) generate item feature and user feature
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
@@ -73,7 +67,24 @@ def main(unused_argv):
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
-  # pipeline
+
+  user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
+  user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
+                  "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
+                 TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
+                 PredictTensorflow(model.retrieval_block.query_block())
+  user_workflow = nvt.Workflow(['user_id'] + user_feature)
+  user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
+  user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
+  # 3) create feature store
+  feast_path = search_command_path('feast')
+  process = subprocess.Popen([feast_path], shell = True, cwd = 'feast_repo')
+  try:
+    process.wait()
+  except KeyboardInterrupt:
+    print("stopping feast...")
+    process.kill()
+  # 4) pipeline
   setup_faiss(item_embeddings, join('faiss_index', 'item.faiss'), embedding_column = "output_1")
   item_retrieval = ['item_id'] >> QueryFeast.from_feature_view(
                                     store = feast.FeatureStore(join('feast_repo', 'feature_repo')),
@@ -84,14 +95,6 @@ def main(unused_argv):
                    PredictTensorflow(model.retrieval_block.item_block()) >> \
                    QueryFaiss(join('faiss_index', 'item.faiss'), topk = FLAGS.topk)
 
-  user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
-  user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
-                  "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
-                 TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
-                 PredictTensorflow(model.retrieval_block.query_block())
-  user_workflow = nvt.Workflow(['user_id'] + user_feature)
-  user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
-  user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
   # pipeline
   setup_faiss(user_embeddings, join('faiss_index', 'user.faiss'), embedding_column = "output_1")
   user_retrieval = ['user_id'] >> QueryFeast.from_feature_view(
