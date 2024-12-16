@@ -12,6 +12,7 @@ from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
+import nvtabular as nvt
 
 FLAGS = flags.FLAGS
 
