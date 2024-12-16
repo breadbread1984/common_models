@@ -8,6 +8,7 @@ import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 from merlin.schema.tags import Tags
+from merlin.models.utils.dataset import unique_rows_by_features
 from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
@@ -48,6 +49,7 @@ def main(unused_argv):
   print(metrics)
   # 2) generate pipeline
   # NOTE: only user feature is calculated online when deployment
+  workflow = nvt.Workflow.load('dlrm_torch.workflow')
   pipeline = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
               "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
              TransformWorkflow(workflow.get_subworkflow('user')) >> \
@@ -55,13 +57,14 @@ def main(unused_argv):
   ensemble = Ensemble(pipeline, workflow.get_subworkflow('user').input_schema)
   ensemble.export(FLAGS.pipeline)
   # 3) generate item feature and user feature
-  workflow = nvt.Workflow.load('dlrm_torch.workflow')
+  item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
                  PredictTensorflow(model.retrieval_block.item_block())
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
+  user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
                  TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
