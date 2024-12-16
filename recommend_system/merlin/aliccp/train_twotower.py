@@ -8,7 +8,7 @@ import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
 from merlin.schema.tags import Tags
-from merlin.models.utils.dataset import unique_rows_by_features
+from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
 
