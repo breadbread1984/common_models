@@ -18,6 +18,7 @@ def add_options():
   flags.DEFINE_string('dataset', default = 'aliccp', help = 'path to dataset')
   flags.DEFINE_string('ckpt', default = 'tt_ckpt', help = 'path to ckpt')
   flags.DEFINE_integer('batch', default = 1024 * 8, help = 'batch size')
+  flags.DEFINE_float('lr', default = 5e-3, help = 'learning rate')
   flags.DEFINE_integer('epochs', default = 20, help = 'epochs')
 
 def main(unused_argv):
