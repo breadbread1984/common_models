@@ -55,7 +55,12 @@ def main(unused_argv):
              TransformWorkflow(workflow.get_subworkflow('user')) >> \
              PredictTensorflow(model.retrieval_block.query_block())
   ensemble = Ensemble(pipeline, workflow.get_subworkflow('user').input_schema)
-  ensemble.export(FLAGS.pipeline)
+  ensemble.export(FLAGS.pipeline + 'user2items')
+  pipeline = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
+             TransformWorkflow(workflow.get_subworkflow("item")) >> \
+             PredictTensorflow(model.retrieval_block.item_block())
+  ensemble = Ensemble(pipelinem, workflow.get_subworkflow('item').input_schema)
+  ensemble.export(FLAGS.pipeline + 'item2users')
   # 3) generate item feature and user feature
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
