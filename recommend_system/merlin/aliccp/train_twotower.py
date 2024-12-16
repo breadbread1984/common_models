@@ -87,7 +87,7 @@ def main(unused_argv):
   # 4) pipeline
   setup_faiss(item_embeddings, join('faiss_index', 'item.faiss'), embedding_column = "output_1")
   item_retrieval = ['item_id'] >> QueryFeast.from_feature_view(
-                                    store = feast.FeatureStore(join('feast_repo', 'feature_repo')),
+                                    store = feast.FeatureStore('feast_repo'),
                                     view = "item_features",
                                     column = "item_id",
                                     include_id = True) >> \
@@ -98,7 +98,7 @@ def main(unused_argv):
   # pipeline
   setup_faiss(user_embeddings, join('faiss_index', 'user.faiss'), embedding_column = "output_1")
   user_retrieval = ['user_id'] >> QueryFeast.from_feature_view(
-                                    store = feast.FeatureStore(join('feast_repo', 'feature_repo')),
+                                    store = feast.FeatureStore('feast_repo'),
                                     view = "user_features",
                                     column = "user_id",
                                     include_id = True) >> \
