@@ -57,15 +57,15 @@ def main(unused_argv):
   # 3) generate item feature and user feature
   workflow = nvt.Workflow.load('dlrm_torch.workflow')
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
-          TransformWorkflow(workflow.get_subworkflow("item")) >> \
-          PredictTensorflow(model.retrieval_block.item_block())
+                 TransformWorkflow(workflow.get_subworkflow("item")) >> \
+                 PredictTensorflow(model.retrieval_block.item_block())
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
-                  TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
-                  PredictTensorflow(model.retrieval_block.query_block())
+                 TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
+                 PredictTensorflow(model.retrieval_block.query_block())
   user_workflow = nvt.Workflow(['user_id'] + user_feature)
   user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
   user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
