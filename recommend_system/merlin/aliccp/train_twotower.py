@@ -5,6 +5,8 @@ from shutil import rmtree
 from os import mkdir
 from os.path import join, exists
 import subprocess
+from datetime import datetime
+import numpy as np
 import tensorflow as tf
 from merlin.io.dataset import Dataset
 import merlin.models.tf as mm
@@ -61,8 +63,9 @@ def main(unused_argv):
   metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
   print(metrics)
   # 2) extract item and user feature
+  dt = datetime.now()
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
-  item_features['datetime'] = datetime.now()
+  item_features['datetime'] = dt
   item_features['datetime'] = item_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
@@ -72,7 +75,7 @@ def main(unused_argv):
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
   user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
-  user_features['datetime'] = datetime.now()
+  user_features['datetime'] = dt
   item_features['datetime'] = user_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
@@ -89,7 +92,7 @@ def main(unused_argv):
   except KeyboardInterrupt:
     print("stopping feast...")
     process.kill()
-  process = subprocess.Popen([feast_path, "materialize"], shell = True, cwd = 'feast_repo')
+  process = subprocess.Popen([feast_path, "materialize", f"{np.datetime64(dt)}", f"{np.datetime64(dt)}"], shell = True, cwd = 'feast_repo')
   try:
     process.wait()
   except KeyboardInterrupt:
