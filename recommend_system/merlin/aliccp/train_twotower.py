@@ -76,7 +76,7 @@ def main(unused_argv):
                  PredictTensorflow(model.retrieval_block.item_block())
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
-  item_embeddings.to_parquet(join('feast_repo', 'item_embeddings.parquet'))
+  item_embeddings.to_parquet('item_embeddings.parquet')
 
   user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
   user_features['datetime'] = dt
@@ -89,7 +89,7 @@ def main(unused_argv):
                  PredictTensorflow(model.retrieval_block.query_block())
   user_workflow = nvt.Workflow(['user_id'] + user_feature)
   user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
-  user_embeddings.to_parquet(join('feast_repo', 'user_embeddings.parquet'))
+  user_embeddings.to_parquet('user_embeddings.parquet')
   # 3) create feature store
   feast_path = search_command_path('feast')
   process = subprocess.Popen([feast_path, "apply"], shell = True, cwd = 'feast_repo')
