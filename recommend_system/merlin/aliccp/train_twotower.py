@@ -62,8 +62,10 @@ def main(unused_argv):
   model.fit(train, validation_data = valid, batch_size = FLAGS.batch, epochs = FLAGS.epochs, callbacks = callbacks)
   metrics = model.evaluate(valid, batch_size = FLAGS.batch, return_dict = True)
   print(metrics)
-  # 2) extract item and user feature
+  # 2) extract item and user feature, save item_id & item_feature, save user_id & user_feature
+  workflow = nvt.Workflow.load("dlrm_torch.workflow")
   dt = datetime.now()
+
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features['datetime'] = dt
   item_features['datetime'] = item_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
@@ -79,7 +81,7 @@ def main(unused_argv):
   item_features['datetime'] = user_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
-                 TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
+                 TransformWorkflow(workflow.get_subworkflow("user")) >> \
                  PredictTensorflow(model.retrieval_block.query_block())
   user_workflow = nvt.Workflow(['user_id'] + user_feature)
   user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
