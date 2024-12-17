@@ -1,0 +1,9 @@
+project: feast_repo
+registry: ./registry.db
+provider: local
+online_store:
+  type: sqlite
+  path: ./oneline_store.db
+offline_store:
+  type: file
+  path: ./data
