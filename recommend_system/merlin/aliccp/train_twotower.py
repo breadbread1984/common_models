@@ -69,23 +69,27 @@ def main(unused_argv):
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
   item_features['datetime'] = dt
   item_features['datetime'] = item_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
+  item_features.to_parquet(join('feast_repo', 'data', 'item_features.parquet'))
+
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
                  PredictTensorflow(model.retrieval_block.item_block())
   item_workflow = nvt.Workflow(['item_id'] + item_feature)
   item_embeddings = item_workflow.fit_transform(Dataset(item_features)).to_ddf().compute()
-  item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
+  item_embeddings.to_parquet(join('feast_repo', 'item_embeddings.parquet'))
 
   user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
   user_features['datetime'] = dt
-  item_features['datetime'] = user_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
+  user_features['datetime'] = user_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
+  user_features.to_parquet(join('feast_repo', 'data', 'user_features.parquet'))
+
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
                  TransformWorkflow(workflow.get_subworkflow("user")) >> \
                  PredictTensorflow(model.retrieval_block.query_block())
   user_workflow = nvt.Workflow(['user_id'] + user_feature)
   user_embeddings = user_workflow.fit_transform(Dataset(user_features)).to_ddf().compute()
-  user_embeddings.to_parquet(join('feast_repo', 'data', 'user_embeddings.parquet'))
+  user_embeddings.to_parquet(join('feast_repo', 'user_embeddings.parquet'))
   # 3) create feature store
   feast_path = search_command_path('feast')
   process = subprocess.Popen([feast_path, "apply"], shell = True, cwd = 'feast_repo')
