@@ -14,6 +14,7 @@ from merlin.systems.dag import Ensemble
 from merlin.systems.dag.ops.tensorflow import PredictTensorflow
 from merlin.systems.dag.ops.workflow import TransformWorkflow
 from merlin.systems.dag.ops.faiss import QueryFaiss, setup_faiss
+from merlin.systems.dag.ops.feast import QueryFeast
 import nvtabular as nvt
 import feast
 
@@ -61,6 +62,8 @@ def main(unused_argv):
   print(metrics)
   # 2) extract item and user feature
   item_features = unique_rows_by_features(train, Tags.ITEM, Tags.ITEM_ID).compute().reset_index(drop = True)
+  item_features['datetime'] = datetime.now()
+  item_features['datetime'] = item_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
   item_feature = ['item_id', 'item_brand', 'item_category', 'item_shop'] >> \
                  TransformWorkflow(workflow.get_subworkflow("item")) >> \
                  PredictTensorflow(model.retrieval_block.item_block())
@@ -69,6 +72,8 @@ def main(unused_argv):
   item_embeddings.to_parquet(join('feast_repo', 'data', 'item_embeddings.parquet'))
 
   user_features = unique_rows_by_features(train, Tags.USER, Tags.USER_ID).compute().reset_index(drop = True)
+  user_features['datetime'] = datetime.now()
+  item_features['datetime'] = user_features['datetime'].astype('datetime64[ns]') # to enable feast command to process parquet
   user_feature = ["user_id", "user_shops", "user_profile", "user_group", "user_gender", "user_age", "user_consumption_2",
                   "user_is_occupied", "user_geography", "user_intentions", "user_brands", "user_categories"] >> \
                  TransformWorkflow(get_workflow().get_subworkflow("user")) >> \
