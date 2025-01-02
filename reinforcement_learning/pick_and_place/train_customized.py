@@ -3,6 +3,7 @@
 from absl import flags, app
 from tqdm import tqdm
 import numpy as np
+import cv2
 import gymnasium as gym
 import gymnasium_robotics
 
@@ -13,29 +14,36 @@ def add_options():
   flags.DEFINE_string('logdir', default = 'logs', help = 'path to log directory')
   flags.DEFINE_integer('epochs', default = 300, help = 'number of epoch')
   flags.DEFINE_integer('episodes', default = 10000, help = 'episodes per epoch')
+  flags.DEFINE_integer('max_ep_steps', default = 300, help = 'max episode steps')
   flags.DEFINE_float('gamma', default = 0.95, help = 'gamma value')
   flags.DEFINE_float('lam', default = 0.95, help = 'lambda')
+  flags.DEFINE_boolean('visualize', default = False, help = 'whether to visualize')
 
 def main(unused_argv):
   gym.register_envs(gymnasium_robotics)
   env = gym.make("FetchPickAndPlaceDense-v3", render_mode = "rgb_array")
-  for ep in tqdm(range(FLAGS.epochs)):
-    for e in tqdm(range(FLAGS.episodes), leave = False):
+  for epoch in tqdm(range(FLAGS.epochs)):
+    for episode in tqdm(range(FLAGS.episodes), leave = False):
       states, rewards, dones = list(), list(), list()
       obs, info = env.reset()
-      states.append(obs)
-      while True:
+      states.append(obs['observation'])
+      for step in range(FLAGS.max_ep_steps):
         action = env.action_space.sample()
         obs, reward, done, truc, info = env.step(action)
         rewards.append(reward)
         dones.append(done)
+        if FLAGS.visualize:
+          image = env.render()[:,:,::-1]
+          cv2.imshow("", image)
+          cv2.waitKey(1)
+          print(reward)
         if done:
           assert len(rewards) == len(dones)
           rewards = np.array(rewards)
           v_values = discount_cumsum(rewards, gamma = FLAGS.gamma)
           advantages = gae(rewards, v_values, dones, FLAGS.gamma, FLAGS.lam)
           break
-        states.append(obs)
+        states.append(obs['observation'])
       import pdb; pdb.set_trace() 
         
 def discount_cumsum(rewards, gamma = 1.):
