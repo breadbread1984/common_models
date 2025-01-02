@@ -21,25 +21,22 @@ def main(unused_argv):
   env = gym.make("FetchPickAndPlaceDense-v3", render_mode = "rgb_array")
   for ep in tqdm(range(FLAGS.epochs)):
     for e in tqdm(range(FLAGS.episodes), leave = False):
-      states, rewards, logprobs, dones = list(), list(), list(), list()
+      states, rewards, dones = list(), list(), list()
       obs, info = env.reset()
       states.append(obs)
       while True:
         action = env.action_space.sample()
         obs, reward, done, truc, info = env.step(action)
         rewards.append(reward)
-        logprobs.apend(np.log(probs[0][action]))
         dones.append(done)
         if done:
-          assert len(logprobs) == len(rewards) == len(dones)
-          logprobs = np.array(logprobs)
+          assert len(rewards) == len(dones)
           rewards = np.array(rewards)
           v_values = discount_cumsum(rewards, gamma = FLAGS.gamma)
           advantages = gae(rewards, v_values, dones, FLAGS.gamma, FLAGS.lam)
           break
         states.append(obs)
-      
-      
+      import pdb; pdb.set_trace() 
         
 def discount_cumsum(rewards, gamma = 1.):
   discount_cumsum = np.zeros_like(rewards)
@@ -56,3 +53,8 @@ def gae(rewards, values, dones, gamma, lam):
     delta = rewards[t] + (gamma * values[t + 1] if not dones[t] else 0) - values[t]
     advantages[t] = delta + (gamma * lam * advantages[t + 1] if not dones[t] else 0)
   return advantages
+
+if __name__ == "__main__":
+  add_options()
+  app.run(main)
+
