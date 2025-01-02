@@ -68,7 +68,7 @@ class PPO(nn.Module):
     mean, std = self.policy_net(x)
     dist = self.dist(mean, std)
     action = dist.sample()
-    log_prob = dist.log_prob(action)
+    log_prob = dist.log_prob(action).sum(dim = -1)
     return action, log_prob
   def advantages(self, states, rewards, values, dones, gamma = 0.95, lam = 0.95):
     assert states.shape[0] == rewards.shape[0] + 1 == values.shape[0] + 1 == dones.shape[0] + 1
@@ -86,8 +86,10 @@ class PPO(nn.Module):
     return advantages
   def get_values(self, states, rewards, dones, gamma):
     assert states.shape[0] == rewards.shape[0] + 1 == dones.shape[0] + 1
+    # calculate the V(s_t) of the last state s_t before truncation
     discount_cumsum = torch.zeros_like(rewards).to(next(self.parameters()).device) # discount_cumsum.shape = (len)
     discount_cumsum[-1] = rewards[-1] + (0 if dones[-1] else gamma * self.value_net(states[-1:])[0,0])
+    # calculate the leading V(s_t)
     for t in reversed(range(rewards.shape[0] - 1)):
       discount_cumsum[t] = rewards[t] + gamma * discount_cumsum[t + 1]
     assert discount_cumsum.shape[0] == rewards.shape[0]
@@ -111,10 +113,8 @@ def main(unused_argv):
     ppo.load_state_dict(ckpt['state_dict'])
     optimizer.load_state_dict(ckpt['optimizer'])
     scheduler = ckpt['scheduler']
-  #for epoch in tqdm(range(FLAGS.epochs)):
-  for epoch in range(FLAGS.epochs):
-    #for episode in tqdm(range(FLAGS.episodes), leave = False):
-    for episode in range(FLAGS.episodes):
+  for epoch in tqdm(range(FLAGS.epochs)):
+    for episode in tqdm(range(FLAGS.episodes), leave = False):
       states, logprobs, rewards, dones = list(), list(), list(), list()
       obs, info = env.reset()
       states.append(obs['observation']) # s_t
@@ -122,7 +122,7 @@ def main(unused_argv):
         obs = torch.from_numpy(np.expand_dims(obs['observation'], axis = 0).astype(np.float32)).to(next(ppo.parameters()).device) # obs.shape = (1, 25)
         action, logprob = ppo.act(obs) # action.shape = (1,4), logprob.shape = (1,1)
         obs, reward, done, truc, info = env.step(action.detach().squeeze(dim = 0).cpu().numpy()) # r_t
-        logprobs.append(torch.squeeze(logprob, dim = -1))
+        logprobs.append(logprob)
         rewards.append(reward)
         dones.append(done)
         if FLAGS.visualize:
@@ -149,7 +149,7 @@ def main(unused_argv):
       loss.backward()
       optimizer.step()
       tb_writer.add_scalar('loss', loss, global_steps)
-      global_step += 1
+      global_steps += 1
     scheduler.step()
     ckpt = {
       'global_steps': global_steps,
