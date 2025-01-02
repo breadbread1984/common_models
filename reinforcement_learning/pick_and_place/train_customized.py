@@ -79,7 +79,9 @@ class PPO(nn.Module):
       delta = rewards[t] + (0 if dones[t] else \
                             gamma * values[t + 1] if t != T - 1 else \
                             gamma * self.value_net(states[-1:])[0,0]) - values[t]
-      advantages[t] = delta + (gamma * lam * advantages[t + 1] if not dones[t] else 0)
+      advantages[t] = delta + (0 if dones[t] else \
+                               gamma * lam * advantages[t + 1] if t != T - 1 else \
+                               0)
     assert advantages.shape[0] == rewards.shape[0]
     return advantages
   def get_values(self, states, rewards, dones, gamma):
