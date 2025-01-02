@@ -24,12 +24,13 @@ def main(unused_argv):
   env = gym.make("FetchPickAndPlaceDense-v3", render_mode = "rgb_array")
   for epoch in tqdm(range(FLAGS.epochs)):
     for episode in tqdm(range(FLAGS.episodes), leave = False):
-      states, rewards, dones = list(), list(), list()
+      states, actions, rewards, dones = list(), list(), list(), list()
       obs, info = env.reset()
-      states.append(obs['observation'])
+      states.append(obs['observation']) # s_t
       for step in range(FLAGS.max_ep_steps):
-        action = env.action_space.sample()
-        obs, reward, done, truc, info = env.step(action)
+        action = env.action_space.sample() # a_t
+        obs, reward, done, truc, info = env.step(action) # r_t
+        actions.append(action)
         rewards.append(reward)
         dones.append(done)
         if FLAGS.visualize:
@@ -38,8 +39,12 @@ def main(unused_argv):
           cv2.waitKey(1)
           print(reward)
         if done:
-          assert len(rewards) == len(dones)
-          rewards = np.array(rewards)
+          print(len(states), len(reward), len(dones))
+          assert len(states) == len(rewards) == len(dones)
+          states = np.stack(states) # states.shape = (len, 25)
+          actions = np.array(actions) # actions.shape = (len)
+          rewards = np.array(rewards) # rewards.shape = (len)
+          dones = np.array(dones) # rewards.shape = (len)
           v_values = discount_cumsum(rewards, gamma = FLAGS.gamma)
           advantages = gae(rewards, v_values, dones, FLAGS.gamma, FLAGS.lam)
           break
