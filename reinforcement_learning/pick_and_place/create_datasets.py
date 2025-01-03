@@ -7,7 +7,7 @@ from stable_baselines3.common.env_util import make_vec_env
 def load_fetchpickplace_env(para_num = 1, logdir = "log"):
   gym.register_envs(gymnasium_robotics)
   #env = gym.make("FetchPickAndPlace-v3", render_mode = "rgb_array")
-  env = make_vec_env("FetchPickAndPlace-v3", n_envs = para_num, monitor_dir = logdir)
+  env = make_vec_env("FetchPickAndPlaceDense-v3", n_envs = para_num, monitor_dir = logdir)
   return env
 
 if __name__ == "__main__":
