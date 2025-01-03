@@ -4,6 +4,8 @@ from absl import flags, app
 import gymnasium as gym
 import gymnasium_robotics
 import cv2
+import numpy as np
+import torch
 from models import PPO
 
 FLAGS = flags.FLAGS
