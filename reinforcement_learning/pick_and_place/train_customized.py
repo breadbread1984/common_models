@@ -17,7 +17,7 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_integer('env_num', default = 1, help = 'number of parallel environment')
-  flags.DEFINE_string('ckpt', default = 'ckpt', help = 'checkpoint')
+  flags.DEFINE_string('ckpt', default = 'ckpt.pt', help = 'checkpoint')
   flags.DEFINE_string('logdir', default = 'logs', help = 'path to log directory')
   flags.DEFINE_integer('epochs', default = 300, help = 'number of epoch')
   flags.DEFINE_integer('episodes', default = 10000, help = 'episodes per epoch')
