@@ -105,6 +105,7 @@ def main(unused_argv):
   ppo = PPO()
   criterion = nn.MSELoss()
   optimizer = Adam(ppo.parameters(), lr = FLAGS.lr)
+  scheduler = CosineAnnealingWarmRestarts(optimizer, T_0 = 5, T_mult = 2)
   tb_writer = SummaryWriter(log_dir = FLAGS.logdir)
   global_steps = 0
   if exists(FLAGS.ckpt):
