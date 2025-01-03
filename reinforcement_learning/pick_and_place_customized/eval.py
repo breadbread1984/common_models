@@ -4,7 +4,7 @@ from absl import flags, app
 import gymnasium as gym
 import gymnasium_robotics
 import cv2
-from modesl import PPO
+from models import PPO
 
 FLAGS = flags.FLAGS
 
