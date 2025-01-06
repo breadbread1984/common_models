@@ -16,11 +16,11 @@ def create_interface():
   graph = get_graph()
   prompt = get_prompt()
   def chatbot_response(user_input, history):
-    messages = list()
+    chat_history = list()
     for human, ai in history:
-      messages.append(HumanMessage(content = human))
-      messages.append(AIMessage(content = ai))
-    messages.append(HumanMessage(content = user_input))
+      chat_history.append(HumanMessage(content = human))
+      chat_history.append(AIMessage(content = ai))
+    messages = prompt.invoke({"input": user_input, "chat_history": chat_history}).to_messages()
     for event in graph.stream({"messages": messages}):
       for value in event.values():
         response = value["messages"][-1]
