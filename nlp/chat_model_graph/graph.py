@@ -4,7 +4,7 @@ from typing import Annotated
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-from models import LLM
+from models import Llama3_2
 
 class Prompt(TypedDict):
   input: str
@@ -15,7 +15,7 @@ class State(TypedDict):
 
 def get_graph():
   graph_builder = StateGraph(State)
-  llm = LLM()
+  llm = Llama3_2()
   def chatbot(state: State):
     return {"messages": [llm.invoke(state["messages"])]}
   graph_builder.add_node("chat", chatbot)
