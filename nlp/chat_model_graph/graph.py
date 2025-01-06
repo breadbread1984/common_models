@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from typing import Annotated
-from tying_extensions import TypedDict
+from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from models import Qwen2

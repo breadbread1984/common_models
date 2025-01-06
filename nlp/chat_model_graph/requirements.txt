@@ -11,3 +11,4 @@ langgraph
 langsmith
 transformers
 gradio
+absl-py
