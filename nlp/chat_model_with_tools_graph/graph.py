@@ -15,11 +15,13 @@ class State(TypedDict):
 def get_graph():
   graph_builder = StateGraph(State)
   llm = Llama3_2()
+  tools = tools = load_tools(['google-serper', 'llm-math', 'wikipedia', 'arxiv'], llm = llm, serper_api_key = 'd075ad1b698043747f232ec1f00f18ee0e7e8663')
+  llm_with_tools = llm.bind_tools(tools)
   def chatbot(state: State):
-    return {"messages": [llm.invoke(state["messages"])]}
+    return {"messages": [llm_with_tools.invoke(state["messages"])]}
   graph_builder.add_node("chatbot", chatbot)
   environ['SERPER_API_KEY'] = 'd075ad1b698043747f232ec1f00f18ee0e7e8663'
-  tool_node = BasicToolNode(tools = load_tools(['google-serper', 'llm-math', 'wikipedia', 'arxiv'], llm = llm, serper_api_key = 'd075ad1b698043747f232ec1f00f18ee0e7e8663'))
+  tool_node = BasicToolNode(tools = tools)
   graph_builder.add_node("tools", tool_node)
   graph_builder.add_edge(START, "chatbot")
   def route_tools(state: State):
