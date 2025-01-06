@@ -1,10 +1,7 @@
 #!/usr/bin/python3
 
 from os import environ
-from collections.abc import Sequence
-from transformers import AutoTokenizer
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-from langchain_core.messages import convert_to_messages
 
 class Llama3_2(ChatHuggingFace):
   def __init__(self,):
