@@ -1,27 +1,26 @@
 #!/usr/bin/python3
 
 from os import environ
-from collections.abc import Sequence
 from transformers import AutoTokenizer
+from langchain_community.chat_models import ChatHuggingFace
 from langchain_community.llms import HuggingFaceEndpoint
-from langchain_core.messages import convert_to_messages
-from prompts import HFChatPromptValue
 
-class Llama3_2(HuggingFaceEndpoint):
+class Llama3_2(ChatHuggingFace):
   def __init__(self,):
-    super(HuggingFaceEndpoint, self).__init__(
-      endpoint_url = "meta-llama/Llama-3.2-3B-Instruct",
-      huggingfacehub_api_token = "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",
-      task = "text-generation",
-      max_length = 131072,
-      do_sample = False,
-      top_p = 0.8,
-      temperature = 0.8,
-      trust_remote_code = True,
-      use_cache = True
+    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    super(ChatHuggingFace, self).__init__(
+      llm = HuggingFaceEndpoint(
+        endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct",
+        huggingfacehub_api_token = "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",
+        task = "text-generation",
+        max_length = 131072,
+        do_sample = False,
+        top_p = 0.8,
+        temperature = 0.8,
+        trust_remote_code = True,
+        use_cache = True
+      ),
+      tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
+      verbose = True
     )
-  def _convert_input(self, input):
-    assert isinstance(input, Sequence)
-    return HFChatPromptValue(messages = convert_to_messages(input),
-                             tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'))
 
