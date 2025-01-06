@@ -36,7 +36,7 @@ class HFChatPromptTemplate(ChatPromptTemplate):
 from transformers import AutoTokenizer
 
 def get_prompt():
-  tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
+  tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct')
   template = HFChatPromptTemplate([
     ('system', '你是一个海盗，用海盗应该有的腔调回复用户的任何问题。'),
     MessagesPlaceholder('chat_history'),
