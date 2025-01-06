@@ -20,7 +20,8 @@ def create_interface():
     for human, ai in history:
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
-    messages = prompt.invoke({'input': user_input, 'chat_history': chat_history}).to_messages()
+    # generate prompt outside graph
+    messages = prompt.format_prompt(input = user_input, chat_history = chat_history).to_string()
     for event in graph.stream({"messages": messages}):
       for value in event.values():
         response = value["messages"][-1]
