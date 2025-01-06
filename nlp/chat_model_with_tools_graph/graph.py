@@ -14,19 +14,6 @@ from tools import BasicToolNode
 class State(TypedDict):
   messages: Annotated[list, add_messages]
 
-def route_tools(
-    state: State,
-):
-  if isinstance(state, list):
-    ai_message = state[-1]
-  elif messages := state.get("messages", []):
-    ai_message = messages[-1]
-  else:
-    raise ValueError(f"No messages found in input state to tool_edge: {state}")
-  if hasattr(ai_message, "tool_calls") and len(ai_message.tool_calls) > 0:
-    return "tools"
-  return END
-
 def get_graph():
   graph_builder = StateGraph(State)
   llm = Llama3_2()
@@ -41,6 +28,19 @@ def get_graph():
   ])
   graph_builder.add_node("tools", tool_node)
   graph_builder.add_edge(START, "chatbot")
+  def route_tools(state: State):
+    # edge switcher
+    # if message container tool_calls switch tools
+    # else switch to end
+    if isinstance(state, list):
+      ai_message = state[-1]
+    elif messages := state.get("messages", []):
+      ai_message = messages[-1]
+    else:
+      raise ValueError(f"No messages found in input state to tool_edge: {state}")
+    if hasattr(ai_message, "tool_calls") and len(ai_message.tool_calls) > 0:
+      return "tools"
+    return END
   graph_builder.add_conditional_edges("chatbot", route_tools, {"tools": "tools", END: END})
   graph_builder.add_edge("tools", "chatbot")
   graph = graph_builder.compile()
