@@ -4,6 +4,7 @@ from absl import flags, app
 import gradio as gr
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from graph import get_graph
+from prompts import get_prompt
 
 FLAGS = flags.FLAGS
 
@@ -13,13 +14,14 @@ def add_options():
 
 def create_interface():
   graph = get_graph()
+  prompt = get_prompt()
   def chatbot_response(user_input, history):
     chat_history = list()
     for human, ai in history:
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
-    for event in graph.stream({"messages": [("input", user_input),
-                                            ("chat_history", chat_history)]}):
+    messages = prompt.invoke({'input': user_input, 'chat_history': chat_history}).to_messages()
+    for event in graph.stream({"messages": messages}):
       for value in event.values():
         response = value["messages"][-1].content
         break
