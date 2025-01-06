@@ -23,7 +23,7 @@ def create_interface():
     messages.append(HumanMessage(content = user_input))
     for event in graph.stream({"messages": messages}):
       for value in event.values():
-        response = value["messages"][-1]
+        response = value["messages"][-1].content
         break
     history.append((user_input, response))
     return history, history, ""
