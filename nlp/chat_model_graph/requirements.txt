@@ -1,0 +1,12 @@
+torch
+torchtext
+torchvision
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-cli
+langchainhub
+langgraph
+langsmith
+transformers
