@@ -21,6 +21,7 @@ def create_interface():
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
     # generate prompt outside graph
+    # langchain BaseLLM cannot convert according huggingface open source LLM format
     messages = prompt.format_prompt(input = user_input, chat_history = chat_history).to_string()
     for event in graph.stream({"messages": messages}):
       for value in event.values():
