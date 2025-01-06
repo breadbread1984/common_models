@@ -9,9 +9,9 @@ from prompts import HFChatPromptValue
 
 class Llama3_2(HuggingFaceEndpoint):
   def __init__(self,):
-    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
     super(HuggingFaceEndpoint, self).__init__(
       endpoint_url = "meta-llama/Llama-3.2-3B-Instruct",
+      huggingfacehub_api_token = "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",
       task = "text-generation",
       max_length = 131072,
       do_sample = False,
