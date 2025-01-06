@@ -5,9 +5,7 @@ from typing import Annotated
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
-from langchain_community.tools.google_serper import GoogleSerperRun
-from langchain_community.tools.wikipedia.tool import WikipediaQueryRun
-from langchain_community.tools.arxiv import ArxivQueryRun
+from langchain.agents import load_tools
 from models import Llama3_2
 from tools import BasicToolNode
 
@@ -21,11 +19,7 @@ def get_graph():
     return {"messages": [llm.invoke(state["messages"])]}
   graph_builder.add_node("chatbot", chatbot)
   environ['SERPER_API_KEY'] = 'd075ad1b698043747f232ec1f00f18ee0e7e8663'
-  tool_node = BasicToolNode(tools = [
-    GoogleSerperRun(),
-    WikipediaQueryRun(),
-    ArxivQueryRun()
-  ])
+  tool_node = BasicToolNode(tools = load_tools(['google-serper', 'llm-math', 'wikipedia', 'arxiv'], llm = llm, serper_api_key = 'd075ad1b698043747f232ec1f00f18ee0e7e8663'))
   graph_builder.add_node("tools", tool_node)
   graph_builder.add_edge(START, "chatbot")
   def route_tools(state: State):
