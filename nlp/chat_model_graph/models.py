@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
+from os import environ
 from langchain_community.llms import HuggingFaceEndpoint
 
-def Qwen2():
+def LLM():
+  environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
   return HuggingFaceEndpoint(
-    endpoint_url = "Qwen/Qwen2.5-7B-Instruct",
+    endpoint_url = "meta-llama/Llama-3.2-3B-Instruct",
     task = "text-generation",
     max_length = 131072,
     do_sample = False,
