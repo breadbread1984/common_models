@@ -3,7 +3,7 @@ torchtext
 torchvision
 langchain
 langchain-core
-langchain-community
+langchain-huggingface
 langchain-openai
 langchain-cli
 langchainhub
