@@ -10,3 +10,4 @@ langchainhub
 langgraph
 langsmith
 transformers
+gradio
