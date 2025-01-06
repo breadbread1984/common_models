@@ -6,7 +6,7 @@ from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langchain_community.tools.google_serper import GoogleSerperRun
-from langchain_community.tools.wikipedia import WikipediaQueryRun
+from langchain_community.tools.wikipedia.tool import WikipediaQueryRun
 from langchain_community.tools.arxiv import ArxivQueryRun
 from models import Llama3_2
 from tools import BasicToolNode
