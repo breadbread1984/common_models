@@ -16,3 +16,4 @@ numexpr
 wikipedia
 arxiv
 google-search-results
+pyowm

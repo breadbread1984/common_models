@@ -1,10 +1,14 @@
 #!/usr/bin/python3
 
 from os import environ
+from langchain import hub
 from transformers import AutoTokenizer
-#from langchain_community.chat_models import ChatHuggingFace
-#from langchain_community.llms import HuggingFaceEndpoint
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.agents.format_scratchpad.tools import format_to_tool_messages
+from langchain.agents.output_parsers import ToolsAgentOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from prompts import agent_template
 
 class Llama3_2(ChatHuggingFace):
   def __init__(self,):
@@ -14,12 +18,11 @@ class Llama3_2(ChatHuggingFace):
         endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct",
         huggingfacehub_api_token = "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",
         task = "text-generation",
-        max_length = 131072,
+        #max_length = 131072,
         do_sample = False,
         top_p = 0.8,
         temperature = 0.8,
-        trust_remote_code = True,
-        use_cache = True
+        #use_cache = True
       ),
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
       verbose = True
@@ -37,3 +40,39 @@ class Llama3_2(ChatHuggingFace):
     )
     return self._to_chat_result(llm_result)
 
+if __name__ == "__main__":
+  from langchain_core.tools import tool
+  from langchain.agents import AgentExecutor, create_tool_calling_agent
+
+  @tool
+  def add(a: int, b: int) -> int:
+    """Adds a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a + b
+
+  @tool
+  def multiply(a: int, b: int) -> int:
+    """Multiplies a and b.
+
+    Args:
+        a: first int
+        b: second int
+    """
+    return a * b
+
+  chat_model = Llama3_2()
+  tools = [add, multiply]
+  if True:
+    prompt = hub.pull("hwchase17/openai-functions-agent")
+    agent = create_tool_calling_agent(chat_model, tools, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    response = agent_executor.invoke({"input": "What is 3 * 12?"})
+  else:
+    chat_model.bind_tools(tools)
+    response = chat_model.invoke([('user', 'What is 3 * 12?')])
+    print(response.tool_calls)
+  print(response)
