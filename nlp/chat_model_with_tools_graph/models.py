@@ -2,8 +2,9 @@
 
 from os import environ
 from transformers import AutoTokenizer
-from langchain_community.chat_models import ChatHuggingFace
-from langchain_community.llms import HuggingFaceEndpoint
+#from langchain_community.chat_models import ChatHuggingFace
+#from langchain_community.llms import HuggingFaceEndpoint
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 
 class Llama3_2(ChatHuggingFace):
   def __init__(self,):
@@ -23,4 +24,16 @@ class Llama3_2(ChatHuggingFace):
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
       verbose = True
     )
+  def _generate(
+        self,
+        messages,
+        stop = None,
+        run_manager = None,
+        **kwargs,
+    ):
+    llm_input = self._to_chat_prompt(messages)
+    llm_result = self.llm._generate(
+      prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
+    )
+    return self._to_chat_result(llm_result)
 
