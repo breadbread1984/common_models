@@ -65,13 +65,13 @@ if __name__ == "__main__":
 
   chat_model = Llama3_2()
   tools = [add, multiply]
-  if True:
+  if False:
     prompt = hub.pull("hwchase17/openai-functions-agent")
     agent = create_tool_calling_agent(chat_model, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     response = agent_executor.invoke({"input": "What is 3 * 12?"})
   else:
-    chat_model.bind_tools(tools)
+    chat_model = chat_model.bind_tools(tools)
     response = chat_model.invoke([('user', 'What is 3 * 12?')])
     print(response.tool_calls)
   print(response)
