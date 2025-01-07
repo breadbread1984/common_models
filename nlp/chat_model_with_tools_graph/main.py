@@ -16,9 +16,9 @@ def create_interface():
   def chatbot_response(user_input, history):
     messages = list()
     for human, ai in history:
-      messages.append(HumanMessage(content = human))
-      messages.append(AIMessage(content = ai))
-    messages.append(HumanMessage(content = user_input))
+      messages.append(('user', human))
+      messages.append(('assistant', ai))
+    messages.append(('user', user_input))
     for event in graph.stream({"messages": messages}):
       for value in event.values():
         response = value["messages"][-1].content
