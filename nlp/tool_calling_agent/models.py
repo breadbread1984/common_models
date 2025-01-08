@@ -8,6 +8,7 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.agents.format_scratchpad.tools import format_to_tool_messages
 from langchain.agents.output_parsers import ToolsAgentOutputParser
 from langchain_core.runnables import RunnablePassthrough
+from langchain_core.messages import HumanMessage
 
 class Llama3_2(ChatHuggingFace):
   def __init__(self,):
