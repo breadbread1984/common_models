@@ -26,23 +26,37 @@ class Llama3_2(ChatHuggingFace):
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
       verbose = True
     )
+  
   def _generate(
-        self,
-        messages,
-        stop = None,
-        run_manager = None,
-        **kwargs,
-    ):
-    if 'tools' not in kwargs:
-      # ordinary LLM inference
-      llm_input = self._to_chat_prompt(messages)
-      llm_result = self.llm._generate(
-        prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
-      )
-      return self._to_chat_result(llm_result)
-    else:
-      # create agent to generate tool calls
-      raise NotImplementedError('huggingface does not support tool calling')
+    self,
+    messages,
+    stop = None,
+    run_manager = None,
+    **kwargs,
+  ):
+    # ordinary LLM inference
+    llm_input = self._to_chat_prompt(messages, **kwargs)
+    llm_result = self.llm._generate(
+      prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
+    )
+    return self._to_chat_result(llm_result)
+  def _to_chat_prompt(
+    self,
+    messages: List[BaseMessage],
+    **kwargs,
+  ) -> str:
+    """Convert a list of messages into a prompt format expected by wrapped LLM."""
+    if not messages:
+      raise ValueError("At least one HumanMessage must be provided!")
+
+    if not isinstance(messages[-1], HumanMessage):
+      raise ValueError("Last message must be a HumanMessage!")
+
+    messages_dicts = [self._to_chatml_format(m) for m in messages]
+
+    return self.tokenizer.apply_chat_template(
+      messages_dicts, tokenize=False, add_generation_prompt=True, **kwargs
+    )
 
 class Qwen2_5(ChatHuggingFace):
   def __init__(self,):
@@ -60,22 +74,35 @@ class Qwen2_5(ChatHuggingFace):
       verbose = True
     )
   def _generate(
-        self,
-        messages,
-        stop = None,
-        run_manager = None,
-        **kwargs,
-    ):
-    if 'tools' not in kwargs:
-      # ordinary LLM inference
-      llm_input = self._to_chat_prompt(messages)
-      llm_result = self.llm._generate(
-        prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
-      )
-      return self._to_chat_result(llm_result)
-    else:
-      # create agent to generate tool calls
-      raise NotImplementedError
+    self,
+    messages,
+    stop = None,
+    run_manager = None,
+    **kwargs,
+  ):
+    # ordinary LLM inference
+    llm_input = self._to_chat_prompt(messages, **kwargs)
+    llm_result = self.llm._generate(
+      prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
+    )
+    return self._to_chat_result(llm_result)
+  def _to_chat_prompt(
+    self,
+    messages: List[BaseMessage],
+    **kwargs,
+  ) -> str:
+    """Convert a list of messages into a prompt format expected by wrapped LLM."""
+    if not messages:
+      raise ValueError("At least one HumanMessage must be provided!")
+
+    if not isinstance(messages[-1], HumanMessage):
+      raise ValueError("Last message must be a HumanMessage!")
+
+    messages_dicts = [self._to_chatml_format(m) for m in messages]
+
+    return self.tokenizer.apply_chat_template(
+      messages_dicts, tokenize=False, add_generation_prompt=True, **kwargs
+    )
 
 if __name__ == "__main__":
   from langchain_core.tools import tool
