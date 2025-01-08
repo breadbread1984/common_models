@@ -33,11 +33,17 @@ class Llama3_2(ChatHuggingFace):
         run_manager = None,
         **kwargs,
     ):
-    llm_input = self._to_chat_prompt(messages)
-    llm_result = self.llm._generate(
-      prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
-    )
-    return self._to_chat_result(llm_result)
+    if 'tools' not in kwargs:
+      # ordinary LLM inference
+      llm_input = self._to_chat_prompt(messages)
+      import pdb; pdb.set_trace()
+      llm_result = self.llm._generate(
+        prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
+      )
+      return self._to_chat_result(llm_result)
+    else:
+      # create agent to generate tool calls
+      raise NotImplementedError
 
 if __name__ == "__main__":
   from langchain_core.tools import tool
