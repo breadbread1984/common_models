@@ -43,6 +43,40 @@ class Llama3_2(ChatHuggingFace):
       return self._to_chat_result(llm_result)
     else:
       # create agent to generate tool calls
+      raise NotImplementedError('huggingface does not support tool calling')
+
+class Qwen2_5(ChatHuggingFace):
+  def __init__(self,):
+    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    super(ChatHuggingFace, self).__init__(
+      llm = HuggingFaceEndpoint(
+        endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct",
+        huggingfacehub_api_token = "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",
+        task = "text-generation",
+        do_sample = False,
+        top_p = 0.8,
+        temperature = 0.8
+      ),
+      tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct'),
+      verbose = True
+    )
+  def _generate(
+        self,
+        messages,
+        stop = None,
+        run_manager = None,
+        **kwargs,
+    ):
+    if 'tools' not in kwargs:
+      # ordinary LLM inference
+      llm_input = self._to_chat_prompt(messages)
+      import pdb; pdb.set_trace()
+      llm_result = self.llm._generate(
+        prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
+      )
+      return self._to_chat_result(llm_result)
+    else:
+      # create agent to generate tool calls
       raise NotImplementedError
 
 if __name__ == "__main__":
