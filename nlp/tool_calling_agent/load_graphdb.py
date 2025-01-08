@@ -10,7 +10,6 @@ from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLo
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jGraph
 from langchain_experimental.graph_transformers.llm import LLMGraphTransformer
-from models import TGI
 from prompts import extract_triplets_template
 from tools.graph_rag import neo4j_host, neo4j_user, neo4j_password, neo4j_db, node_types, rel_types, extract_triplets_template
 from models import Llama3_2, Qwen2_5
