@@ -8,7 +8,7 @@ output_description = "招股说明书相关的答案"
 neo4j_host = "bolt://localhost:7687"
 neo4j_user = "neo4j"
 neo4j_password = "neo4j"
-neo4j_db = "neo4j"
+neo4j_db = "graphdb"
 
 use_fewshot = False
 use_selector = False
