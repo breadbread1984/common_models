@@ -36,7 +36,6 @@ class Llama3_2(ChatHuggingFace):
     if 'tools' not in kwargs:
       # ordinary LLM inference
       llm_input = self._to_chat_prompt(messages)
-      import pdb; pdb.set_trace()
       llm_result = self.llm._generate(
         prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
       )
@@ -70,7 +69,6 @@ class Qwen2_5(ChatHuggingFace):
     if 'tools' not in kwargs:
       # ordinary LLM inference
       llm_input = self._to_chat_prompt(messages)
-      import pdb; pdb.set_trace()
       llm_result = self.llm._generate(
         prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
       )
