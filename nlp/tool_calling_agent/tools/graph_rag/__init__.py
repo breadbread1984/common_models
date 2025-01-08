@@ -11,5 +11,8 @@ from .config import (
   neo4j_password,
   neo4j_db,
   use_fewshot,
-  use_selector
+  use_selector,
+  node_types,
+  rel_types
 )
+from .prompts import extract_triplets_template
