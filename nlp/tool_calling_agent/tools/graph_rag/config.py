@@ -10,6 +10,9 @@ neo4j_user = "neo4j"
 neo4j_password = "neo4j"
 neo4j_db = "neo4j"
 
+use_fewshot = False
+use_selector = False
+
 node_types = ['Person', 'Location', 'Organization', 'Product', 'Time', 'Event']
 rel_types = [
   ('Person', 'CEO_of', 'Organization'),

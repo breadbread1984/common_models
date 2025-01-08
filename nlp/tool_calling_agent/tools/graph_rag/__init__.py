@@ -9,5 +9,7 @@ from .config import (
   neo4j_host,
   neo4j_user,
   neo4j_password,
-  neo4j_db
+  neo4j_db,
+  use_fewshot,
+  use_selector
 )
