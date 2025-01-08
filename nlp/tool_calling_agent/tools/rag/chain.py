@@ -5,7 +5,6 @@ from langchain.chains import create_history_aware_retriever, create_retrieval_ch
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_neo4j import Neo4jVector
-from langchain.schema.runnable import ConfigurableField
 
 def rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db):
   embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
