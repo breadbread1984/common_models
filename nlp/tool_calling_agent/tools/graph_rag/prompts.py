@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from typing import Any, Union, List, Tuple, Optional
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, FewShotPromptTemplate, PromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.prompts.chat import HumanMessagePromptTemplate
