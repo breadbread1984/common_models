@@ -6,7 +6,7 @@ from langchain import SQLDatabase
 from langchain_core.runnables import Runnable
 from langchain.tools import StructuredTool
 from langchain.callbacks.manager import CallbackManagerForToolRun
-from sql_rag import (
+from .sql_rag import (
   sql_rag_chain,
   tool_name,
   tool_description,

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from langchain_core.runnables import Runnable
 from langchain.tools import StructuredTool
 from langchain.callbacks.manager import CallbackManagerForToolRun
-from graph_rag import (
+from .graph_rag import (
   input_description,
   output_description,
   tool_name,
