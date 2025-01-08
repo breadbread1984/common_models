@@ -7,6 +7,7 @@ from langchain_experimental.graph_transformers.llm import create_unstructured_pr
 from langchain_neo4j.chains.graph_qa.prompts import CYPHER_QA_PROMPT, CYPHER_GENERATION_PROMPT
 from langchain_neo4j import Neo4jVector
 from langchain_huggingface import HuggingFaceEmbeddings
+from .config import node_types, examples
 
 def extract_triplets_template(node_types: Optional[List[str]] = None,
                               rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None):
@@ -39,7 +40,7 @@ def fewshot_cypher_prompt(with_selector = False, neo4j_host = 'bolt://localhost:
   if with_selector:
     # only add similar examples selected by retriever
     example_selector = SemanticSimilarityExampleSelector.from_examples(
-      config.examples,
+      examples,
       embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"),
       vectorstore_cls = Neo4jVector,
       k = 5,
@@ -60,7 +61,7 @@ def fewshot_cypher_prompt(with_selector = False, neo4j_host = 'bolt://localhost:
   else:
     # add leading examples
     prompt = FewShotPromptTemplate(
-      examples = config.examples[:5],
+      examples = examples[:5],
       example_prompt = example_prompt,
       prefix = "You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.\n\nHere is the schema information\n{schema}.\n\nBelow are a number of examples of questions and their corresponding Cypher queries.",
       suffix="User input: {question}\nCypher query: ",
@@ -73,10 +74,3 @@ def fewshot_cypher_prompt(with_selector = False, neo4j_host = 'bolt://localhost:
   )
   return prompt
 
-def rephrase_question_answer():
-  prompt = ChatPromptTemplate(
-    messages = [
-      ('human', '请将如下问题和答案rephrase成为一个陈述句。\n\nQuestion:\n\n{question}\n\nAnswer:\n\n{answer}')
-    ]
-  )
-  return prompt
