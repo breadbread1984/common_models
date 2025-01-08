@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from langchain import hub
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j import GraphCypherQAChain
 from .prompts import qa_prompt, cypher_prompt, fewshot_cypher_prompt
