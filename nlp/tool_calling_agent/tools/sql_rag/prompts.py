@@ -27,4 +27,4 @@ Question: {input}"""
       HumanMessagePromptTemplate(_sqlite_prompt + PROMPT_SUFFIX),
     ]
   )
-  return template
+  return prompt
