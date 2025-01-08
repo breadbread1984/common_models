@@ -42,7 +42,7 @@ class Llama3_2(ChatHuggingFace):
     return self._to_chat_result(llm_result)
   def _to_chat_prompt(
     self,
-    messages: List[BaseMessage],
+    messages,
     **kwargs,
   ) -> str:
     """Convert a list of messages into a prompt format expected by wrapped LLM."""
@@ -88,7 +88,7 @@ class Qwen2_5(ChatHuggingFace):
     return self._to_chat_result(llm_result)
   def _to_chat_prompt(
     self,
-    messages: List[BaseMessage],
+    messages,
     **kwargs,
   ) -> str:
     """Convert a list of messages into a prompt format expected by wrapped LLM."""
