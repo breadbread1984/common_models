@@ -86,7 +86,25 @@ class Llama3_2(ChatHuggingFace2):
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
       verbose = True
     )
-  
+
+class CodeLlama(ChatHuggingFace2):
+  def __init__(self,):
+    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    super(ChatHuggingFace, self).__init__(
+      llm = HuggingFaceEndpoint(
+        endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/CodeLlama-7b-Instruct-hf",
+        huggingfacehub_api_token = "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",
+        task = "text-generation",
+        do_sample = False,
+        top_p = 0.8,
+        temperature = 0.8,
+        model_kwargs = {
+          'use_cache': True
+        }
+      ),
+      tokenizer = AutoTokenizer.from_pretrained('meta-llama/CodeLlama-7b-Instruct-hf'),
+      verbose = True
+
 class Qwen2_5(ChatHuggingFace2):
   def __init__(self,):
     environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
