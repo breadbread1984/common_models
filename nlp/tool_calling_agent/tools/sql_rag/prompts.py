@@ -2,7 +2,7 @@
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_core.prompts.chat import HumanMessagePromptTemplate
+from langchain_core.prompts.prompt import PromptTemplate
 
 def sqlite_prompt():
   _sqlite_prompt = """You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question.
@@ -23,9 +23,5 @@ Answer: Final answer here
 {table_info}
 
 Question: {input}"""
-  prompt = ChatPromptTemplate(
-    messages = [
-      HumanMessagePromptTemplate(prompt = _sqlite_prompt + PROMPT_SUFFIX),
-    ]
-  )
+  prompt = PromptTemplate(template = _sqlite_prompt + PROMPT_SUFFIX, input_variables = ['input', 'table_info', 'top_k'])
   return prompt
