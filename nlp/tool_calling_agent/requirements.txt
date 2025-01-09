@@ -14,6 +14,7 @@ langsmith
 transformers
 gradio
 absl-py
+cohere
 unstructured
 pdf2image
 pdfminer

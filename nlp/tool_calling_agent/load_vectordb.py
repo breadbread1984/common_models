@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
-from os import walk
+from os import environ, walk
 from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import CohereEmbeddings
 from tools.rag import neo4j_host, neo4j_user, neo4j_password, neo4j_db
 
 FLAGS = flags.FLAGS
@@ -18,7 +18,8 @@ def add_options():
   flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
 
 def main(unused_argv):
-  embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+  environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
+  embedding = CohereEmbeddings(model = "embed-english-v3.0", user_agent = "my-app")
   vectordb = Neo4jVector(
     embedding = embedding,
     url = neo4j_host,
