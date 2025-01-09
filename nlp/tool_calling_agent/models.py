@@ -32,6 +32,7 @@ class ChatHuggingFace2(ChatHuggingFace):
       prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
     )
     generations = self._to_chat_result(llm_result)
+    # NOTE: if the query is about tool calling, parse the result
     if 'tools' in kwargs:
       try:
         tool_calls = json.loads(generations.generations[0].message.content)
@@ -58,12 +59,10 @@ class ChatHuggingFace2(ChatHuggingFace):
     """Convert a list of messages into a prompt format expected by wrapped LLM."""
     if not messages:
       raise ValueError("At least one HumanMessage must be provided!")
-
     if not isinstance(messages[-1], HumanMessage):
       raise ValueError("Last message must be a HumanMessage!")
-
     messages_dicts = [self._to_chatml_format(m) for m in messages]
-
+    # NOTE: add binded kwargs to tokenizer
     return self.tokenizer.apply_chat_template(
       messages_dicts, tokenize=False, add_generation_prompt=True, **kwargs
     )
