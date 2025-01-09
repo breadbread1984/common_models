@@ -10,10 +10,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 class SQLRAGTest(unittest.TestCase):
   def test_function(self):
     from models import Llama3_2
-    from tools import sql_rag
+    from tools import load_sql_rag
     from langchain import SQLDatabase
     llm = Llama3_2()
-    tool = sql_rag(llm)
+    tool = load_sql_rag(llm)
     sqlite_path = os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)),'Chinook_Sqlite.sqlite'))
     if not sqlite_path:
       download('https://github.com/lerocha/chinook-database/releases/download/v1.4.5/Chinook_Sqlite.sqlite', out = os.path.abspath(os.path.dirname(__file__)))
