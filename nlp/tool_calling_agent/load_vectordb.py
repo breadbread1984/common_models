@@ -35,7 +35,7 @@ def main(unused_argv):
   if not index_type:
     vectordb.create_new_index()
   # load
-  text_splitter = RecursiveCharacterTextSplitter(separactor = ["\n\n", "\n", ".", "。"], chunk_size = FLAGS.length, chunk_overlap = FLAGS.overlap)
+  text_splitter = RecursiveCharacterTextSplitter(separators = [r"\n\n", r"\n", r"\.(?![0-9])|(?<![0-9])\.", r"。"], is_separator_regex = True, chunk_size = FLAGS.length, chunk_overlap = FLAGS.overlap)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
       stem, ext = splitext(f)
