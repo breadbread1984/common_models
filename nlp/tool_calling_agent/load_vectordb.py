@@ -14,6 +14,8 @@ FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('input_dir', default = None, help = 'path to directory')
+  flags.DEFINE_integer('length', default = 150, help = 'segment length after splitting')
+  flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
 
 def main(unused_argv):
   embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
@@ -33,7 +35,7 @@ def main(unused_argv):
   if not index_type:
     vectordb.create_new_index()
   # load
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size = FLAGS.length, chunk_overlap = FLAGS.overlap)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
       stem, ext = splitext(f)
