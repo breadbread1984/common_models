@@ -15,6 +15,7 @@ transformers
 gradio
 absl-py
 cohere
+wget
 unstructured
 pdf2image
 pdfminer

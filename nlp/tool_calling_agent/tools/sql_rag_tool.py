@@ -15,7 +15,7 @@ from .sql_rag import (
   sqlite_path
 )
 
-def load_sql_rag(llm):
+def load_sql_rag(llm, db):
   class SQLRAGInput(BaseModel):
     query: str = Field(description = input_description)
   class SQLRAGOutput(BaseModel):
@@ -32,7 +32,6 @@ def load_sql_rag(llm):
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> SQLRAGOutput:
       response = self.config.chain.run(query)
       return SQLRAGOutput(answer = response)
-  db = SQLDatabase.from_uri(f'sqlite:///{sqlite_path}')
   chain = sql_rag_chain(llm, db)
   return SQLRAGTool(config = SQLRAGConfig(chain = chain))
 

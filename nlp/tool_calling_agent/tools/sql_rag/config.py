@@ -5,4 +5,3 @@ tool_description = "当你有基金基本信息，基金股票持仓明细，基
 input_description = "需要询问的金融问题"
 output_description = "金融问题的答案"
 
-sqlite_path = "bs_challenge_financial_14b_dataset/dataset/博金杯比赛数据.db"
