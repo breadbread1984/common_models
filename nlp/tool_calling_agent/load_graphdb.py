@@ -34,7 +34,7 @@ def main(unused_argv):
   )
   neo4j = Neo4jGraph(url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db)
   if FLAGS.split:
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
+    text_splitter = RecursiveCharacterTextSplitter(separators = [r"\n\n", r"\n", r"\.(?![0-9])|(?<![0-9])\.", r"。"], is_separator_regex = True, chunk_size = 150, chunk_overlap = 10)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
       stem, ext = splitext(f)
