@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 from os import environ
+import json
+import json_repair
 import random
 import string
 from langchain import hub
@@ -31,8 +33,13 @@ class ChatHuggingFace2(ChatHuggingFace):
     )
     generations = self._to_chat_result(llm_result)
     if 'tools' in kwargs:
-      import json_repair
-      tool_calls = json_repair.loads(generations.generations[0].message.content)
+      try:
+        tool_calls = json.loads(generations.generations[0].message.content)
+      except:
+        try:
+          tool_calls = json_repair.loads(generations.generations[0].message.content)
+        except:
+          raise
       if type(tool_calls) is dict:
         tool_calls = [tool_calls]
       generations.generations[0].message.content = ''
@@ -69,11 +76,13 @@ class Llama3_2(ChatHuggingFace2):
         endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct",
         huggingfacehub_api_token = "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",
         task = "text-generation",
-        #max_length = 131072,
         do_sample = False,
         top_p = 0.8,
         temperature = 0.8,
-        #use_cache = True
+        model_kwargs = {
+          'max_length': 131072,
+          'use_cache': True
+        }
       ),
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/Llama-3.2-3B-Instruct'),
       verbose = True
@@ -89,7 +98,11 @@ class Qwen2_5(ChatHuggingFace2):
         task = "text-generation",
         do_sample = False,
         top_p = 0.8,
-        temperature = 0.8
+        temperature = 0.8,
+        model_kwargs = {
+          'max_length': 131072,
+          'use_cache': True
+        }
       ),
       tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct'),
       verbose = True
