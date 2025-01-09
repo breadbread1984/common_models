@@ -104,6 +104,7 @@ class CodeLlama(ChatHuggingFace2):
       ),
       tokenizer = AutoTokenizer.from_pretrained('meta-llama/CodeLlama-7b-Instruct-hf'),
       verbose = True
+    )
 
 class Qwen2_5(ChatHuggingFace2):
   def __init__(self,):
