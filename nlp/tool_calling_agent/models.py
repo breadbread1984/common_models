@@ -92,7 +92,7 @@ class CodeLlama(ChatHuggingFace2):
     environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
-        endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/CodeLlama-7b-Instruct-hf",
+        endpoint_url = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-Instruct-hf",
         huggingfacehub_api_token = "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",
         task = "text-generation",
         do_sample = False,
