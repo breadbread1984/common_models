@@ -25,7 +25,7 @@ Answer: Final answer here
 Question: {input}"""
   prompt = ChatPromptTemplate(
     messages = [
-      HumanMessagePromptTemplate(_sqlite_prompt + PROMPT_SUFFIX),
+      HumanMessagePromptTemplate(prompt = _sqlite_prompt + PROMPT_SUFFIX),
     ]
   )
   return prompt
