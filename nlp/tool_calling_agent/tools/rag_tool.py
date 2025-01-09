@@ -32,7 +32,7 @@ def load_rag(llm):
     args_schema: Type[BaseModel] = RAGInput
     config: RAGConfig
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> RAGOutput:
-      response = self.config.invoke({'input': query, 'chat_history': []})
+      response = self.config.chain.invoke({'input': query, 'chat_history': []})
       return RAGOutput(answer = response['answer'])
   chain = rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db)
   return RAGTool(config = RAGConfig(chain = chain))

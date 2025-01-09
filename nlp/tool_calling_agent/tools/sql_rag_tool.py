@@ -30,7 +30,7 @@ def load_sql_rag(llm):
     args_schema: Type[BaseModel] = SQLRAGInput
     config: SQLRAGConfig
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> SQLRAGOutput:
-      response = chain.run(query)
+      response = self.config.chain.run(query)
       return SQLRAGOutput(answer = response)
   db = SQLDatabase.from_uri(f'sqlite:///{sqlite_path}')
   chain = sql_rag_chain(llm, db)
