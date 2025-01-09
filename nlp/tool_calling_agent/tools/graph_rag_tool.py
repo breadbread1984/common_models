@@ -32,7 +32,7 @@ def load_graph_rag(llm):
     args_schema: Type[BaseModel] = GraphRAGInput
     config: GraphRAGConfig
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> GraphRAGOutput:
-      response = self.config.chain.invoke({'input': query, 'chat_history': []})
+      response = self.config.chain.invoke({'query': query, 'chat_history': []})
       return RAGOutput(answer = response['result'])
   chain = graph_rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db)
   return GraphRAGTool(config = GraphRAGConfig(chain = chain))
