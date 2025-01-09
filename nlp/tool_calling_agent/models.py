@@ -102,7 +102,7 @@ class CodeLlama(ChatHuggingFace2):
           'use_cache': True
         }
       ),
-      tokenizer = AutoTokenizer.from_pretrained('meta-llama/CodeLlama-7b-Instruct-hf'),
+      tokenizer = AutoTokenizer.from_pretrained('codellama/CodeLlama-7b-Instruct-hf'),
       verbose = True
     )
 
