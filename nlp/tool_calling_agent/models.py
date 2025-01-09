@@ -79,7 +79,7 @@ class Llama3_2(ChatHuggingFace2):
         top_p = 0.8,
         temperature = 0.8,
         model_kwargs = {
-          'max_length': 131072,
+          'max_length': 3096,
           'use_cache': True
         }
       ),
