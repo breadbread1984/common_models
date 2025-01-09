@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-tool_name = "招股说明书"
-tool_description = "当你有招股说明书相关问题，可以调用这个工具"
-input_description = "招股说明书相关的问题"
-output_description = "招股说明书相关的答案"
+tool_name = "Elon Musk的公司信息工具"
+tool_description = "当你有Elon Musk的公司相关问题，可以调用这个工具"
+input_description = "Elon Musk的公司相关的问题"
+output_description = "Elon Musk的公司相关问题的答案"
 
 neo4j_host = "bolt://localhost:7687"
 neo4j_user = "neo4j"
