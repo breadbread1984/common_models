@@ -13,6 +13,8 @@ class GraphRAGTest(unittest.TestCase):
     llm = Llama3_2()
     tool = load_graph_rag(llm)
     print(tool.invoke('Which organization does Elon Musk work as CEO of?'))
+    print(tool.invoke('which organization develops Starship?'))
+    print(tool.invoke('which organization collaborates with Nasa?'))
 
 if __name__ == "__main__":
   unittest.main()
