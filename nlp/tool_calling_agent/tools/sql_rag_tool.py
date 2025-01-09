@@ -11,8 +11,7 @@ from .sql_rag import (
   tool_name,
   tool_description,
   input_description,
-  output_description,
-  sqlite_path
+  output_description
 )
 
 def load_sql_rag(llm, db):
