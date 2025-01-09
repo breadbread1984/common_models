@@ -12,7 +12,7 @@ class TestGraphRAGTest(unittest.TestCase):
     from tools import load_graph_rag
     llm = Llama3_2()
     tool = load_graph_rag(llm)
-    print(tool.invoke('Where does Organization Tesla base in?'))
+    print(tool.invoke('Which organization does Elon Musk work as CEO of?'))
 
 if __name__ == "__main__":
   unittest.main()
