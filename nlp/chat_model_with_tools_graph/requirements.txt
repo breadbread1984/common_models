@@ -17,3 +17,4 @@ wikipedia
 arxiv
 google-search-results
 pyowm
+fastapi==0.111.0
