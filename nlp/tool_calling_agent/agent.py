@@ -2,7 +2,7 @@
 
 from langchain import hub
 from langchain import SQLDatabase
-from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.agents import load_tools, AgentExecutor, create_tool_calling_agent
 from models import Llama3_2, CodeLlama, Qwen2_5, CodeQwen2
 from tools import load_graph_rag, load_rag, load_sql_rag
 
@@ -23,7 +23,7 @@ class Agent(object):
               load_rag(llm)
             ]
     prompt = hub.pull('hwchase17/openai-functions-agent')
-    agent = create_tool_calling_agent(chat_model, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     self.agent_chain = AgentExecutor(agent = agent, tools = tools, verbose = True)
   def query(self, question):
     return self.agent_chain.invoke({"input": question})

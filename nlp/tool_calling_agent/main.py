@@ -21,7 +21,7 @@ def create_interface():
     state = gr.State([])
     with gr.Row(equal_height = True):
       with gr.Column(scale = 15):
-        gr.Markdown("<h1><center>Electrolyte Agent</center></h1>")
+        gr.Markdown("<h1><center>QA System</center></h1>")
     with gr.Row():
       with gr.Column(scale = 4):
         chatbot = gr.Chatbot(height = 450, show_copy_button = True)
