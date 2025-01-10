@@ -126,6 +126,26 @@ class Qwen2_5(ChatHuggingFace2):
       verbose = True
     )
 
+class CodeQwen2(ChatHuggingFace2):
+  def __init__(self,):
+    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    super(ChatHuggingFace, self).__init__(
+      llm = HuggingFaceEndpoint(
+        endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-3B-Instruct",
+        huggingfacehub_api_token = "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",
+        task = "text-generation",
+        do_sample = False,
+        top_p = 0.8,
+        temperature = 0.8,
+        model_kwargs = {
+          'max_length': 131072,
+          'use_cache': True
+        }
+      ),
+      tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-Coder-3B-Instruct'),
+      verbose = True
+    )
+
 if __name__ == "__main__":
   from langchain_core.tools import tool
   from langchain.agents import AgentExecutor, create_tool_calling_agent
