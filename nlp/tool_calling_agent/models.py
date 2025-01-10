@@ -12,7 +12,7 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.agents.format_scratchpad.tools import format_to_tool_messages
 from langchain.agents.output_parsers import ToolsAgentOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, ToolMessage
 from config import *
 
 class ChatHuggingFace2(ChatHuggingFace):
@@ -28,6 +28,7 @@ class ChatHuggingFace2(ChatHuggingFace):
     **kwargs,
   ):
     # ordinary LLM inference
+    import pdb; pdb.set_trace()
     llm_input = self._to_chat_prompt(messages, **kwargs)
     llm_result = self.llm._generate(
       prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
@@ -60,8 +61,9 @@ class ChatHuggingFace2(ChatHuggingFace):
     """Convert a list of messages into a prompt format expected by wrapped LLM."""
     if not messages:
       raise ValueError("At least one HumanMessage must be provided!")
-    if not isinstance(messages[-1], HumanMessage):
-      raise ValueError("Last message must be a HumanMessage!")
+    # NOTE: tool calling agent may feed messages with last one of ToolMessage
+    if not (isinstance(messages[-1], HumanMessage) or isinstance(messages[-1], ToolMessage)):
+      raise ValueError("Last message must be a HumanMessage or ToolMessage!")
     messages_dicts = [self._to_chatml_format(m) for m in messages]
     # NOTE: add binded kwargs to tokenizer
     return self.tokenizer.apply_chat_template(
