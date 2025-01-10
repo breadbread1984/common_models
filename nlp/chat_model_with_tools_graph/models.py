@@ -41,12 +41,13 @@ class ChatHuggingFace2(ChatHuggingFace):
           tool_calls = json_repair.loads(generations.generations[0].message.content)
         except:
           raise
+      import pdb; pdb.set_trace()
       if type(tool_calls) is dict:
         tool_calls = [tool_calls]
       generations.generations[0].message.content = ''
       for call in tool_calls:
         generations.generations[0].message.tool_calls.append({
-          'name': call['name'],
+          'name': call['name'] if 'name' in call else call['function'],
           'args': call['parameters'],
           'id': f'call_{self.generate_random_sequence()}'
         })
