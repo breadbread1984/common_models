@@ -111,7 +111,7 @@ class Qwen2_5(ChatHuggingFace2):
     environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
-        endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct",
+        endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-1.5B-Instruct",
         huggingfacehub_api_token = "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",
         task = "text-generation",
         do_sample = False,
@@ -122,7 +122,7 @@ class Qwen2_5(ChatHuggingFace2):
           'use_cache': True
         }
       ),
-      tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-7B-Instruct'),
+      tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-1.5B-Instruct'),
       verbose = True
     )
 
