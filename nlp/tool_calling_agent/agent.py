@@ -15,7 +15,7 @@ class Agent(object):
       'codeqwen': CodeQwen2
     }
     llm = llms_types[model]()
-    db = SQLDatabase.from_uri(f'sqlite:///{kwargs.get(\'sqlite_path\')}')
+    db = SQLDatabase.from_uri(f"sqlite:///{kwargs.get('sqlite_path')}")
     tools = load_tools(tools, llm = llm, serper_api_key = 'd075ad1b698043747f232ec1f00f18ee0e7e8663') + \
             [
               load_graph_rag(llm),
