@@ -13,6 +13,7 @@ from langchain.agents.format_scratchpad.tools import format_to_tool_messages
 from langchain.agents.output_parsers import ToolsAgentOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.messages import HumanMessage
+from config import *
 
 class ChatHuggingFace2(ChatHuggingFace):
   def generate_random_sequence(self, length = 24):
@@ -69,11 +70,11 @@ class ChatHuggingFace2(ChatHuggingFace):
 
 class Llama3_2(ChatHuggingFace2):
   def __init__(self,):
-    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    environ['HUGGINGFACEHUB_API_TOKEN'] = huggingface_token
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
         endpoint_url = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct",
-        huggingfacehub_api_token = "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",
+        huggingfacehub_api_token = huggingface_token,
         task = "text-generation",
         do_sample = False,
         top_p = 0.8,
@@ -89,11 +90,11 @@ class Llama3_2(ChatHuggingFace2):
 
 class CodeLlama(ChatHuggingFace2):
   def __init__(self,):
-    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    environ['HUGGINGFACEHUB_API_TOKEN'] = huggingface_token
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
         endpoint_url = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-Instruct-hf",
-        huggingfacehub_api_token = "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",
+        huggingfacehub_api_token = huggingface_token,
         task = "text-generation",
         do_sample = False,
         top_p = 0.8,
@@ -108,11 +109,11 @@ class CodeLlama(ChatHuggingFace2):
 
 class Qwen2_5(ChatHuggingFace2):
   def __init__(self,):
-    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    environ['HUGGINGFACEHUB_API_TOKEN'] = huggingface_token
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
         endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-1.5B-Instruct",
-        huggingfacehub_api_token = "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",
+        huggingfacehub_api_token = huggingface_token,
         task = "text-generation",
         do_sample = False,
         top_p = 0.8,
@@ -128,11 +129,11 @@ class Qwen2_5(ChatHuggingFace2):
 
 class CodeQwen2(ChatHuggingFace2):
   def __init__(self,):
-    environ['HUGGINGFACEHUB_API_TOKEN'] = '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'
+    environ['HUGGINGFACEHUB_API_TOKEN'] = huggingface_token
     super(ChatHuggingFace, self).__init__(
       llm = HuggingFaceEndpoint(
         endpoint_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-3B-Instruct",
-        huggingfacehub_api_token = "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",
+        huggingfacehub_api_token = huggingface_token,
         task = "text-generation",
         do_sample = False,
         top_p = 0.8,
