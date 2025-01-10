@@ -4,7 +4,7 @@ from langchain import hub
 from langchain import SQLDatabase
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from models import Llama3_2, CodeLlama, Qwen2_5, CodeQwen2
-from tools import load_graph_rag, load_load_rag, load_sql_rag
+from tools import load_graph_rag, load_rag, load_sql_rag
 
 class Agent(object):
   def __init__(self, model = 'llama3', tools = ['google-serper', 'llm-math', 'wikipedia', 'arxiv'], **kwargs):
