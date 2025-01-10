@@ -8,7 +8,7 @@ import config
 FLAGS = flags.FLAGS
 
 def add_options():
-  flags.DEFINE_enum('model', default = 'qwen2', enum_values = {'llama3', 'qwen2'}, help = 'model to use')
+  flags.DEFINE_enum('model', default = 'llama3', enum_values = {'llama3', 'qwen2'}, help = 'model to use')
   flags.DEFINE_string('sqlite_path', default = 'tests/Chinook_Sqlite.sqlite', help = 'sqlite file path')
 
 def create_interface():
