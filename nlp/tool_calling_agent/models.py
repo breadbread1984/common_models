@@ -28,7 +28,6 @@ class ChatHuggingFace2(ChatHuggingFace):
     **kwargs,
   ):
     # ordinary LLM inference
-    import pdb; pdb.set_trace()
     llm_input = self._to_chat_prompt(messages, **kwargs)
     llm_result = self.llm._generate(
       prompts=[llm_input], stop=stop, run_manager=run_manager, **kwargs
