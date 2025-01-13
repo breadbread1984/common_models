@@ -19,7 +19,7 @@ def add_options():
 
 def main(unused_argv):
   environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
-  embedding = CohereEmbeddings(model = "embed-english-v3.0", user_agent = "my-app")
+  embedding = CohereEmbeddings(model = "embed-multilingual-v3.0", user_agent = "my-app")
   vectordb = Neo4jVector(
     embedding = embedding,
     url = neo4j_host,

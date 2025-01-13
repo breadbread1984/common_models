@@ -9,7 +9,7 @@ from langchain_neo4j import Neo4jVector
 
 def rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db):
   environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
-  embedding = CohereEmbeddings(model = "embed-english-v3.0", user_agent = "my-app")
+  embedding = CohereEmbeddings(model = "embed-multilingual-v3.0", user_agent = "my-app")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever()
   # chain to summarize chat history into a standalone question
