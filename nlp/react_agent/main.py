@@ -21,7 +21,7 @@ def create_interface():
     chat_history = chat_history[-config.max_history_len * 2:]
     response = agent.query(user_input, chat_history)
     history.append((user_input, response['output']))
-    return history, history
+    return "", history, history
   with gr.Blocks() as demo:
     state = gr.State([])
     with gr.Row(equal_height = True):
@@ -37,7 +37,7 @@ def create_interface():
           clear_btn = gr.ClearButton(components = [chatbot, state], value = "清空问题")
       submit_btn.click(chatbot_response,
                        inputs = [user_input, state],
-                       outputs = [chatbot, state])
+                       outputs = [user_input, state, chatbot])
   return demo
 
 def main(unused_argv):
