@@ -35,7 +35,7 @@ for vectorstore retrieval. Look at the input and try to reason about the underly
     return {"documents": documents, "question": rephrased_question}
   graph_builder.add_node("transform", transform_query)
   # create retriever node
-  embeddings = HuggingFaceEmbeddings(model = "Cohere/Cohere-embed-multilingual-v3.0")
+  embeddings = HuggingFaceEmbeddings(model = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever() # search_kwargs = {"k": 5}
   def retrieval(state: State):
