@@ -60,9 +60,8 @@ class ChatHuggingFace2(ChatHuggingFace):
     """Convert a list of messages into a prompt format expected by wrapped LLM."""
     if not messages:
       raise ValueError("At least one HumanMessage must be provided!")
-    # NOTE: tool calling agent may feed messages with last one of ToolMessage
-    if not (isinstance(messages[-1], HumanMessage) or isinstance(messages[-1], ToolMessage)):
-      raise ValueError("Last message must be a HumanMessage or ToolMessage!")
+    if not isinstance(messages[-1], HumanMessage):
+      raise ValueError("Last message must be a HumanMessage!")
     messages_dicts = [self._to_chatml_format(m) for m in messages]
     # NOTE: add binded kwargs to tokenizer
     return self.tokenizer.apply_chat_template(

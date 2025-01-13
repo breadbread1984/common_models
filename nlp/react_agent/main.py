@@ -14,7 +14,12 @@ def add_options():
 def create_interface():
   agent = Agent(model = FLAGS.model, sqlite_path = FLAGS.sqlite_path)
   def chatbot_response(user_input, history):
-    response = agent.query(user_input)
+    chat_history = list()
+    for human, ai in history:
+      chat_history.append(HumanMessage(content = human))
+      chat_history.append(AIMessage(content = ai))
+    chat_history = chat_history[-config.max_history_len * 2:]
+    response = agent.query(user_input, chat_history)
     history.append((user_input, response['output']))
     return history, history
   with gr.Blocks() as demo:
