@@ -50,6 +50,8 @@ def main(unused_argv):
         raise Exception('unknown format!')
       docs = loader.load()
       split_docs = text_splitter.split_documents(docs)
+      for doc in split_docs:
+        doc.metadata['url'] = f'file://{join(root, f)}'
       vectordb.add_documents(split_docs)
 
 if __name__ == "__main__":
