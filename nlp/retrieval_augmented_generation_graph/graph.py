@@ -30,18 +30,18 @@ def get_graph():
     documents = retriever.invoke(question)
     return {'question': question, 'documents': documents}
   graph_builder.add_node("retrieval", retrieval)
-  # create chain node
+  # create rag node
   prompt = hub.pull("rlm/rag-prompt")
   rag_chain = prompt | llm | StrOutputParser()
-  def chatbot(state: State):
+  def rag(state: State):
     documents = state['documents']
     question = state['question']
     generation = rag_chain.invoke({'context': documents, 'question': question})
     return {"documents": documents, "question": question, "generation": generation}
-  graph_builder.add_node("chatbot", chatbot)
+  graph_builder.add_node("rag", rag)
   # add edges
   graph_builder.add_edge(START, "retrieval")
-  graph_builder.add_edge("retrieval", "chatbot")
-  graph_builder.add_edge("chatbot", END)
+  graph_builder.add_edge("retrieval", "rag")
+  graph_builder.add_edge("rag", END)
   graph = graph_builder.compile()
   return graph
