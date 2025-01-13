@@ -19,9 +19,9 @@ def create_interface():
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
     for event in graph.stream({"question": user_input}):
-      for value in event.values():
-        response = value["messages"][-1]['generation']
-        break
+      if 'rag' not in event: continue
+      response = event['rag']['generation']
+      break
     history.append((user_input, response))
     return history, history, ""
   with gr.Blocks() as demo:
