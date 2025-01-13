@@ -18,13 +18,13 @@ class State(TypedDict):
   generation: str
   documents: List[str]
 
-def get_graph():
+def get_graph(k = 5):
   graph_builder = StateGraph(State)
   llm = Llama3_2()
   # create retriever node
-  embeddings = HuggingFaceEmbeddings(model = "intfloat/multilingual-e5-base")
+  embeddings = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
-  retriever = vectordb.as_retriever() # search_kwargs = {"k": 5}
+  retriever = vectordb.as_retriever(search_kwargs = {"k": k})
   def retrieval(state: State):
     question = state['question']
     documents = retriever.invoke(question)
