@@ -7,7 +7,7 @@ from absl import flags, app
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
-from langchain_community.embeddings import CohereEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from tools.rag import neo4j_host, neo4j_user, neo4j_password, neo4j_db
 
 FLAGS = flags.FLAGS
@@ -19,7 +19,7 @@ def add_options():
 
 def main(unused_argv):
   environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
-  embedding = CohereEmbeddings(model = "embed-multilingual-v3.0", user_agent = "my-app")
+  embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(
     embedding = embedding,
     url = neo4j_host,

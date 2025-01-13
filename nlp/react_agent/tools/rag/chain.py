@@ -4,12 +4,12 @@ from os import environ
 from langchain import hub
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.embeddings import CohereEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_neo4j import Neo4jVector
 
 def rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db):
   environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
-  embedding = CohereEmbeddings(model = "embed-multilingual-v3.0", user_agent = "my-app")
+  embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever()
   # chain to summarize chat history into a standalone question
