@@ -16,10 +16,10 @@ def rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db, k = 7):
   # chain to summarize chat history into a standalone question
   history_aware_retriever = create_history_aware_retriever(llm, retriever, hub.pull("langchain-ai/chat-langchain-rephrase"))
   # filter documents with rank
-  def print_results(x):
+  def filter_results(x):
     filtered = [doc for doc in x if doc.metadata['classification'] <= rank]
     return filtered
-  history_aware_retriever = history_aware_retriever | print_results
+  history_aware_retriever = history_aware_retriever | filter_results
   # chain to answer the question based on retrievaled context
   combine_docs_chain = create_stuff_documents_chain(llm, hub.pull("langchain-ai/retrieval-qa-chat"))
   chain = create_retrieval_chain(history_aware_retriever, combine_docs_chain)
