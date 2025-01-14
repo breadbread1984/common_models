@@ -22,7 +22,7 @@ class Agent(object):
               load_sql_rag(llm, db),
               load_rag(llm)
             ]
-    prompt = hub.pull('hwchase17/react-json')
+    prompt = hub.pull('hwchase17/openai-functions-agent')
     agent = create_tool_calling_agent(llm, tools, prompt)
     self.agent_chain = AgentExecutor(agent = agent, tools = tools, verbose = True)
   def query(self, question):
