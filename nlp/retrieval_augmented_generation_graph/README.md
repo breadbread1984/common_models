@@ -31,13 +31,13 @@ create a database for receiving text chunks
 you can choose whatever documents and put them under a directory. after that, execute the following command
 
 ```shell
-python3 load_text.py --input_dir <path/to/directory>
+python3 load_vectordb.py --input_dir <path/to/directory>
 ```
 
 alternatively, you can use the demo text by executing the following command
 
 ```shell
-python3 load_text.py --input_dir vectordb_test
+python3 load_vectordb.py --input_dir vectordb_test
 ```
 
 ## Launch the service

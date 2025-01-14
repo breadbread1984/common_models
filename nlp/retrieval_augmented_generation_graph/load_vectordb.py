@@ -1,34 +1,30 @@
 #!/usr/bin/python3
 
-from os import walk
+from os import environ, walk
 from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
-import numpy as np
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
 from langchain_huggingface import HuggingFaceEmbeddings
-from models import TGI
+from tools.rag import neo4j_host, neo4j_user, neo4j_password, neo4j_db
 
 FLAGS = flags.FLAGS
 
 def add_options():
   flags.DEFINE_string('input_dir', default = None, help = 'path to directory')
-  flags.DEFINE_string('tgi_host', default = 'http://localhost:8080/generate', help = 'host of TGI')
-  flags.DEFINE_string('neo4j_host', default = 'bolt://localhost:7687', help = 'host')
-  flags.DEFINE_string('neo4j_user', default = 'neo4j', help = 'user name')
-  flags.DEFINE_string('neo4j_password', default = 'neo4j', help = 'password')
-  flags.DEFINE_string('neo4j_db', default = 'neo4j', help = 'database')
+  flags.DEFINE_integer('length', default = 150, help = 'segment length after splitting')
+  flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
 
 def main(unused_argv):
-  embedding = HuggingFaceEmbeddings(model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+  embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(
     embedding = embedding,
-    url = FLAGS.neo4j_host,
-    username = FLAGS.neo4j_user,
-    password = FLAGS.neo4j_password,
-    database = FLAGS.neo4j_db,
+    url = neo4j_host,
+    username = neo4j_user,
+    password = neo4j_password,
+    database = neo4j_db,
     index_name = "typical_rag",
     search_type = "hybrid",
     pre_delete_collection = True
@@ -39,7 +35,7 @@ def main(unused_argv):
   if not index_type:
     vectordb.create_new_index()
   # load
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size = 150, chunk_overlap = 10)
+  text_splitter = RecursiveCharacterTextSplitter(separators = [r"\n\n", r"\n", r"\.(?![0-9])|(?<![0-9])\.", r"。"], is_separator_regex = True, chunk_size = FLAGS.length, chunk_overlap = FLAGS.overlap)
   for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
     for f in files:
       stem, ext = splitext(f)
@@ -54,8 +50,9 @@ def main(unused_argv):
       docs = loader.load()
       split_docs = text_splitter.split_documents(docs)
       for doc in split_docs:
-        doc.metadata['url'] = f'file://{join(root,f)}'
-        doc.metadata['classification'] = np.random.randint(low = 0, high = 3)
+        doc.metadata['url'] = f'file://{join(root, f)}' # NOTE: psuedo document url
+        import numpy as np
+        doc.metadata['classification'] = np.random.randint(low = 0, high = 3) # NOTE: psuedo document classification
       vectordb.add_documents(split_docs)
 
 if __name__ == "__main__":
