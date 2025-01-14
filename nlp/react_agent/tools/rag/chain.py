@@ -9,7 +9,6 @@ from langchain_neo4j import Neo4jVector
 from .config import rank
 
 def rag_chain(llm, neo4j_host, neo4j_user, neo4j_password, neo4j_db, k = 7):
-  environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
   embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever(search_kwargs = {"k": k})
