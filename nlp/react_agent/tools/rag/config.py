@@ -10,4 +10,3 @@ neo4j_user = "neo4j"
 neo4j_password = "19841124"
 neo4j_db = "vectordb"
 
-rank = 3
