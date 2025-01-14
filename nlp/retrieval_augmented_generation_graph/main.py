@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+import pandas as pd
 import gradio as gr
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from graph import get_graph
@@ -25,8 +26,12 @@ def create_interface():
       documents = event['rag']['documents']
       break
     history.append((user_input, response))
-    print(documents)
-    return history, history, ""
+    ids = [i for i in range(len(documents))]
+    contents = [doc.page_content for doc in documents]
+    urls = [doc.metadata['url'] for doc in documents]
+    ranks = [doc.metadata['rank'] for doc in documents]
+    documents = pd.DataFrame({'id': ids, 'content': contents, 'url': urls, 'rank': ranks})
+    return history, history, "", documents
   with gr.Blocks() as demo:
     state = gr.State([])
     with gr.Row(equal_height = True):
@@ -35,6 +40,7 @@ def create_interface():
     with gr.Row():
       with gr.Column(scale = 4):
         chatbot = gr.Chatbot(height = 450, show_copy_button = True)
+        references = gr.Dataframe(value = pd.DataFrame({'id':[], 'content':[], 'url': [], 'rank': []}), label = 'references')
         user_input = gr.Textbox(label = '需要问什么？')
         with gr.Row():
           submit_btn = gr.Button("发送")
@@ -42,7 +48,7 @@ def create_interface():
           clear_btn = gr.ClearButton(components = [chatbot, state], value = "清空问题")
       submit_btn.click(chatbot_response,
                        inputs = [user_input, state],
-                       outputs = [chatbot, state, user_input])
+                       outputs = [chatbot, state, user_input, references])
   return demo
 
 def main(unused_argv):
