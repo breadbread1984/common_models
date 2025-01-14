@@ -10,6 +10,7 @@ FLAGS = flags.FLAGS
 def add_options():
   flags.DEFINE_string('host', default = '0.0.0.0', help = 'service host')
   flags.DEFINE_integer('port', default = 8081, help = 'service port')
+  flags.DEFINE_integer('rank', default = 3, help = 'rank')
 
 def create_interface():
   graph = get_graph()
@@ -18,7 +19,7 @@ def create_interface():
     for human, ai in history:
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
-    for event in graph.stream({"question": user_input}):
+    for event in graph.stream({"question": user_input, 'rank': FLAGS.rank}):
       if 'rag' not in event: continue
       response = event['rag']['generation']
       documents = event['rag']['documents']
