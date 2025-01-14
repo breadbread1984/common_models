@@ -4,6 +4,7 @@ from os import walk
 from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
+import numpy as np
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
@@ -52,6 +53,9 @@ def main(unused_argv):
         raise Exception('unknown format!')
       docs = loader.load()
       split_docs = text_splitter.split_documents(docs)
+      for doc in split_docs:
+        doc.metadata['url'] = f'file://{join(root,f)}'
+        doc.metadata['classification'] = np.random.randint(low = 0, high = 3)
       vectordb.add_documents(split_docs)
 
 if __name__ == "__main__":
