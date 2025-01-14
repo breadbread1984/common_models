@@ -8,7 +8,7 @@ from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLo
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_neo4j import Neo4jVector
 from langchain_huggingface import HuggingFaceEmbeddings
-from tools.rag import neo4j_host, neo4j_user, neo4j_password, neo4j_db
+from configs import neo4j_host, neo4j_user, neo4j_password, neo4j_db
 
 FLAGS = flags.FLAGS
 
