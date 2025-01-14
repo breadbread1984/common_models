@@ -29,8 +29,8 @@ def create_interface():
     ids = [i for i in range(len(documents))]
     contents = [doc.page_content for doc in documents]
     urls = [doc.metadata['url'] for doc in documents]
-    ranks = [doc.metadata['rank'] for doc in documents]
-    documents = pd.DataFrame({'id': ids, 'content': contents, 'url': urls, 'rank': ranks})
+    classifications = [doc.metadata['classification'] for doc in documents]
+    documents = pd.DataFrame({'id': ids, 'content': contents, 'url': urls, 'classification': classifications})
     return history, history, "", documents
   with gr.Blocks() as demo:
     state = gr.State([])
@@ -40,7 +40,7 @@ def create_interface():
     with gr.Row():
       with gr.Column(scale = 4):
         chatbot = gr.Chatbot(height = 450, show_copy_button = True)
-        references = gr.Dataframe(value = pd.DataFrame({'id':[], 'content':[], 'url': [], 'rank': []}), label = 'references')
+        references = gr.Dataframe(value = pd.DataFrame({'id':[], 'content':[], 'url': [], 'classification': []}), label = 'references')
         user_input = gr.Textbox(label = '需要问什么？')
         with gr.Row():
           submit_btn = gr.Button("发送")
