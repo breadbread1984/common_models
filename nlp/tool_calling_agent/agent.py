@@ -23,10 +23,6 @@ class Agent(object):
               load_rag(llm)
             ]
     prompt = hub.pull('hwchase17/react-json')
-    prompt = prompt.partial(
-      tools = render_text_description(tools),
-      tool_names = ", ".join([t.name for t in tools])
-    )
     agent = create_tool_calling_agent(llm, tools, prompt)
     self.agent_chain = AgentExecutor(agent = agent, tools = tools, verbose = True)
   def query(self, question):
