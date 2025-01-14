@@ -35,7 +35,7 @@ class Agent(object):
       "agent_scratchpad": lambda x: format_log_to_str(x["intermediate_steps"]),
       "chat_history": lambda x: x["chat_history"]
     } | prompt | llm | ReActJsonSingleInputOutputParser()
-    self.agent_chain = AgentExecutor(agent = chain, tools = tools, verbose = True)
+    self.agent_chain = AgentExecutor(agent = chain, tools = tools, verbose = True, handle_parsing_errors = True)
   def query(self, question, chat_history):
     return self.agent_chain.invoke({"input": question, "chat_history": chat_history})
 
