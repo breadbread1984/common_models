@@ -21,8 +21,10 @@ def create_interface():
     for event in graph.stream({"question": user_input}):
       if 'rag' not in event: continue
       response = event['rag']['generation']
+      documents = event['rag']['documents']
       break
     history.append((user_input, response))
+    print(documents)
     return history, history, ""
   with gr.Blocks() as demo:
     state = gr.State([])

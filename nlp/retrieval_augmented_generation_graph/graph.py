@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.documents import Document
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -14,9 +15,10 @@ from models import Llama3_2
 from configs import *
 
 class State(TypedDict):
+  rank: int
   question: str
   generation: str
-  documents: List[str]
+  documents: List[Document]
 
 def get_graph(k = 5):
   graph_builder = StateGraph(State)
@@ -26,10 +28,19 @@ def get_graph(k = 5):
   vectordb = Neo4jVector(embedding = embedding, url = neo4j_host, username = neo4j_user, password = neo4j_password, database = neo4j_db, index_name = "typical_rag")
   retriever = vectordb.as_retriever(search_kwargs = {"k": k})
   def retrieval(state: State):
+    rank = state['rank']
     question = state['question']
     documents = retriever.invoke(question)
-    return {'question': question, 'documents': documents}
+    return {'rank': rank, 'question': question, 'documents': documents}
   graph_builder.add_node("retrieval", retrieval)
+  # create filter document node
+  def filterdoc(state: State):
+    rank = state['rank']
+    question = state['question']
+    documents = state['documents']
+    documents = [doc for doc in documents if doc.metadata['classification'] <= rank]
+    return {'rank': rank, 'question': question, 'documents': documents}
+  graph_builder.add_node("filter", filterdoc)
   # create rag node
   prompt = hub.pull("rlm/rag-prompt")
   rag_chain = prompt | llm | StrOutputParser()
@@ -41,7 +52,8 @@ def get_graph(k = 5):
   graph_builder.add_node("rag", rag)
   # add edges
   graph_builder.add_edge(START, "retrieval")
-  graph_builder.add_edge("retrieval", "rag")
+  graph_builder.add_edge("retrieval", "filter")
+  graph_builder.add_edge("filter", "rag")
   graph_builder.add_edge("rag", END)
   graph = graph_builder.compile()
   return graph
