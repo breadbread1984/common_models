@@ -18,7 +18,6 @@ def add_options():
   flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
 
 def main(unused_argv):
-  environ['COHERE_API_KEY'] = 't2KtfbXrEnCIv3MaFRsA2oxK8vd5ex2V6qD4L4ev'
   embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(
     embedding = embedding,
