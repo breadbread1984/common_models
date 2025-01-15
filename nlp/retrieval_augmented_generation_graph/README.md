@@ -1,6 +1,8 @@
 # Introduction
 
-this project implements RAG with langgraph.
+this project implements RAG + self-reflection with langgraph.
+
+<img title="RAG + self-reflection" alt = "rag" src="pics/structure.png" />
 
 # Usage
 
