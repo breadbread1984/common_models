@@ -57,7 +57,30 @@ for vectorstore retrieval. Look at the input and try to reason about the underly
     documents = state['documents']
     documents = [doc for doc in documents if doc.metadata['classification'] <= rank]
     return {'rank': rank, 'chat_history': chat_history, 'question': question, 'documents': documents}
-  graph_builder.add_node("filter", filterdoc)
+  graph_builder.add_node("permission_filter", filterdoc)
+  # create retrieval grader node
+  retrieval_grader_prompt = ChatPromptTemplate.from_messages([
+    ('system', """You are a grader assessing relevance of a retrieved document to a user question. \n 
+If the document contains keyword(s) or semantic meaning related to the user question, grade it as relevant. \n
+It does not need to be a stringent test. The goal is to filter out erroneous retrievals. \n
+Give a binary score 'yes' or 'no' score to indicate whether the document is relevant to the question."""),
+    ('user', "Retrieved document: \n\n {document} \n\n User question: {question}")
+  ])
+  retrievance_grader = retrieval_grader_prompt | llm
+  def relevance_filter(state: State):
+    rank = state['rank']
+    chat_history = state['chat_history']
+    question = state['question']
+    documents = state['documents']
+    filtered_docs = list()
+    for d in documents:
+      score = retrievance_grader.invoke({'document': d, 'question': question})
+      if score.content.lower() == 'yes':
+        filtered_docs.append(d)
+      else:
+        continue
+    return {'rank': rank, 'chat_history': chat_history, 'question': question, 'documents': filtered_docs}
+  graph_builder.add_node("relevance_filter", relevance_filter)
   # create generation node
   prompt = ChatPromptTemplate.from_messages([
     ('system', 'Answer any use questions in the language in which it was entered or required based solely on the context below:\n\n<context>\n{context}\n</context>'),
@@ -98,8 +121,9 @@ Give a binary score 'yes' or 'no'. Yes' means that the answer resolves the quest
       return 'not supported'
   # add edges
   graph_builder.add_edge(START, "retrieval")
-  graph_builder.add_edge("retrieval", "filter")
-  graph_builder.add_edge("filter", "chatbot")
+  graph_builder.add_edge("retrieval", "permission_filter")
+  graph_builder.add_edge("permission_filter", "relevance_filter")
+  graph_builder.add_edge("relevance_filter", "chatbot")
   graph_builder.add_conditional_edges("chatbot", check_output, {
     'useful': END, # answer the question -> end
     'not useful': 'rephrase', # not answer the question -> rephrase
