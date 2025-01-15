@@ -14,7 +14,7 @@ class Llama3_2(ChatHuggingFace):
         huggingfacehub_api_token = "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",
         task = "text-generation",
         max_length = 131072,
-        do_sample = False,
+        do_sample = True,
         top_p = 0.8,
         temperature = 0.8,
         trust_remote_code = True,

@@ -21,9 +21,9 @@ def create_interface():
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
     for event in graph.stream({"question": user_input, 'rank': FLAGS.rank}):
-      if 'rag' not in event: continue
-      response = event['rag']['generation']
-      documents = event['rag']['documents']
+      if 'chatbot' not in event: continue
+      response = event['chatbot']['generation']
+      documents = event['chatbot']['documents']
       break
     history.append((user_input, response))
     ids = [i for i in range(len(documents))]
