@@ -4,7 +4,7 @@ from typing import List
 from typing_extensions import TypedDict
 from pydantic import BaseModel, Field
 from langchain import hub
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, START, END
@@ -16,6 +16,7 @@ from configs import *
 
 class State(TypedDict):
   rank: int
+  chat_history: list
   question: str
   generation: str
   documents: List[Document]
@@ -32,9 +33,10 @@ for vectorstore retrieval. Look at the input and try to reason about the underly
   question_rephraser = rephrase_prompt | llm
   def rephrase(state: State):
     rank = state['rank']
+    chat_history = state['chat_history']
     question = state['question']
     question = question_rephraser.invoke({'question': question})
-    return {'rank': rank, 'question': question}
+    return {'rank': rank, 'chat_history': chat_history, 'question': question}
   graph_builder.add_node('rephrase', rephrase)
   # create retriever node
   embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
@@ -42,26 +44,33 @@ for vectorstore retrieval. Look at the input and try to reason about the underly
   retriever = vectordb.as_retriever(search_kwargs = {"k": k})
   def retrieval(state: State):
     rank = state['rank']
+    chat_history = state['chat_history']
     question = state['question']
     documents = retriever.invoke(question)
-    return {'rank': rank, 'question': question, 'documents': documents}
+    return {'rank': rank, 'chat_history': chat_history, 'question': question, 'documents': documents}
   graph_builder.add_node("retrieval", retrieval)
   # create filter document node
   def filterdoc(state: State):
     rank = state['rank']
+    chat_history = state['chat_history']
     question = state['question']
     documents = state['documents']
     documents = [doc for doc in documents if doc.metadata['classification'] <= rank]
-    return {'rank': rank, 'question': question, 'documents': documents}
+    return {'rank': rank, 'chat_history': chat_history, 'question': question, 'documents': documents}
   graph_builder.add_node("filter", filterdoc)
   # create generation node
-  prompt = hub.pull("rlm/rag-prompt")
+  prompt = ChatPromptTemplate.from_messages([
+    ('system', 'Answer any use questions in the language in which it was entered or required based solely on the context below:\n\n<context>\n{context}\n</context>'),
+    MessagesPlaceholder('chat_history'),
+    ('user', '{input}')
+  ])
   rag_chain = prompt | llm | StrOutputParser()
   def generation(state: State):
+    chat_history = state['chat_history']
     documents = state['documents']
     question = state['question']
-    generation = rag_chain.invoke({'context': documents, 'question': question})
-    return {"documents": documents, "question": question, "generation": generation}
+    generation = rag_chain.invoke({'context': documents, 'chat_history': chat_history, 'input': question})
+    return {"chat_history": chat_history, "documents": documents, "question": question, "generation": generation}
   graph_builder.add_node("chatbot", generation)
   # create check hallucination node
   hallucination_prompt = ChatPromptTemplate.from_messages([

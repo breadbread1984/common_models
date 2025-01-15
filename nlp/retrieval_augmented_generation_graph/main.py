@@ -20,7 +20,7 @@ def create_interface():
     for human, ai in history:
       chat_history.append(HumanMessage(content = human))
       chat_history.append(AIMessage(content = ai))
-    for event in graph.stream({"question": user_input, 'rank': FLAGS.rank}):
+    for event in graph.stream({"question": user_input, 'rank': FLAGS.rank, 'chat_history': chat_history}):
       if 'chatbot' not in event: continue
       response = event['chatbot']['generation']
       documents = event['chatbot']['documents']
