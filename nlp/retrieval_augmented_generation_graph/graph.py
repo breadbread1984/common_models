@@ -107,6 +107,6 @@ Give a binary score 'yes' or 'no'. Yes' means that the answer resolves the quest
   })
   graph_builder.add_edge('rephrase', 'retrieval')
   graph = graph_builder.compile()
-  with open('graph.png', 'w') as f:
+  with open('graph.mmd', 'w') as f:
     f.write(graph.get_graph().draw_mermaid())
   return graph
