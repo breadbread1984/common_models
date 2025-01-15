@@ -53,6 +53,7 @@ def main(unused_argv):
         doc.metadata['url'] = f'file://{join(root, f)}' # NOTE: psuedo document url
         import numpy as np
         doc.metadata['classification'] = np.random.randint(low = 0, high = 3) # NOTE: psuedo document classification
+      split_docs = [doc for doc in split_docs if len(doc.page_content) > 3]
       vectordb.add_documents(split_docs)
 
 if __name__ == "__main__":
