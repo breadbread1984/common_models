@@ -55,6 +55,29 @@
     "p": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/SUOS2011.pdf",
     "q": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/EMSUOS2011e.pdf",
     "r": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/WindEffects2019e.pdf",
-    "s": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/ExplanatoryNotesWindEffects2019e.pdf"
+    "s": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/ExplanatoryNotesWindEffects2019e.pdf",
+    "t": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/CoP_MBIS_MWISe.pdf",
+    "u": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/Osi_1992.pdf",
+    "v": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/Fsdfc_1994.pdf"
+  },
+  "Internal / external manuals, guidelines, good practices and consistencies of practices": {
+    "Buildings Department Central Data Bank": "https://www.bd.gov.hk/en/resources/codes-and-references/central-data-bank/CDB.html",
+    "Central Data Bank Important Notes": "https://www.bd.gov.hk/en/resources/codes-and-references/central-data-bank/index.html",
+    "Practice Note for Authorized Persons": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM020.pdf",
+    "Building Materials a": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBCA.pdf",
+    "Building Materials b": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFPM.pdf",
+    "Building Materials c": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFSM.pdf",
+    "Building Materials d": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFMSS.pdf",
+    "Building Materials e": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBMC.pdf",
+    "Building Materials f": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBSF.pdf",
+    "Building Materials g": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBSS.pdf",
+    "Building Components a": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFRD.pdf",
+    "Building Components b": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFRG.pdf",
+    "Building Components c": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBFRLLD.pdf",
+    "Building Components d": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBOFRP.pdf",
+    "Building Components e": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBOBC.pdf",
+    "Building Components f": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBSSSB.pdf",
+    "Construction Systems a": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBCS.pdf",
+    "Construction Systems b": "https://www.bd.gov.hk/doc/en/resources/pre-accepted-materials/CDBMIC.pdf"
   }
 }
