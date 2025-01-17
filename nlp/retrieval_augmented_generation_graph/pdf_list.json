@@ -37,5 +37,24 @@
     "adv002": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADV/ADV002.pdf"
   },
   "Code of Practices mainly by Buildings Department": {
+    "a": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/FRC1996_e.pdf",
+    "b": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/OTTV1995_e.pdf",
+    "c": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/MOA2004e.pdf",
+    "d": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/MOE1996_e.pdf",
+    "e": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/fs_code2011.pdf",
+    "f": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/cop_on_access_for_external_maintenance_2021.pdf",
+    "g": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/BFA2008_e.pdf",
+    "h": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/Demolition_e2004.pdf",
+    "i": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/SS2009_e.pdf",
+    "j": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/TMSS2009_e.pdf",
+    "k": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/DIL2011e.pdf",
+    "l": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/FoundationCode2017.pdf",
+    "m": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/cppcc2016e.pdf",
+    "n": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/CoP_SUC2013e.pdf",
+    "o": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/SUG2018e.pdf",
+    "p": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/SUOS2011.pdf",
+    "q": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/EMSUOS2011e.pdf",
+    "r": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/WindEffects2019e.pdf",
+    "s": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/ExplanatoryNotesWindEffects2019e.pdf"
   }
 }
