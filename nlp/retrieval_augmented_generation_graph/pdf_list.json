@@ -114,6 +114,18 @@
     "appendixii": "https://eform1.bd.gov.hk/GetForm.aspx?FN=m/OP2",
     "appendixiii": "https://eform1.bd.gov.hk/GetForm.aspx?FN=m/OP3",
     "appendixiv": "https://eform1.bd.gov.hk/GetForm.aspx?FN=m/OP4",
-
+    "bim": "https://www.bd.gov.hk/en/resources/codes-and-references/building-information-modelling/index.html",
+    "adm19": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM019.pdf",
+    "adm34": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADV/ADV034.pdf"
+  },
+  "Practices notes": {
+    "adm001": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM001.pdf",
+    "adm002": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM002.pdf",
+    "adm003": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM003.pdf",
+    "adm004": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM004.pdf",
+    "adm005": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM005.pdf",
+    "adm006": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM006.pdf",
+    "adm007": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM007.pdf",
+    "adm008": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/practice-notes-and-circular-letters/pnap/ADM/ADM008.pdf"
   }
 }
