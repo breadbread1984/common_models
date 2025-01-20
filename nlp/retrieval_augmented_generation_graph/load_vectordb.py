@@ -25,7 +25,7 @@ def add_options():
   flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
 
 def main(unused_argv):
-  environ['OCR_AGENT'] = 'tesseract'
+  environ['OCR_AGENT'] = 'unstructured.partition.utils.ocr_models.tesseract_ocr.OCRAgentTesseract'
   embedding = HuggingFaceEmbeddings(model_name = "intfloat/multilingual-e5-base")
   vectordb = Neo4jVector(
     embedding = embedding,
