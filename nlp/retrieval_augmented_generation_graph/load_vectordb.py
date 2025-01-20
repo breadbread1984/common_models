@@ -44,7 +44,7 @@ def main(unused_argv):
     vectordb.create_new_index()
   # load
   text_splitter = RecursiveCharacterTextSplitter(separators = [r"\n\n", r"\n", r"\.(?![0-9])|(?<![0-9])\.", r"。"], is_separator_regex = True, chunk_size = FLAGS.length, chunk_overlap = FLAGS.overlap)
-  choices = np.array(['admin', 'users'])
+  choices = np.array(['all staff', 'leader only'])
   if FLAGS.input_dir:
     for root, dirs, files in tqdm(walk(FLAGS.input_dir)):
       for f in files:
@@ -61,6 +61,7 @@ def main(unused_argv):
         split_docs = text_splitter.split_documents(docs)
         for doc in split_docs:
           doc.metadata['url'] = f'file://{join(root, f)}' # NOTE: psuedo document url
+          # FIXME: assign document's classification as requirements
           doc.metadata['classification'] = np.random.choice(choices) # NOTE: psuedo document classification
         split_docs = [doc for doc in split_docs if len(doc.page_content) > 3]
         vectordb.add_documents(split_docs)
@@ -90,6 +91,10 @@ def main(unused_argv):
           continue
         docs = loader.load()
         split_docs = text_splitter.split_documents(docs)
+        for doc in split_docs:
+          doc.metadata['url'] = url
+          # FIXME: assign document's classification as requirements
+          doc.metadata['classification'] = np.random.choice(choices)
         vectordb.add_documents(split_docs)
         rmtree(join('tmp', f))
   else:
