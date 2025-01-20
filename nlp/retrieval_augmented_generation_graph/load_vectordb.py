@@ -6,7 +6,7 @@ from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
 import json
-import subprocess
+from playwright.sync_api import sync_playwright
 from urllib.parse import urlparse
 from uuid import uuid4
 import numpy as np
@@ -23,13 +23,6 @@ def add_options():
   flags.DEFINE_string('input_json', default = None, help = 'path to json')
   flags.DEFINE_integer('length', default = 150, help = 'segment length after splitting')
   flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
-
-def search_command_path(command):
-  try:
-    result = subprocess.check_output(['which', command]).decode('utf-8').strip()
-    return result
-  except subprocess.CalledProcessError:
-    return None
 
 def main(unused_argv):
   environ['OCR_AGENT'] = 'tesseract'
@@ -77,40 +70,41 @@ def main(unused_argv):
     mkdir("tmp")
     with open(FLAGS.input_json, 'r') as f:
       all_pdfs = json.loads(f.read())
-    for categories, pdfs in all_pdfs.items():
-      for key, url in pdfs.items():
-        parsed_url = urlparse(url)
-        f = parsed_url.path.split('/')[-1]
-        try:
-          process = subprocess.Popen([
-            search_command_path("wget"),
-            url,
-            "-O",
-            join("tmp", f)
-          ])
-          process.wait()
-        except:
-          process.kill()
-          continue
-        stem, ext = splitext(f)
-        if ext.lower() in ['.htm', '.html']:
-          loader = UnstructuredHTMLLoader(join('tmp', f))
-        elif ext.lower() == '.txt':
-          loader = TextLoader(join('tmp', f))
-        elif ext.lower() == '.pdf':
-          loader = UnstructuredPDFLoader(join('tmp', f), mode = 'single', strategy = 'hi_res', languages = ['en', 'zh-cn', 'zh-tw'])
-        else:
-          print('unknown file type!')
+    with sync_playwright() as p:
+      browser = p.chromium.launch()
+      for categories, pdfs in all_pdfs.items():
+        for key, url in pdfs.items():
+          parsed_url = urlparse(url)
+          f = parsed_url.path.split('/')[-1]
+          stem, ext = splitext(f)
+          if ext in ['.htm', '.html']:
+            download(url, out = join('tmp', f))
+          else:
+            page = browser.new_page()
+            page.goto(url)
+            with page.expect_download() as download_info:
+              download = download_info.value
+            download.save_as(join('tmp', f))
+            page.close()
+          if ext.lower() in ['.htm', '.html']:
+            loader = UnstructuredHTMLLoader(join('tmp', f))
+          elif ext.lower() == '.txt':
+            loader = TextLoader(join('tmp', f))
+          elif ext.lower() == '.pdf':
+            loader = UnstructuredPDFLoader(join('tmp', f), mode = 'single', strategy = 'hi_res', languages = ['en', 'zh-cn', 'zh-tw'])
+          else:
+            print('unknown file type!')
+            rmtree(join('tmp', f))
+            continue
+          docs = loader.load()
+          split_docs = text_splitter.split_documents(docs)
+          for doc in split_docs:
+            doc.metadata['url'] = url
+            # FIXME: assign document's classification as requirements
+            doc.metadata['access right'] = np.random.choice(choices)
+          vectordb.add_documents(split_docs)
           rmtree(join('tmp', f))
-          continue
-        docs = loader.load()
-        split_docs = text_splitter.split_documents(docs)
-        for doc in split_docs:
-          doc.metadata['url'] = url
-          # FIXME: assign document's classification as requirements
-          doc.metadata['access right'] = np.random.choice(choices)
-        vectordb.add_documents(split_docs)
-        rmtree(join('tmp', f))
+      browser.close()
   else:
     raise Exception('either input_dir or input_json must be provided!')
 

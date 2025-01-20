@@ -10,6 +10,7 @@ this project implements RAG + self-reflection with langgraph.
 
 ```shell
 python3 -m pip install requirements.txt
+playwright install
 ```
 
 ## Launch Neo4j
