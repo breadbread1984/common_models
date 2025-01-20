@@ -104,8 +104,8 @@ def main(unused_argv):
             # FIXME: assign document's classification as requirements
             doc.metadata['access right'] = np.random.choice(choices)
           vectordb.add_documents(split_docs)
-          rmtree(join('tmp', f))
       browser.close()
+    rmtree('tmp')
   else:
     raise Exception('either input_dir or input_json must be provided!')
 
