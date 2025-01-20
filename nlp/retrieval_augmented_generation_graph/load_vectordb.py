@@ -6,9 +6,9 @@ from os.path import join, exists, splitext
 from tqdm import tqdm
 from absl import flags, app
 import json
+import subprocess
 from urllib.parse import urlparse
 from uuid import uuid4
-from wget import download
 import numpy as np
 from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredHTMLLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -23,6 +23,13 @@ def add_options():
   flags.DEFINE_string('input_json', default = None, help = 'path to json')
   flags.DEFINE_integer('length', default = 150, help = 'segment length after splitting')
   flags.DEFINE_integer('overlap', default = 10, help = 'segment overlapping length')
+
+def search_command_path(command):
+  try:
+    result = subprocess.check_output(['which', command]).decode('utf-8').strip()
+    return result
+  except subprocess.CalledProcessError:
+    return None
 
 def main(unused_argv):
   environ['OCR_AGENT'] = 'tesseract'
@@ -62,7 +69,7 @@ def main(unused_argv):
         for doc in split_docs:
           doc.metadata['url'] = f'file://{join(root, f)}' # NOTE: psuedo document url
           # FIXME: assign document's classification as requirements
-          doc.metadata['classification'] = np.random.choice(choices) # NOTE: psuedo document classification
+          doc.metadata['access right'] = np.random.choice(choices) # NOTE: psuedo document classification
         split_docs = [doc for doc in split_docs if len(doc.page_content) > 3]
         vectordb.add_documents(split_docs)
   elif FLAGS.input_json:
@@ -75,8 +82,15 @@ def main(unused_argv):
         parsed_url = urlparse(url)
         f = parsed_url.path.split('/')[-1]
         try:
-          download(url, out = join('tmp', f))
+          process = subprocess.Popen([
+            search_command_path("wget"),
+            url,
+            "-O",
+            join("tmp", f)
+          ])
+          process.wait()
         except:
+          process.kill()
           continue
         stem, ext = splitext(f)
         if ext.lower() in ['.htm', '.html']:
@@ -94,7 +108,7 @@ def main(unused_argv):
         for doc in split_docs:
           doc.metadata['url'] = url
           # FIXME: assign document's classification as requirements
-          doc.metadata['classification'] = np.random.choice(choices)
+          doc.metadata['access right'] = np.random.choice(choices)
         vectordb.add_documents(split_docs)
         rmtree(join('tmp', f))
   else:
