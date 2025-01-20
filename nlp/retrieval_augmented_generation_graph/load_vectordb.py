@@ -95,7 +95,6 @@ def main(unused_argv):
             loader = UnstructuredPDFLoader(join('tmp', f), mode = 'single', strategy = 'hi_res', languages = ['en', 'zh-cn', 'zh-tw'])
           else:
             print('unknown file type!')
-            rmtree(join('tmp', f))
             continue
           docs = loader.load()
           split_docs = text_splitter.split_documents(docs)
