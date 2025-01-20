@@ -86,6 +86,7 @@ def main(unused_argv):
               download = download_info.value
             download.save_as(join('tmp', f))
             page.close()
+          print(f"downloaded {join('tmp', f)}!")
           if ext.lower() in ['.htm', '.html']:
             loader = UnstructuredHTMLLoader(join('tmp', f))
           elif ext.lower() == '.txt':
